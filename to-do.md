@@ -21,14 +21,14 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 |------|-----------|
 | **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, store e Provider global prontos |
 | **1 — Shell da aplicação** | Concluída: layout `(app)` + AppShell flex responsivo (`<md` conteúdo + sheet; `md–lg` sidebar + conteúdo; `xl+` sidebar + lista + conteúdo) |
-| **2 — Lista de contatos** | Parcial: componente de lista, filtros internos e ações principais prontos; falta rota dedicada/filtros por query params e criação de contato |
+| **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
 | **3 — Detalhe do contato** | Parcial: rota `/contato/[nome]`, header, tags, seções e criação de lembrete/evento/nota prontos; falta edição inline e fluxo completo de exclusão/404 |
 | **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
 | **5–7** | Pendente — mobile, animações e polish final |
 
 **Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/contacts-store.tsx`, `src/components/layout/` (incl. `sidebar-nav`, `mobile-nav-sheet`, `app-shell-mobile-header`), `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
 
-**Ainda não existe:** `AddContactFab`, fluxo de criação de contato, filtros da lista via query params do sidebar. Rotas atuais: `/contato/[nome]` e `/eventos` (dentro do grupo `(app)`).
+**Ainda não existe:** `AddContactFab`, animações (fase 6). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
 
 ---
 
@@ -44,7 +44,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 | Rota | Descrição | Status |
 |------|-----------|--------|
-| `/` | Redireciona para a área principal da aplicação | Pendente |
+| `/` | Lista de contatos em todos os breakpoints | Feito |
 | `/preview` | Vitrine de componentes | Feito |
 | `/contato/[nome]` | Detalhe do contato por slug do nome | Feito parcial |
 | `/eventos` | Timeline de eventos e lembretes futuros | Feito parcial |
@@ -91,7 +91,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 - [x] `MobileNavSheet` + `app-shell-mobile-header.tsx`
 - [x] Lista central `ContactsList` só em `xl+`; highlight do contato ativo na lista
 - [x] Páginas renderizam só o painel direito (`appMainPanelClassName`)
-- [x] Redirect `/` → `/eventos`
+- [x] Home `/`: lista de contatos no painel principal (todos os breakpoints)
 - [x] Metadata pt-BR e `lang="pt-BR"` no `<html>`
 - [x] Tema dark no `<html>`
 - [x] Componente shadcn `sheet` (mobile)
@@ -101,15 +101,16 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ---
 
-## Fase 2 — Lista de contatos (`/contacts`)
+## Fase 2 — Lista de contatos (`/`)
 
 - [x] Componente `ContactsList`
-- [ ] Filtros por query params: favorites, tag, q, sort
-- [x] Filtros internos: todos, favoritos, fixados e sort A–Z/Z–A
-- [ ] Desktop: empty state no painel direito
+- [x] Rota `/` como lista de contatos (todos os breakpoints)
+- [x] Filtros por query params: favorites, tag, q, sort
+- [x] Filtros internos: todos, favoritos, fixados e sort A–Z/Z–A (sincronizados com URL)
 - [x] Tap/click em contato abre `/contato/[nome]`
 - [x] Ações: favoritar, pin, excluir
-- [ ] Criar contato (dialog) → navega para `[id]`
+- [x] Links do sidebar: `/`, `/?favorites=true`, `/?tag=<slug>`
+- [x] Criar contato (dialog) → navega para `/contato/[nome]`
 
 **Critério de pronto:** filtros do sidebar refletem na lista.
 

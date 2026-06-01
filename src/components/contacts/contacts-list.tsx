@@ -30,6 +30,10 @@ type ContactsListProps = {
   activeContactSlug?: string;
   className?: string;
   defaultView?: ContactsListView;
+  filter?: ContactsListFilter;
+  sort?: ContactsListSort;
+  onFilterChange?: (filter: ContactsListFilter) => void;
+  onSortChange?: (sort: ContactsListSort) => void;
   onEditContact?: (contact: Contact) => void;
   onToggleFavorite?: (contact: Contact) => void;
   onTogglePin?: (contact: Contact) => void;
@@ -43,27 +47,54 @@ export function ContactsList({
   activeContactSlug,
   className,
   defaultView = "list",
+  filter: filterProp,
+  sort: sortProp,
+  onFilterChange,
+  onSortChange,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
   onDeleteContact,
 }: ContactsListProps) {
   const [view, setView] = useState<ContactsListView>(defaultView);
-  const [filter, setFilter] = useState<ContactsListFilter>("all");
-  const [sort, setSort] = useState<ContactsListSort>("az");
+  const [internalFilter, setInternalFilter] = useState<ContactsListFilter>("all");
+  const [internalSort, setInternalSort] = useState<ContactsListSort>("az");
+
+  const filter = filterProp ?? internalFilter;
+  const sort = sortProp ?? internalSort;
+
+  const handleFilterChange = (value: ContactsListFilter) => {
+    if (onFilterChange) {
+      onFilterChange(value);
+    } else {
+      setInternalFilter(value);
+    }
+  };
+
+  const handleSortChange = (value: ContactsListSort) => {
+    if (onSortChange) {
+      onSortChange(value);
+    } else {
+      setInternalSort(value);
+    }
+  };
 
   const visibleContacts = useMemo(() => {
-    const filteredContacts = contacts.filter((contact) => {
-      if (filter === "favorites") {
-        return contact.favorite;
-      }
+    let filteredContacts = contacts;
 
-      if (filter === "pinned") {
-        return contact.pinned;
-      }
+    if (!onFilterChange) {
+      filteredContacts = contacts.filter((contact) => {
+        if (filter === "favorites") {
+          return contact.favorite;
+        }
 
-      return true;
-    });
+        if (filter === "pinned") {
+          return contact.pinned;
+        }
+
+        return true;
+      });
+    }
 
     return [...filteredContacts].sort((a, b) => {
       const comparison = a.name.localeCompare(b.name, "pt-BR", {
@@ -72,7 +103,7 @@ export function ContactsList({
 
       return sort === "az" ? comparison : -comparison;
     });
-  }, [contacts, filter, sort]);
+  }, [contacts, filter, sort, onFilterChange]);
 
   const pinnedContacts = visibleContacts.filter((contact) => contact.pinned);
   const unpinnedContacts = visibleContacts.filter((contact) => !contact.pinned);
@@ -81,7 +112,7 @@ export function ContactsList({
   return (
     <section
       className={cn(
-        "flex h-full pb-4 min-h-0 w-full flex-col bg-background p-4 text-foreground",
+        "flex h-full min-h-0 w-full flex-col bg-background p-4 text-foreground",
         className,
       )}
     >
@@ -121,7 +152,9 @@ export function ContactsList({
         <div className="flex flex-wrap items-center gap-2">
           <Select
             value={filter}
-            onValueChange={(value) => setFilter(value as ContactsListFilter)}
+            onValueChange={(value) =>
+              handleFilterChange(value as ContactsListFilter)
+            }
           >
             <SelectTrigger size="sm">
               <SelectValue aria-label={ui.filterBy} />
@@ -135,7 +168,7 @@ export function ContactsList({
 
           <Select
             value={sort}
-            onValueChange={(value) => setSort(value as ContactsListSort)}
+            onValueChange={(value) => handleSortChange(value as ContactsListSort)}
           >
             <SelectTrigger size="sm">
               <SelectValue aria-label={sort === "az" ? ui.sortAz : ui.sortZa} />

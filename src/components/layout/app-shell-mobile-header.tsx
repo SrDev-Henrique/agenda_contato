@@ -7,17 +7,20 @@ import { MobileNavSheet } from "@/components/layout/mobile-nav-sheet";
 import type { SidebarItemId } from "@/components/layout/sidebar-nav";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
+import type { Tag } from "@/types/tag";
 
 type AppShellMobileHeaderProps = {
   activeItem: SidebarItemId;
   peopleHref: string;
   untaggedCount: number;
+  tags?: Tag[];
 };
 
 export function AppShellMobileHeader({
   activeItem,
   peopleHref,
   untaggedCount,
+  tags = [],
 }: AppShellMobileHeaderProps) {
   const [open, setOpen] = useState(false);
 
@@ -33,6 +36,7 @@ export function AppShellMobileHeader({
         activeItem={activeItem}
         peopleHref={peopleHref}
         untaggedCount={untaggedCount}
+        tags={tags}
         trigger={
           <Button
             type="button"

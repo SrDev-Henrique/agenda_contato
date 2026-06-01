@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReadonlyURLSearchParams } from "next/navigation";
 import type { ComponentType } from "react";
 
 import { ui } from "@/lib/i18n/pt-br";
@@ -22,15 +23,6 @@ export type SidebarItemId =
   | "tags"
   | "events";
 
-export const sidebarTagItems = [
-  "Trabalho",
-  "Família",
-  "Amigos",
-  "Esportes",
-  "Dev",
-  "Design",
-];
-
 export const sidebarNavItems: Array<{
   id: SidebarItemId;
   label: string;
@@ -38,19 +30,32 @@ export const sidebarNavItems: Array<{
   expandable?: boolean;
   href?: string;
 }> = [
-  { id: "people", label: ui.navAllPeople, icon: Users },
+  { id: "people", label: ui.navAllPeople, icon: Users, href: "/" },
   { id: "businesses", label: ui.navAllBusinesses, icon: BriefcaseBusiness },
-  { id: "favorites", label: ui.navFavorites, icon: Star },
+  { id: "favorites", label: ui.navFavorites, icon: Star, href: "/?favorites=true" },
   { id: "tags", label: ui.navTags, icon: Tags, expandable: true },
   { id: "events", label: ui.navEvents, icon: CalendarDays, href: "/eventos" },
 ];
 
-export function getActiveSidebarItem(pathname: string): SidebarItemId {
+export function getActiveSidebarItem(
+  pathname: string,
+  searchParams?: ReadonlyURLSearchParams | URLSearchParams,
+): SidebarItemId {
   if (pathname.startsWith("/eventos")) {
     return "events";
   }
 
   if (pathname.startsWith("/contato")) {
+    return "people";
+  }
+
+  if (pathname === "/") {
+    if (searchParams?.get("favorites") === "true") {
+      return "favorites";
+    }
+    if (searchParams?.get("tag")) {
+      return "tags";
+    }
     return "people";
   }
 
@@ -66,14 +71,15 @@ type SidebarNavListProps = {
 
 export function SidebarNavList({
   activeItem,
-  peopleHref,
+  peopleHref = "/",
   onNavigate,
   className,
 }: SidebarNavListProps) {
   return (
     <nav className={cn("flex flex-col gap-1", className)}>
       {sidebarNavItems.map((item) => {
-        const href = item.id === "people" ? peopleHref : item.href;
+        const href =
+          item.id === "people" ? peopleHref : item.href;
 
         return (
           <SidebarNavItem

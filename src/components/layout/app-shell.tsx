@@ -1,13 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-import { ContactsList } from "@/components/contacts/contacts-list";
 import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { ShellContactsList } from "@/components/layout/shell-contacts-list";
 import { getActiveSidebarItem } from "@/components/layout/sidebar-nav";
-import { slugify } from "@/lib/id";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 
@@ -15,31 +15,16 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
-export function AppShell({ children }: AppShellProps) {
+function AppShellContent({ children }: AppShellProps) {
   const pathname = usePathname();
-  const { state, deleteContact, toggleFavorite, togglePinned } =
-    useContactsStore();
+  const searchParams = useSearchParams();
+  const { state, untaggedCount } = useContactsStore();
 
-  const contacts = state.contacts;
-  const untaggedCount = contacts.filter(
-    (contact) => contact.tagIds.length === 0,
-  ).length;
+  const activeItem = getActiveSidebarItem(pathname, searchParams);
+  const peopleHref = "/";
 
-  const activeItem = getActiveSidebarItem(pathname);
-
-  const peopleHref = useMemo(() => {
-    const first = contacts[0];
-
-    if (!first) {
-      return "/eventos";
-    }
-
-    return `/contato/${slugify(first.name)}`;
-  }, [contacts]);
-
-  const activeContactSlug = pathname.startsWith("/contato/")
-    ? decodeURIComponent(pathname.split("/")[2] ?? "")
-    : undefined;
+  const showShellListColumn =
+    pathname.startsWith("/contato") || pathname.startsWith("/eventos");
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col bg-background text-foreground">
@@ -47,33 +32,29 @@ export function AppShell({ children }: AppShellProps) {
         activeItem={activeItem}
         peopleHref={peopleHref}
         untaggedCount={untaggedCount}
+        tags={state.tags}
       />
 
       <div className="flex h-screen w-full flex-1 flex-row overflow-hidden">
-        <div className="app-shell__sidebar h-full min-w-84 pb-4 shrink-0 flex-col">
+        <div className="app-shell__sidebar h-full shrink-0 flex-col pb-4">
           <AppSidebar
             activeItem={activeItem}
             peopleHref={peopleHref}
             untaggedCount={untaggedCount}
+            tags={state.tags}
             className="h-screen"
           />
         </div>
 
-        <div className="app-shell__contacts-list h-screen flex-1 max-w-[620px] shrink-0 flex-col">
-          <ContactsList
-            contacts={contacts}
-            tags={state.tags}
-            totalCount={contacts.length}
-            activeContactSlug={activeContactSlug}
-            onToggleFavorite={(contact) => toggleFavorite(contact.id)}
-            onTogglePin={(contact) => togglePinned(contact.id)}
-            onDeleteContact={(contact) => deleteContact(contact.id)}
-          />
-        </div>
+        {showShellListColumn ? (
+          <div className="app-shell__contacts-list h-screen max-w-[620px] flex-1 shrink-0 flex-col">
+            <ShellContactsList />
+          </div>
+        ) : null}
 
         <main
           className={cn(
-            "flex h-screen pt-2 pe-2 overflow-y-auto min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pe-2 py-2",
           )}
         >
           {children}
@@ -83,5 +64,19 @@ export function AppShell({ children }: AppShellProps) {
   );
 }
 
+export function AppShell({ children }: AppShellProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner className="size-6" />
+        </div>
+      }
+    >
+      <AppShellContent>{children}</AppShellContent>
+    </Suspense>
+  );
+}
+
 export const appMainPanelClassName =
-  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground xl:max-h-full";
+  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground shadow-2xl shadow-black/25 xl:max-h-full";
