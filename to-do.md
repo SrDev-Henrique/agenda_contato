@@ -20,15 +20,15 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | Fase | Progresso |
 |------|-----------|
 | **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, store e Provider global prontos |
-| **1 — Shell da aplicação** | Concluída: AppShell compartilhado, sidebar, lista central, redirect, dark theme e sheet base prontos |
+| **1 — Shell da aplicação** | Concluída: layout `(app)` + AppShell flex responsivo (`<md` conteúdo + sheet; `md–lg` sidebar + conteúdo; `xl+` sidebar + lista + conteúdo) |
 | **2 — Lista de contatos** | Parcial: componente de lista, filtros internos e ações principais prontos; falta rota dedicada/filtros por query params e criação de contato |
 | **3 — Detalhe do contato** | Parcial: rota `/contato/[nome]`, header, tags, seções e criação de lembrete/evento/nota prontos; falta edição inline e fluxo completo de exclusão/404 |
 | **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
 | **5–7** | Pendente — mobile, animações e polish final |
 
-**Já no repositório:** `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/contacts-store.tsx`, `src/components/layout/`, `src/components/contacts/`, `src/components/events/`, `src/components/reminders/`, `src/components/notes/`, páginas `/preview`, `/contato/[nome]`, `/eventos`, `to-do.md`.
+**Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/contacts-store.tsx`, `src/components/layout/` (incl. `sidebar-nav`, `mobile-nav-sheet`, `app-shell-mobile-header`), `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
 
-**Ainda não existe:** `src/app/(app)/`, `MobileNavSheet`, `AddContactFab`, fluxo de criação de contato, páginas `/contacts` e `/events` antigas. As rotas atuais decididas são `/contato/[nome]` e `/eventos`.
+**Ainda não existe:** `AddContactFab`, fluxo de criação de contato, filtros da lista via query params do sidebar. Rotas atuais: `/contato/[nome]` e `/eventos` (dentro do grupo `(app)`).
 
 ---
 
@@ -82,18 +82,22 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ## Fase 1 — Shell da aplicação
 
-- [x] Grid 3 colunas desktop / 1 coluna mobile aplicado nas páginas `/contato/[nome]` e `/eventos`
-- [x] `AppShell` compartilhado para evitar duplicação entre páginas
-- [x] `AppSidebar` — navegação, tags, sem tag, adicionar contato (textos via `ui` em pt-br.ts)
-- [x] `ContactListColumn` / lista central — implementado com `ContactsList`
+- [x] `AppShell` como layout em [`src/app/(app)/layout.tsx`](src/app/(app)/layout.tsx) (rotas `/contato/*` e `/eventos`)
+- [x] Layout **flex** responsivo (não empilhar sidebar/lista/conteúdo em coluna única):
+  - `< md`: só `{children}` + header com `MobileNavSheet`
+  - `md` – `lg`: sidebar fixo à esquerda + `{children}` à direita
+  - `xl+`: sidebar + `ContactsList` + `{children}` em linha
+- [x] `AppSidebar` + `sidebar-nav.tsx` (nav compartilhado)
+- [x] `MobileNavSheet` + `app-shell-mobile-header.tsx`
+- [x] Lista central `ContactsList` só em `xl+`; highlight do contato ativo na lista
+- [x] Páginas renderizam só o painel direito (`appMainPanelClassName`)
 - [x] Redirect `/` → `/eventos`
-- [x] Metadata pt-BR e `lang="pt-BR"` no `<html>` ([layout.tsx](src/app/layout.tsx))
-- [x] Tema dark no `<html>` (`className="dark"`)
+- [x] Metadata pt-BR e `lang="pt-BR"` no `<html>`
+- [x] Tema dark no `<html>`
 - [x] Componente shadcn `sheet` (mobile)
+- [ ] `AddContactFab` (fase 5)
 
-**Pré-requisito UI:** componentes shadcn base em `src/components/ui/` (button, dialog, input, etc.) — já instalados; **componentes de layout/app ainda serão criados por você**.
-
-**Critério de pronto:** navegar `/contacts` ↔ `/events` no desktop com 3 colunas.
+**Critério de pronto:** navegar `/eventos` ↔ `/contato/[nome]` com layout correto em mobile, tablet e desktop (`xl+`).
 
 ---
 
@@ -163,7 +167,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 - [ ] Estados vazios
 - [ ] Acessibilidade básica (aria, foco)
-- [ ] `bun run build` sem erros
+- [x] `bun run build` sem erros
 - [ ] README atualizado
 
 ---
@@ -172,10 +176,9 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ```
 src/
-  app/(app)/          # pendente — layout + páginas
-  app/contato/[nome]/ # feito parcial — detalhe do contato
-  app/eventos/        # feito parcial — timeline
-  components/layout/  # feito — AppShell, sidebar, busca, perfil, notificações
+  app/(app)/          # feito — layout AppShell + contato + eventos
+  app/preview/        # feito — sem shell
+  components/layout/  # feito — AppShell, sidebar-nav, mobile sheet, sidebar, busca
   components/contacts/# feito parcial — header, lista, row, tags
   components/events/  # feito parcial — composer, card, timeline
   components/reminders/# feito parcial — composer, card

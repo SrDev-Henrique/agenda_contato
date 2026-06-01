@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { slugify } from "@/lib/id";
 import { groupContactsByLetter } from "@/lib/selectors";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ type ContactsListProps = {
   contacts: Contact[];
   tags: Tag[];
   totalCount?: number;
+  activeContactSlug?: string;
   className?: string;
   defaultView?: ContactsListView;
   onEditContact?: (contact: Contact) => void;
@@ -38,6 +40,7 @@ export function ContactsList({
   contacts,
   tags,
   totalCount = contacts.length,
+  activeContactSlug,
   className,
   defaultView = "list",
   onEditContact,
@@ -78,7 +81,7 @@ export function ContactsList({
   return (
     <section
       className={cn(
-        "flex min-h-[560px] w-full flex-col rounded-[28px] border border-border bg-background p-4 text-foreground shadow-2xl shadow-black/25",
+        "flex h-full pb-4 min-h-0 w-full flex-col bg-background p-4 text-foreground",
         className,
       )}
     >
@@ -159,6 +162,7 @@ export function ContactsList({
           <ContactsGrid
             contacts={visibleContacts}
             tags={tags}
+            activeContactSlug={activeContactSlug}
             onEditContact={onEditContact}
             onToggleFavorite={onToggleFavorite}
             onTogglePin={onTogglePin}
@@ -169,6 +173,7 @@ export function ContactsList({
             pinnedContacts={pinnedContacts}
             groupedContacts={groupedContacts}
             tags={tags}
+            activeContactSlug={activeContactSlug}
             onEditContact={onEditContact}
             onToggleFavorite={onToggleFavorite}
             onTogglePin={onTogglePin}
@@ -184,6 +189,7 @@ function ContactsListGroups({
   pinnedContacts,
   groupedContacts,
   tags,
+  activeContactSlug,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -192,6 +198,7 @@ function ContactsListGroups({
   pinnedContacts: Contact[];
   groupedContacts: Map<string, Contact[]>;
   tags: Tag[];
+  activeContactSlug?: string;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
@@ -203,6 +210,7 @@ function ContactsListGroups({
           title={ui.pinned}
           contacts={pinnedContacts}
           tags={tags}
+          activeContactSlug={activeContactSlug}
           onEditContact={onEditContact}
           onToggleFavorite={onToggleFavorite}
           onTogglePin={onTogglePin}
@@ -216,6 +224,7 @@ function ContactsListGroups({
           title={letter}
           contacts={contacts}
           tags={tags}
+          activeContactSlug={activeContactSlug}
           onEditContact={onEditContact}
           onToggleFavorite={onToggleFavorite}
           onTogglePin={onTogglePin}
@@ -230,6 +239,7 @@ function ContactSection({
   title,
   contacts,
   tags,
+  activeContactSlug,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -238,6 +248,7 @@ function ContactSection({
   title: string;
   contacts: Contact[];
   tags: Tag[];
+  activeContactSlug?: string;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
@@ -252,6 +263,10 @@ function ContactSection({
           <ContactRow
             key={contact.id}
             contact={contact}
+            active={
+              activeContactSlug !== undefined &&
+              slugify(contact.name) === activeContactSlug
+            }
             tag={getPrimaryTag(tags, contact)}
             onEdit={onEditContact}
             onToggleFavorite={onToggleFavorite}
@@ -267,6 +282,7 @@ function ContactSection({
 function ContactsGrid({
   contacts,
   tags,
+  activeContactSlug,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -274,6 +290,7 @@ function ContactsGrid({
 }: {
   contacts: Contact[];
   tags: Tag[];
+  activeContactSlug?: string;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
@@ -284,6 +301,10 @@ function ContactsGrid({
         <ContactRow
           key={contact.id}
           contact={contact}
+          active={
+            activeContactSlug !== undefined &&
+            slugify(contact.name) === activeContactSlug
+          }
           tag={getPrimaryTag(tags, contact)}
           variant="grid"
           onEdit={onEditContact}

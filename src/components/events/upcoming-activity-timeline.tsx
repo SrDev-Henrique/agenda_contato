@@ -113,7 +113,7 @@ export function UpcomingActivityTimeline({
   return (
     <section
       className={cn(
-        "flex min-h-[calc(100vh-2.5rem)] flex-col rounded-[28px] border border-border bg-surface p-4 text-foreground shadow-2xl shadow-black/25",
+        "flex h-full overflow-y-auto min-h-0 flex-col rounded-[28px] border border-border bg-surface p-4 text-foreground",
         className,
       )}
     >
@@ -127,7 +127,9 @@ export function UpcomingActivityTimeline({
 
           <Select
             value={kindFilter}
-            onValueChange={(value) => setKindFilter(value as ActivityKindFilter)}
+            onValueChange={(value) =>
+              setKindFilter(value as ActivityKindFilter)
+            }
           >
             <SelectTrigger size="sm">
               <SelectValue aria-label={ui.filterBy} />
@@ -168,7 +170,10 @@ export function UpcomingActivityTimeline({
             <div className="absolute bottom-2 left-4 top-2 w-px bg-border" />
             <div className="space-y-4">
               {activities.map((activity) => (
-                <TimelineItem key={`${activity.kind}-${activity.id}`} activity={activity} />
+                <TimelineItem
+                  key={`${activity.kind}-${activity.id}`}
+                  activity={activity}
+                />
               ))}
             </div>
           </div>

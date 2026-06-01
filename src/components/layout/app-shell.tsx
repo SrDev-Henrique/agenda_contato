@@ -1,56 +1,87 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
+
 import { ContactsList } from "@/components/contacts/contacts-list";
+import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { getActiveSidebarItem } from "@/components/layout/sidebar-nav";
+import { slugify } from "@/lib/id";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 
 type AppShellProps = {
-  activeItem?: "people" | "businesses" | "favorites" | "tags" | "events";
   children: React.ReactNode;
-  className?: string;
-  contactsListClassName?: string;
 };
 
-export function AppShell({
-  activeItem = "people",
-  children,
-  className,
-  contactsListClassName,
-}: AppShellProps) {
+export function AppShell({ children }: AppShellProps) {
+  const pathname = usePathname();
   const { state, deleteContact, toggleFavorite, togglePinned } =
     useContactsStore();
+
   const contacts = state.contacts;
   const untaggedCount = contacts.filter(
     (contact) => contact.tagIds.length === 0,
   ).length;
 
+  const activeItem = getActiveSidebarItem(pathname);
+
+  const peopleHref = useMemo(() => {
+    const first = contacts[0];
+
+    if (!first) {
+      return "/eventos";
+    }
+
+    return `/contato/${slugify(first.name)}`;
+  }, [contacts]);
+
+  const activeContactSlug = pathname.startsWith("/contato/")
+    ? decodeURIComponent(pathname.split("/")[2] ?? "")
+    : undefined;
+
   return (
-    <main className="min-h-screen bg-background px-4 py-5 text-foreground md:px-6 lg:px-8">
-      <div
-        className={cn(
-          "mx-auto grid w-full max-w-[1360px] gap-4 lg:grid-cols-[210px_minmax(360px,0.95fr)] xl:grid-cols-[210px_minmax(390px,0.95fr)_minmax(460px,1.15fr)]",
-          className,
-        )}
-      >
-        <AppSidebar
-          activeItem={activeItem}
-          untaggedCount={untaggedCount}
-          className="h-auto min-h-[calc(100vh-2.5rem)] w-full lg:sticky lg:top-5"
-        />
+    <div className="flex min-h-0 w-full flex-1 flex-col bg-background text-foreground">
+      <AppShellMobileHeader
+        activeItem={activeItem}
+        peopleHref={peopleHref}
+        untaggedCount={untaggedCount}
+      />
 
-        <ContactsList
-          className={cn("min-h-[calc(100vh-2.5rem)]", contactsListClassName)}
-          contacts={contacts}
-          tags={state.tags}
-          totalCount={contacts.length}
-          onToggleFavorite={(contact) => toggleFavorite(contact.id)}
-          onTogglePin={(contact) => togglePinned(contact.id)}
-          onDeleteContact={(contact) => deleteContact(contact.id)}
-        />
+      <div className="flex h-screen w-full flex-1 flex-row overflow-hidden">
+        <div className="app-shell__sidebar h-full min-w-84 pb-4 shrink-0 flex-col">
+          <AppSidebar
+            activeItem={activeItem}
+            peopleHref={peopleHref}
+            untaggedCount={untaggedCount}
+            className="h-screen"
+          />
+        </div>
 
-        {children}
+        <div className="app-shell__contacts-list h-screen flex-1 max-w-[620px] shrink-0 flex-col">
+          <ContactsList
+            contacts={contacts}
+            tags={state.tags}
+            totalCount={contacts.length}
+            activeContactSlug={activeContactSlug}
+            onToggleFavorite={(contact) => toggleFavorite(contact.id)}
+            onTogglePin={(contact) => togglePinned(contact.id)}
+            onDeleteContact={(contact) => deleteContact(contact.id)}
+          />
+        </div>
+
+        <main
+          className={cn(
+            "flex h-screen pt-2 pe-2 overflow-y-auto min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+          )}
+        >
+          {children}
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
+
+export const appMainPanelClassName =
+  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground xl:max-h-full";

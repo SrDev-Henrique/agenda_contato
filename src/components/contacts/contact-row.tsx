@@ -30,6 +30,7 @@ type ContactRowProps = {
   contact: Contact;
   tag?: Tag;
   href?: string;
+  active?: boolean;
   className?: string;
   variant?: "list" | "grid";
   onEdit?: (contact: Contact) => void;
@@ -42,6 +43,7 @@ export function ContactRow({
   contact,
   tag,
   href = `/contato/${slugify(contact.name)}`,
+  active = false,
   className,
   variant = "list",
   onEdit,
@@ -60,6 +62,7 @@ export function ContactRow({
       <article
         className={cn(
           "group/contact-row relative flex min-h-52 flex-col rounded-lg border border-border bg-surface p-4 transition-colors hover:bg-muted/30",
+          active && "bg-muted/50 ring-1 ring-ring/40",
           className,
         )}
       >
@@ -127,6 +130,7 @@ export function ContactRow({
     <div
       className={cn(
         "group/contact-row grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border px-2 py-2 transition-colors hover:bg-muted/40 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,0.7fr)_auto] sm:px-3",
+        active && "bg-muted/60",
         className,
       )}
     >

@@ -83,8 +83,9 @@ function Dot({ className }: { className?: string }) {
 
 export function Notifications() {
   const [notifications, setNotifications] = useState(initialNotifications);
-  const unreadCount = notifications.filter((notification) => notification.unread)
-    .length;
+  const unreadCount = notifications.filter(
+    (notification) => notification.unread,
+  ).length;
 
   const handleMarkAllAsRead = () => {
     setNotifications(
@@ -122,7 +123,10 @@ export function Notifications() {
           ) : null}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="me-4 w-80 bg-card p-1">
+      <PopoverContent
+        align="center"
+        className="me-4 w-80 h-fit max-h-[calc(100vh-10rem)] overflow-y-auto bg-card p-1"
+      >
         <div className="flex items-baseline justify-between gap-4 px-3 py-2">
           <div className="text-sm font-semibold text-card-foreground">
             Notificações
@@ -147,7 +151,7 @@ export function Notifications() {
               )}
               key={notification.id}
             >
-              <div className="relative flex items-start gap-3 pe-3">
+              <div className="relative flex items-start gap-3 pe-3 ps-1">
                 <Avatar className="size-9">
                   <AvatarFallback>
                     {getInitials(notification.user)}
@@ -175,7 +179,7 @@ export function Notifications() {
                   </div>
                 </div>
                 {notification.unread ? (
-                  <div className="absolute end-0 mt-2 text-primary">
+                  <div className="absolute -left-2 mt-3 text-primary">
                     <Dot />
                   </div>
                 ) : null}

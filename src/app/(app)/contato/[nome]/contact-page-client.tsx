@@ -14,7 +14,7 @@ import Link from "next/link";
 import { ContactHeader } from "@/components/contacts/contact-header";
 import { EventCard } from "@/components/events/event-card";
 import { EventComposer } from "@/components/events/event-composer";
-import { AppShell } from "@/components/layout/app-shell";
+import { appMainPanelClassName } from "@/components/layout/app-shell";
 import { NoteCard } from "@/components/notes/note-card";
 import { NoteComposer } from "@/components/notes/note-composer";
 import { ReminderCard } from "@/components/reminders/reminder-card";
@@ -54,19 +54,22 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
 
   if (!contact) {
     return (
-      <main className="dark flex min-h-screen items-center justify-center bg-background px-6 py-10 text-foreground">
-        <section className="w-full max-w-md rounded-[28px] border border-border bg-surface p-6 text-center shadow-2xl shadow-black/25">
-          <h1 className="font-inter text-xl font-semibold text-foreground">
-            {isHydrated ? ui.contactNotFound : ui.loading}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-foreground-muted">
-            {isHydrated ? ui.contactNotFoundHint : ui.appDescription}
-          </p>
-          <Button asChild className="mt-5" variant="primary">
-            <Link href="/preview">{ui.backToContacts}</Link>
-          </Button>
-        </section>
-      </main>
+      <section
+        className={cn(
+          appMainPanelClassName,
+          "items-center justify-center p-6 text-center",
+        )}
+      >
+        <h1 className="font-inter text-xl font-semibold text-foreground">
+          {isHydrated ? ui.contactNotFound : ui.loading}
+        </h1>
+        <p className="mt-2 max-w-md text-sm leading-6 text-foreground-muted">
+          {isHydrated ? ui.contactNotFoundHint : ui.appDescription}
+        </p>
+        <Button asChild className="mt-5" variant="primary">
+          <Link href="/eventos">{ui.backToContacts}</Link>
+        </Button>
+      </section>
     );
   }
 
@@ -76,84 +79,79 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
   const notes = getContactNotes(contact.id);
 
   return (
-    <AppShell
-      activeItem="people"
-      className="lg:grid-cols-[210px_minmax(360px,0.9fr)] xl:grid-cols-[210px_minmax(390px,0.95fr)_minmax(460px,1.15fr)]"
-    >
-      <section className="flex min-h-[calc(100vh-2.5rem)] flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground shadow-2xl shadow-black/25 xl:sticky xl:top-5 xl:max-h-[calc(100vh-2.5rem)]">
-        <div className="min-h-0 overflow-y-auto">
-          <ContactHeader
-            contact={contact}
-            tags={contactTags}
-            className="rounded-none border-0 bg-[radial-gradient(circle_at_45%_0%,oklch(from_var(--muted)_l_c_h_/_55%),transparent_34%),var(--surface)] shadow-none"
-            onCall={() => undefined}
-            onVideoCall={() => undefined}
-            onEmail={() => undefined}
-            onAddTag={(name) => {
-              const tag = createTag(name);
+    <section className={cn(appMainPanelClassName)}>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <ContactHeader
+          contact={contact}
+          tags={contactTags}
+          className="rounded-none border-0 bg-[radial-gradient(circle_at_45%_0%,oklch(from_var(--muted)_l_c_h/55%),transparent_34%),var(--surface)] shadow-none"
+          onCall={() => undefined}
+          onVideoCall={() => undefined}
+          onEmail={() => undefined}
+          onAddTag={(name) => {
+            const tag = createTag(name);
 
-              if (tag) {
-                addTagToContact(contact.id, tag.id);
-              }
-            }}
-            onRemoveTag={(tag) => removeTagFromContact(contact.id, tag.id)}
-          />
+            if (tag) {
+              addTagToContact(contact.id, tag.id);
+            }
+          }}
+          onRemoveTag={(tag) => removeTagFromContact(contact.id, tag.id)}
+        />
 
-          <div className="space-y-5 border-t border-border bg-surface-muted p-4">
-            <ContactInfoGrid contact={contact} />
+        <div className="space-y-5 border-t border-border bg-surface-muted p-4">
+          <ContactInfoGrid contact={contact} />
 
-            <DetailSection title={ui.reminders}>
-              <div className="space-y-2">
-                {reminders.map((reminder) => (
-                  <ReminderCard
-                    key={reminder.id}
-                    reminder={reminder}
-                    contact={contact}
-                  />
-                ))}
-                <ReminderComposer
-                  contacts={contacts}
-                  defaultContactId={contact.id}
-                  onCreateReminder={(data) =>
-                    addReminder({ ...data, contactId: contact.id })
-                  }
+          <DetailSection title={ui.reminders}>
+            <div className="space-y-2">
+              {reminders.map((reminder) => (
+                <ReminderCard
+                  key={reminder.id}
+                  reminder={reminder}
+                  contact={contact}
                 />
-              </div>
-            </DetailSection>
+              ))}
+              <ReminderComposer
+                contacts={contacts}
+                defaultContactId={contact.id}
+                onCreateReminder={(data) =>
+                  addReminder({ ...data, contactId: contact.id })
+                }
+              />
+            </div>
+          </DetailSection>
 
-            <DetailSection title={ui.upcomingEvents}>
-              <div className="space-y-2">
-                {events.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    contact={contact}
-                    attendees={contacts.filter((item) =>
-                      event.attendeeContactIds?.includes(item.id),
-                    )}
-                  />
-                ))}
-                <EventComposer
-                  contacts={contacts}
-                  onCreateEvent={(data) =>
-                    addEvent({ ...data, contactId: contact.id })
-                  }
+          <DetailSection title={ui.upcomingEvents}>
+            <div className="space-y-2">
+              {events.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  contact={contact}
+                  attendees={contacts.filter((item) =>
+                    event.attendeeContactIds?.includes(item.id),
+                  )}
                 />
-              </div>
-            </DetailSection>
+              ))}
+              <EventComposer
+                contacts={contacts}
+                onCreateEvent={(data) =>
+                  addEvent({ ...data, contactId: contact.id })
+                }
+              />
+            </div>
+          </DetailSection>
 
-            <DetailSection title={ui.notes}>
-              <div className="space-y-2">
-                {notes.map((note) => (
-                  <NoteCard key={note.id} note={note} />
-                ))}
-                <NoteComposer contactId={contact.id} onCreateNote={addNote} />
-              </div>
-            </DetailSection>
-          </div>
+          <DetailSection title={ui.notes}>
+            <div className="space-y-2">
+              {notes.map((note) => (
+                <NoteCard key={note.id} note={note} />
+              ))}
+              <NoteComposer contactId={contact.id} onCreateNote={addNote} />
+            </div>
+          </DetailSection>
         </div>
-      </section>
-    </AppShell>
+      </div>
+    </section>
   );
 }
 
@@ -200,7 +198,9 @@ function ContactInfoGrid({ contact }: { contact: Contact }) {
     },
     {
       label: ui.birthday,
-      value: contact.birthday ? formatBirthday(contact.birthday) : "Sem aniversário",
+      value: contact.birthday
+        ? formatBirthday(contact.birthday)
+        : "Sem aniversário",
       icon: Cake,
     },
     {

@@ -1,57 +1,36 @@
 "use client";
 
-import {
-  BriefcaseBusiness,
-  CalendarDays,
-  ChevronDown,
-  ChevronRight,
-  Star,
-  Tags,
-  Users,
-} from "lucide-react";
-import Link from "next/link";
-import type { ComponentType } from "react";
+import { ChevronRight } from "lucide-react";
 
 import { ContactsSearch } from "@/components/layout/contacts-search";
 import { Notifications } from "@/components/layout/notifications";
 import { ProfileMenu } from "@/components/layout/profile-menu";
+import {
+  SidebarNavList,
+  sidebarTagItems,
+  type SidebarItemId,
+} from "@/components/layout/sidebar-nav";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 
-type SidebarItemId = "people" | "businesses" | "favorites" | "tags" | "events";
-
 type AppSidebarProps = {
   activeItem?: SidebarItemId;
+  peopleHref?: string;
   untaggedCount?: number;
   className?: string;
 };
 
-const tagItems = ["Trabalho", "Família", "Amigos", "Esportes", "Dev", "Design"];
-
-const navItems: Array<{
-  id: SidebarItemId;
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-  expandable?: boolean;
-  href?: string;
-}> = [
-  { id: "people", label: ui.navAllPeople, icon: Users },
-  { id: "businesses", label: ui.navAllBusinesses, icon: BriefcaseBusiness },
-  { id: "favorites", label: ui.navFavorites, icon: Star },
-  { id: "tags", label: ui.navTags, icon: Tags, expandable: true },
-  { id: "events", label: ui.navEvents, icon: CalendarDays, href: "/eventos" },
-];
-
 export function AppSidebar({
   activeItem = "tags",
+  peopleHref,
   untaggedCount = 41,
   className,
 }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-[620px] w-[190px] shrink-0 flex-col rounded-[28px] border border-sidebar-border bg-sidebar px-4 py-5 text-sidebar-foreground shadow-2xl shadow-black/30",
+        "flex w-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-4 py-5 text-sidebar-foreground",
         className,
       )}
     >
@@ -69,22 +48,15 @@ export function AppSidebar({
         placeholder={ui.searchPlaceholder}
       />
 
-      <nav className="mt-4 flex flex-col gap-1">
-        {navItems.map((item) => (
-          <SidebarNavItem
-            key={item.id}
-            active={activeItem === item.id}
-            icon={item.icon}
-            label={item.label}
-            expandable={item.expandable}
-            href={item.href}
-          />
-        ))}
-      </nav>
+      <SidebarNavList
+        activeItem={activeItem}
+        peopleHref={peopleHref}
+        className="mt-4"
+      />
 
       {activeItem === "tags" ? (
         <div className="mt-1 space-y-1 pl-8">
-          {tagItems.map((tag) => (
+          {sidebarTagItems.map((tag) => (
             <button
               key={tag}
               type="button"
@@ -131,52 +103,5 @@ export function AppSidebar({
         />
       </div>
     </aside>
-  );
-}
-
-function SidebarNavItem({
-  active,
-  icon: Icon,
-  label,
-  expandable,
-  href,
-}: {
-  active: boolean;
-  icon: ComponentType<{ className?: string }>;
-  label: string;
-  expandable?: boolean;
-  href?: string;
-}) {
-  const className = cn(
-    "flex h-7 w-full items-center gap-2 rounded-md px-2 text-left text-xs font-medium text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-    active && "bg-sidebar-accent text-sidebar-accent-foreground",
-  );
-
-  const content = (
-    <>
-      <Icon className="size-3.5 shrink-0" />
-      <span className="min-w-0 flex-1 truncate">{label}</span>
-      {expandable ? (
-        <ChevronDown className="size-3.5 shrink-0 text-foreground-subtle" />
-      ) : null}
-    </>
-  );
-
-  if (href) {
-    return (
-      <Link
-        href={href}
-        aria-current={active ? "page" : undefined}
-        className={className}
-      >
-        {content}
-      </Link>
-    );
-  }
-
-  return (
-    <button type="button" aria-current={active ? "page" : undefined} className={className}>
-      {content}
-    </button>
   );
 }
