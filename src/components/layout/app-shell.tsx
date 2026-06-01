@@ -3,9 +3,9 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import { AppShellBreadcrumb } from "@/components/layout/app-shell-breadcrumb";
 import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { ShellContactsList } from "@/components/layout/shell-contacts-list";
 import { getActiveSidebarItem } from "@/components/layout/sidebar-nav";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
@@ -22,9 +22,6 @@ function AppShellContent({ children }: AppShellProps) {
 
   const activeItem = getActiveSidebarItem(pathname, searchParams);
   const peopleHref = "/";
-
-  const showShellListColumn =
-    pathname.startsWith("/contato") || pathname.startsWith("/eventos");
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col bg-background text-foreground">
@@ -46,18 +43,15 @@ function AppShellContent({ children }: AppShellProps) {
           />
         </div>
 
-        {showShellListColumn ? (
-          <div className="app-shell__contacts-list h-screen max-w-[620px] flex-1 shrink-0 flex-col">
-            <ShellContactsList />
-          </div>
-        ) : null}
-
         <main
           className={cn(
-            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden py-2 pe-2",
+            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden py-2 pe-2",
           )}
         >
-          {children}
+          <AppShellBreadcrumb />
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            {children}
+          </div>
         </main>
       </div>
     </div>
@@ -79,4 +73,4 @@ export function AppShell({ children }: AppShellProps) {
 }
 
 export const appMainPanelClassName =
-  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground shadow-2xl shadow-black/25 xl:max-h-full";
+  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground shadow-2xl shadow-black/25";

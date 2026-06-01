@@ -205,18 +205,8 @@
     display: none;
   }
 
-  .app-shell__contacts-list {
-    display: none;
-  }
-
   @media (width >= 48rem) {
     .app-shell__sidebar {
-      display: flex;
-    }
-  }
-
-  @media (width >= 80rem) {
-    .app-shell__contacts-list {
       display: flex;
     }
   }

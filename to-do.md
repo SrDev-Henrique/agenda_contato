@@ -20,7 +20,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | Fase | Progresso |
 |------|-----------|
 | **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, Redux (RTK) + `useContactsStore` e Provider global |
-| **1 — Shell da aplicação** | Concluída: layout `(app)` + AppShell flex responsivo (`<md` conteúdo + sheet; `md–lg` sidebar + conteúdo; `xl+` sidebar + lista + conteúdo) |
+| **1 — Shell da aplicação** | Concluída: sidebar + conteúdo (md+), mobile com sheet, breadcrumb em todos os breakpoints |
 | **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
 | **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
 | **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
@@ -84,21 +84,20 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 ## Fase 1 — Shell da aplicação
 
 - [x] `AppShell` como layout em [`src/app/(app)/layout.tsx`](src/app/(app)/layout.tsx) (rotas `/contato/*` e `/eventos`)
-- [x] Layout **flex** responsivo (não empilhar sidebar/lista/conteúdo em coluna única):
-  - `< md`: só `{children}` + header com `MobileNavSheet`
-  - `md` – `lg`: sidebar fixo à esquerda + `{children}` à direita
-  - `xl+`: sidebar + `ContactsList` + `{children}` em linha
+- [x] Layout **flex** responsivo (2 colunas no máximo):
+  - `< md`: header com `MobileNavSheet` + breadcrumb + `{children}`
+  - `md+`: sidebar fixo à esquerda + breadcrumb + `{children}` à direita
 - [x] `AppSidebar` + `sidebar-nav.tsx` (nav compartilhado)
 - [x] `MobileNavSheet` + `app-shell-mobile-header.tsx`
-- [x] Lista central `ContactsList` só em `xl+`; highlight do contato ativo na lista
-- [x] Páginas renderizam só o painel direito (`appMainPanelClassName`)
+- [x] `AppShellBreadcrumb` — trilha por rota (`/`, filtros, `/contato/[nome]`, `/eventos`)
+- [x] Páginas renderizam painel principal (`appMainPanelClassName`)
 - [x] Home `/`: lista de contatos no painel principal (todos os breakpoints)
 - [x] Metadata pt-BR e `lang="pt-BR"` no `<html>`
 - [x] Tema dark no `<html>`
 - [x] Componente shadcn `sheet` (mobile)
 - [ ] `AddContactFab` (fase 5)
 
-**Critério de pronto:** navegar `/eventos` ↔ `/contato/[nome]` com layout correto em mobile, tablet e desktop (`xl+`).
+**Critério de pronto:** navegar `/eventos` ↔ `/contato/[nome]` com layout correto em mobile e desktop (`md+` sidebar + breadcrumb).
 
 ---
 

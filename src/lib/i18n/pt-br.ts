@@ -9,13 +9,15 @@ export const ui = {
   appDescription: "Agenda de contatos",
 
   // Navegação / sidebar
-  navAllPeople: "Todas as pessoas",
+  navAllPeople: "Contatos",
   navAllBusinesses: "Todos os negócios",
   navFavorites: "Favoritos",
   navEvents: "Eventos",
   navTags: "Tags",
   navSmartTags: "Tags inteligentes",
   navUntagged: "Sem tag",
+  breadcrumbNav: "Navegação",
+  more: "Mais",
   searchPlaceholder: "Buscar",
   addContact: "Adicionar contato",
   addContactShort: "Add Contato +",
