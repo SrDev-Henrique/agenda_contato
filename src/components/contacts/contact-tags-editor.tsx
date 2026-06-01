@@ -2,7 +2,13 @@
 
 import { Plus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,11 +36,19 @@ export function ContactTagsEditor({
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const focusTagInput = useCallback(() => {
+    inputRef.current?.focus({ preventScroll: true });
+  }, []);
+
   useEffect(() => {
-    if (isEditing) {
-      inputRef.current?.focus();
-    }
-  }, [isEditing]);
+    if (!isEditing) return;
+
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(focusTagInput);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [isEditing, focusTagInput]);
 
   const handleSubmit = () => {
     const tagName = value.trim();
@@ -92,9 +106,15 @@ export function ContactTagsEditor({
             exit={{ opacity: 0, width: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="overflow-hidden"
+            onAnimationComplete={() => {
+              if (isEditing) {
+                focusTagInput();
+              }
+            }}
           >
             <Input
               ref={inputRef}
+              autoFocus
               aria-label={ui.newTag}
               className="h-7 rounded-lg bg-background px-2 text-xs"
               placeholder={placeholder}

@@ -172,7 +172,15 @@ function reducer(state: AppState, action: Action): AppState {
 type ContactsStoreValue = {
   state: AppState;
   isHydrated: boolean;
-  addContact: (data: { name: string }) => string;
+  addContact: (
+    data: {
+      name: string;
+      email?: string;
+      phone?: string;
+      tagIds?: string[];
+      favorite?: boolean;
+    },
+  ) => string;
   updateContact: (id: string, patch: Partial<Contact>) => void;
   deleteContact: (id: string) => void;
   toggleFavorite: (id: string) => void;

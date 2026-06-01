@@ -54,8 +54,19 @@ export const ui = {
 
   // Criar / excluir contato
   newContact: "Novo contato",
+  newContactDescription:
+    "Preencha os dados básicos. Você pode editar o restante no perfil depois.",
   contactName: "Nome",
   contactNameRequired: "Informe o nome do contato",
+  invalidEmail: "Informe um e-mail válido",
+  phoneRequired: "Informe o telefone",
+  phoneInvalid: "Informe um telefone válido com DDD",
+  contactTag: "Tag",
+  contactTagNone: "Sem tag",
+  favoriteStatus: "Favorito",
+  favoriteYes: "Sim, marcar como favorito",
+  favorites: "Adicionar aos favoritos?",
+  createContact: "Criar contato",
   deleteContactTitle: "Excluir contato",
   deleteContactDescription:
     "Esta ação não pode ser desfeita. O contato e os dados vinculados serão removidos.",
