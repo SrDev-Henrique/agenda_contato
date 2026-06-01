@@ -129,13 +129,7 @@ export function getContactTags(state: AppState, contact: Contact): Tag[] {
     .filter((t): t is Tag => Boolean(t));
 }
 
-export function filterEventsByWeek(
-  events: Event[],
-  week: "current" | "all",
-): Event[] {
-  if (week === "all") return events;
-
-  const now = new Date();
+export function getCurrentWeekRange(now = new Date()) {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
   const day = start.getDay();
@@ -145,8 +139,20 @@ export function filterEventsByWeek(
   const end = new Date(start);
   end.setDate(end.getDate() + 7);
 
-  return events.filter((e) => {
-    const d = new Date(e.startsAt);
-    return d >= start && d < end;
-  });
+  return { start, end };
+}
+
+export function isDateInCurrentWeek(value: string | Date, now = new Date()) {
+  const date = new Date(value);
+  const { start, end } = getCurrentWeekRange(now);
+  return date >= start && date < end;
+}
+
+export function filterEventsByWeek(
+  events: Event[],
+  week: "current" | "all",
+): Event[] {
+  if (week === "all") return events;
+
+  return events.filter((e) => isDateInCurrentWeek(e.startsAt));
 }

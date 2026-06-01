@@ -45,7 +45,7 @@ function AppShellContent({ children }: AppShellProps) {
 
         <main
           className={cn(
-            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden py-2 pe-2",
+            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
           )}
         >
           <AppShellBreadcrumb />
@@ -73,4 +73,4 @@ export function AppShell({ children }: AppShellProps) {
 }
 
 export const appMainPanelClassName =
-  "flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-border bg-surface text-foreground shadow-2xl shadow-black/25";
+  "flex min-h-0 flex-1 flex-col overflow-hidden border border-border bg-surface text-foreground";

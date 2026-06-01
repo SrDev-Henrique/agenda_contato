@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+
+import { Spinner } from "@/components/ui/spinner";
 
 import { EventsPageClient } from "./events-page-client";
 
@@ -8,5 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default function EventsPage() {
-  return <EventsPageClient />;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner className="size-6" />
+        </div>
+      }
+    >
+      <EventsPageClient />
+    </Suspense>
+  );
 }

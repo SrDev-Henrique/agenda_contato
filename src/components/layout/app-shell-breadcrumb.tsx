@@ -67,7 +67,36 @@ function buildCrumbs(
   },
 ): Crumb[] {
   if (pathname.startsWith("/eventos")) {
-    return [{ type: "page", label: ui.navEvents }];
+    const week = searchParams.get("week") === "current";
+    const kind = searchParams.get("kind");
+
+    if (!week && !kind) {
+      return [{ type: "page", label: ui.navEvents }];
+    }
+
+    const crumbs: Crumb[] = [
+      { type: "link", label: ui.navEvents, href: "/eventos" },
+    ];
+
+    if (week && kind === "reminders") {
+      crumbs.push({
+        type: "page",
+        label: `${ui.thisWeek} — ${ui.reminders}`,
+      });
+    } else if (week && kind === "events") {
+      crumbs.push({
+        type: "page",
+        label: `${ui.thisWeek} — ${ui.navEvents}`,
+      });
+    } else if (week) {
+      crumbs.push({ type: "page", label: ui.thisWeek });
+    } else if (kind === "reminders") {
+      crumbs.push({ type: "page", label: ui.reminders });
+    } else if (kind === "events") {
+      crumbs.push({ type: "page", label: ui.navEvents });
+    }
+
+    return crumbs;
   }
 
   if (pathname.startsWith("/contato/")) {

@@ -19,12 +19,14 @@ import type { Event } from "@/types/event";
 type EventComposerProps = {
   contacts: Contact[];
   onCreateEvent: (data: Omit<Event, "id">) => void;
+  onCancel?: () => void;
   className?: string;
 };
 
 export function EventComposer({
   contacts,
   onCreateEvent,
+  onCancel,
   className,
 }: EventComposerProps) {
   const [title, setTitle] = useState("");
@@ -129,13 +131,13 @@ export function EventComposer({
         </PopoverContent>
       </Popover>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               type="button"
               variant="background"
-              className="justify-start sm:min-w-56"
+              className="h-9 w-fit justify-start sm:min-w-56"
             >
               <Users data-icon="inline-start" />
               {attendees.length > 0
@@ -162,7 +164,7 @@ export function EventComposer({
           </PopoverContent>
         </Popover>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
+        <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
           <span className="sr-only">{ui.eventDate}</span>
           <input
@@ -173,7 +175,7 @@ export function EventComposer({
           />
         </label>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
+        <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <Clock className="size-4" />
           <span className="sr-only">{ui.eventTime}</span>
           <input
@@ -184,15 +186,23 @@ export function EventComposer({
           />
         </label>
 
-        <Button
-          type="button"
-          variant="primary"
-          disabled={!canSubmit}
-          onClick={handleCreateEvent}
-        >
-          {ui.createEvent}
-          <Send data-icon="inline-end" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="primary"
+            disabled={!canSubmit}
+            onClick={handleCreateEvent}
+          >
+            {ui.createEvent}
+            <Send data-icon="inline-end" />
+          </Button>
+
+          {onCancel ? (
+            <Button type="button" variant="destructive" onClick={onCancel}>
+              {ui.cancel}
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {attendees.length > 0 ? (

@@ -21,6 +21,7 @@ type ReminderComposerProps = {
     contactId: string;
     scheduledAt: string;
   }) => void;
+  onCancel?: () => void;
   className?: string;
   defaultContactId?: string;
 };
@@ -28,6 +29,7 @@ type ReminderComposerProps = {
 export function ReminderComposer({
   contacts,
   onCreateReminder,
+  onCancel,
   className,
   defaultContactId = "",
 }: ReminderComposerProps) {
@@ -134,8 +136,8 @@ export function ReminderComposer({
         </PopoverContent>
       </Popover>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
           <span className="sr-only">{ui.reminderDate}</span>
           <input
@@ -146,7 +148,7 @@ export function ReminderComposer({
           />
         </label>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
+        <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <Clock className="size-4" />
           <span className="sr-only">{ui.reminderTime}</span>
           <input
@@ -157,15 +159,23 @@ export function ReminderComposer({
           />
         </label>
 
-        <Button
-          type="button"
-          variant="primary"
-          disabled={!canSubmit}
-          onClick={handleCreateReminder}
-        >
-          {ui.createReminder}
-          <Send data-icon="inline-end" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="primary"
+            disabled={!canSubmit}
+            onClick={handleCreateReminder}
+          >
+            {ui.createReminder}
+            <Send data-icon="inline-end" />
+          </Button>
+
+          {onCancel ? (
+            <Button type="button" variant="destructive" onClick={onCancel}>
+              {ui.cancel}
+            </Button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

@@ -18,16 +18,21 @@ import {
   addNote,
   addReminder,
   addTag,
+  closeEventComposers,
   deleteContact,
   deleteEvent,
   deleteNote,
   deleteReminder,
+  setAddingEvent,
+  setAddingReminder,
   updateContact as updateContactAction,
   updateEvent,
   updateNote,
 } from "@/store/agenda-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
+  selectAddingEvent,
+  selectAddingReminder,
   selectAgenda,
   selectIsHydrated,
   selectTagsWithCounts,
@@ -73,6 +78,11 @@ type ContactsStoreValue = {
   getContactNotes: (contactId: string) => Note[];
   tagsWithCounts: Array<Tag & { count: number }>;
   untaggedCount: number;
+  addingEvent: boolean;
+  addingReminder: boolean;
+  setAddingEvent: (open: boolean) => void;
+  setAddingReminder: (open: boolean) => void;
+  closeEventComposers: () => void;
 };
 
 export function useContactsStore(): ContactsStoreValue {
@@ -81,6 +91,8 @@ export function useContactsStore(): ContactsStoreValue {
   const isHydrated = useAppSelector(selectIsHydrated);
   const tagsWithCounts = useAppSelector(selectTagsWithCounts);
   const untaggedCount = useAppSelector(selectUntaggedCount);
+  const addingEvent = useAppSelector(selectAddingEvent);
+  const addingReminder = useAppSelector(selectAddingReminder);
 
   const updateContact = useCallback(
     (id: string, patch: Partial<Contact>) => {
@@ -206,6 +218,24 @@ export function useContactsStore(): ContactsStoreValue {
     [dispatch],
   );
 
+  const setAddingEventHandler = useCallback(
+    (open: boolean) => {
+      dispatch(setAddingEvent(open));
+    },
+    [dispatch],
+  );
+
+  const setAddingReminderHandler = useCallback(
+    (open: boolean) => {
+      dispatch(setAddingReminder(open));
+    },
+    [dispatch],
+  );
+
+  const closeEventComposersHandler = useCallback(() => {
+    dispatch(closeEventComposers());
+  }, [dispatch]);
+
   return useMemo<ContactsStoreValue>(
     () => ({
       state: agenda,
@@ -257,6 +287,11 @@ export function useContactsStore(): ContactsStoreValue {
       getContactNotes: (contactId) => getNotesForContact(agenda, contactId),
       tagsWithCounts,
       untaggedCount,
+      addingEvent,
+      addingReminder,
+      setAddingEvent: setAddingEventHandler,
+      setAddingReminder: setAddingReminderHandler,
+      closeEventComposers: closeEventComposersHandler,
     }),
     [
       agenda,
@@ -278,6 +313,11 @@ export function useContactsStore(): ContactsStoreValue {
       deleteNoteHandler,
       tagsWithCounts,
       untaggedCount,
+      addingEvent,
+      addingReminder,
+      setAddingEventHandler,
+      setAddingReminderHandler,
+      closeEventComposersHandler,
     ],
   );
 }

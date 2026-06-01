@@ -121,6 +121,17 @@ export const ui = {
   noEvents: "Nenhum evento agendado",
   noEventsHint: "Adicione um evento para vê-lo na timeline.",
   reminder: "Lembrete",
+  addReminderShort: "Lembrete",
+  addEventShort: "Evento",
+  options: "Opções",
+  editEvent: "Editar evento",
+  eventType: "Tipo de evento",
+  deleteEventTitle: "Excluir evento",
+  deleteEventDescription:
+    "Esta ação não pode ser desfeita. O evento será removido da timeline.",
+  deleteReminderTitle: "Excluir lembrete",
+  deleteReminderDescription:
+    "Esta ação não pode ser desfeita. O lembrete será removido permanentemente.",
 
   // Formulários genéricos
   title: "Título",

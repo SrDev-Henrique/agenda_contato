@@ -23,7 +23,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | **1 — Shell da aplicação** | Concluída: sidebar + conteúdo (md+), mobile com sheet, breadcrumb em todos os breakpoints |
 | **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
 | **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
-| **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
+| **4 — Eventos** | Concluída: rota `/eventos`, timeline, filtros via searchParams, paginação client e CRUD global |
 | **5–7** | Pendente — mobile, animações e polish final |
 
 **Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/` (Redux: `agenda-slice`, `index`, `persistence`, facade `contacts-store.tsx`), `src/components/layout/`, `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
@@ -47,7 +47,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | `/` | Lista de contatos em todos os breakpoints | Feito |
 | `/preview` | Vitrine de componentes | Feito |
 | `/contato/[nome]` | Detalhe do contato por slug do nome (edição inline + 404) | Feito |
-| `/eventos` | Timeline de eventos e lembretes futuros | Feito parcial |
+| `/eventos` | Timeline de eventos e lembretes futuros | Feito |
 | `/contacts` | Lista de contatos na rota antiga planejada | Pendente / revisar necessidade |
 | `/contacts/[id]` | Detalhe do contato na rota antiga planejada | Substituída por `/contato/[nome]` |
 | `/events` | Timeline na rota antiga planejada | Substituída por `/eventos` |
@@ -59,6 +59,8 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | `?q=<texto>` | Busca por nome |
 | `?sort=az` | Ordenação A–Z |
 | `?week=current` | Eventos da semana atual |
+| `?kind=events` | Apenas eventos na timeline |
+| `?kind=reminders` | Apenas lembretes na timeline |
 
 **Persistência:** `localStorage` chave `alloy-agenda:v1` (implementado em `src/lib/storage/`)
 
@@ -135,10 +137,9 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 - [x] Rota `/eventos`
 - [x] Timeline ordenada por data, com eventos e lembretes futuros
-- [ ] Filtros semana / tipo via searchParams
-- [x] Filtros client semana / tipo
-- [ ] Paginação client (ex.: `ui.showMoreEvents`) — pt-BR
-- [ ] CRUD evento global
+- [x] Filtros semana / tipo via searchParams (`?week=current`, `?kind=events|reminders`)
+- [x] Paginação client (`ui.showMoreEvents`) — pt-BR
+- [x] CRUD evento global (criar, editar, excluir na timeline; excluir lembretes)
 
 **Critério de pronto:** sidebar Eventos abre timeline funcional.
 

@@ -13,6 +13,8 @@ export type AgendaRootState = {
   agenda: AppState;
   meta: {
     isHydrated: boolean;
+    addingEvent: boolean;
+    addingReminder: boolean;
   };
 };
 
@@ -20,6 +22,8 @@ const initialState: AgendaRootState = {
   agenda: createSeedState(),
   meta: {
     isHydrated: false,
+    addingEvent: false,
+    addingReminder: false,
   },
 };
 
@@ -36,6 +40,22 @@ const agendaSlice = createSlice({
     },
     setHydrated(state, action: PayloadAction<boolean>) {
       state.meta.isHydrated = action.payload;
+    },
+    setAddingEvent(state, action: PayloadAction<boolean>) {
+      state.meta.addingEvent = action.payload;
+      if (action.payload) {
+        state.meta.addingReminder = false;
+      }
+    },
+    setAddingReminder(state, action: PayloadAction<boolean>) {
+      state.meta.addingReminder = action.payload;
+      if (action.payload) {
+        state.meta.addingEvent = false;
+      }
+    },
+    closeEventComposers(state) {
+      state.meta.addingEvent = false;
+      state.meta.addingReminder = false;
     },
     addContact(
       state,
@@ -161,6 +181,9 @@ const agendaSlice = createSlice({
 export const {
   hydrate,
   setHydrated,
+  setAddingEvent,
+  setAddingReminder,
+  closeEventComposers,
   addContact,
   updateContact,
   deleteContact,
