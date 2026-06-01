@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useState } from "react";
 
+import { HintTooltip } from "@/components/ui/hint-tooltip";
 import { Input } from "@/components/ui/input";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
@@ -69,16 +70,17 @@ export function EditableContactName({
   }
 
   return (
-    <button
-      type="button"
-      title={ui.clickToEdit}
-      onClick={startEditing}
-      className={cn(
-        "max-w-full truncate rounded-md px-1 py-0.5 font-inter font-semibold text-2xl text-foreground leading-tight transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        className,
-      )}
-    >
-      {name}
-    </button>
+    <HintTooltip label={ui.clickToEdit}>
+      <button
+        type="button"
+        onClick={startEditing}
+        className={cn(
+          "max-w-full truncate rounded-md px-1 py-0.5 font-inter font-semibold text-2xl text-foreground leading-tight transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+          className,
+        )}
+      >
+        {name}
+      </button>
+    </HintTooltip>
   );
 }

@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useCallback, useState } from "react";
 
+import { HintTooltip } from "@/components/ui/hint-tooltip";
 import { Input } from "@/components/ui/input";
 import { ui } from "@/lib/i18n/pt-br";
 import { formatBrazilPhone } from "@/lib/phone-mask";
@@ -95,18 +96,19 @@ export function EditableField({
   }
 
   return (
-    <button
-      type="button"
-      title={ui.clickToEdit}
-      onClick={startEditing}
-      className={cn(
-        "block h-8 w-full truncate rounded-md px-1 py-0.5 text-left font-medium text-sm transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        isEmpty ? "text-foreground-muted" : "text-foreground",
-        className,
-      )}
-    >
-      {displayValue}
-    </button>
+    <HintTooltip label={ui.clickToEdit}>
+      <button
+        type="button"
+        onClick={startEditing}
+        className={cn(
+          "block h-8 w-full truncate rounded-md px-1 py-0.5 text-left font-medium text-sm transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+          isEmpty ? "text-foreground-muted" : "text-foreground",
+          className,
+        )}
+      >
+        {displayValue}
+      </button>
+    </HintTooltip>
   );
 }
 

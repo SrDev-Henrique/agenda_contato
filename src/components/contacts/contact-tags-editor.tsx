@@ -12,6 +12,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { HintTooltip } from "@/components/ui/hint-tooltip";
 import { Input } from "@/components/ui/input";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
@@ -136,16 +137,17 @@ export function ContactTagsEditor({
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.14, ease: "easeOut" }}
           >
-            <Button
-              type="button"
-              aria-label={ui.addTag}
-              title={ui.addTag}
-              variant="muted"
-              size="icon-sm"
-              onClick={() => setIsEditing(true)}
-            >
-              <Plus />
-            </Button>
+            <HintTooltip label={ui.addTag}>
+              <Button
+                type="button"
+                aria-label={ui.addTag}
+                variant="muted"
+                size="icon-sm"
+                onClick={() => setIsEditing(true)}
+              >
+                <Plus />
+              </Button>
+            </HintTooltip>
           </motion.div>
         )}
       </AnimatePresence>

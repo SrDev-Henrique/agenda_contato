@@ -6,6 +6,7 @@ import { ContactTagsEditor } from "@/components/contacts/contact-tags-editor";
 import { EditableContactName } from "@/components/contacts/editable-contact-name";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { HintTooltip } from "@/components/ui/hint-tooltip";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
@@ -65,36 +66,45 @@ export function ContactHeader({
           )}
 
           <div className="mt-4 flex items-center gap-2">
-            <Button
-              aria-label={`${ui.callContact} ${contact.name}`}
-              title={ui.callContact}
-              size="icon"
-              variant="muted"
-              disabled={!onCall}
-              onClick={() => onCall?.(contact)}
-            >
-              <Phone />
-            </Button>
-            <Button
-              aria-label={`${ui.videoCallContact} ${contact.name}`}
-              title={ui.videoCallContact}
-              size="icon"
-              variant="muted"
-              disabled={!onVideoCall}
-              onClick={() => onVideoCall?.(contact)}
-            >
-              <Video />
-            </Button>
-            <Button
-              aria-label={`${ui.emailContact} ${contact.name}`}
-              title={ui.emailContact}
-              size="icon"
-              variant="muted"
-              disabled={!onEmail}
-              onClick={() => onEmail?.(contact)}
-            >
-              <Mail />
-            </Button>
+            <HintTooltip label={ui.callContact}>
+              <span className="inline-flex">
+                <Button
+                  aria-label={`${ui.callContact} ${contact.name}`}
+                  size="icon"
+                  variant="muted"
+                  disabled={!onCall}
+                  onClick={() => onCall?.(contact)}
+                >
+                  <Phone />
+                </Button>
+              </span>
+            </HintTooltip>
+            <HintTooltip label={ui.videoCallContact}>
+              <span className="inline-flex">
+                <Button
+                  aria-label={`${ui.videoCallContact} ${contact.name}`}
+                  size="icon"
+                  variant="muted"
+                  disabled={!onVideoCall}
+                  onClick={() => onVideoCall?.(contact)}
+                >
+                  <Video />
+                </Button>
+              </span>
+            </HintTooltip>
+            <HintTooltip label={ui.emailContact}>
+              <span className="inline-flex">
+                <Button
+                  aria-label={`${ui.emailContact} ${contact.name}`}
+                  size="icon"
+                  variant="muted"
+                  disabled={!onEmail}
+                  onClick={() => onEmail?.(contact)}
+                >
+                  <Mail />
+                </Button>
+              </span>
+            </HintTooltip>
           </div>
 
           <ContactTagsEditor
