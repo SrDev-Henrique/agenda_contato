@@ -25,8 +25,8 @@ export function AppShellMobileHeader({
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 md:hidden">
-      <div className="truncate text-base font-semibold tracking-tight">
+    <header className="flex shrink-0 items-center justify-between gap-3 border-border border-b px-4 py-3 md:hidden">
+      <div className="truncate font-semibold text-base tracking-tight">
         {ui.appName}
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useMemo, useState } from "react";
 
 import { ContactsList } from "@/components/contacts/contacts-list";
 import { useContactListFilters } from "@/hooks/use-contact-list-filters";

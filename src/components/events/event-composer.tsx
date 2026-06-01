@@ -101,7 +101,7 @@ export function EventComposer({
         <PopoverAnchor asChild>
           <input
             aria-label={ui.title}
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground text-sm outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             placeholder={ui.eventTitlePlaceholder}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
@@ -144,7 +144,7 @@ export function EventComposer({
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-80 p-1">
-            <div className="px-2 py-2 text-xs font-medium text-foreground-muted">
+            <div className="px-2 py-2 font-medium text-foreground-muted text-xs">
               {ui.eventParticipants}
             </div>
             {contacts.map((contact) => {
@@ -162,7 +162,7 @@ export function EventComposer({
           </PopoverContent>
         </Popover>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-foreground-muted">
+        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
           <span className="sr-only">{ui.eventDate}</span>
           <input
@@ -173,7 +173,7 @@ export function EventComposer({
           />
         </label>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-foreground-muted">
+        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <Clock className="size-4" />
           <span className="sr-only">{ui.eventTime}</span>
           <input
@@ -201,7 +201,7 @@ export function EventComposer({
             <button
               key={attendee.id}
               type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-full bg-muted px-2 text-xs text-foreground transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="inline-flex h-8 items-center gap-2 rounded-full bg-muted px-2 text-foreground text-xs transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               onClick={() => handleToggleAttendee(attendee.id)}
             >
               <Avatar className="size-5">
@@ -247,10 +247,10 @@ function ContactOption({
         <AvatarFallback>{getInitials(contact.name)}</AvatarFallback>
       </Avatar>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-medium text-foreground">
+        <span className="block truncate font-medium text-foreground text-sm">
           {contact.name}
         </span>
-        <span className="block truncate text-xs text-foreground-muted">
+        <span className="block truncate text-foreground-muted text-xs">
           {contact.email ?? ui.noEmail}
         </span>
       </span>

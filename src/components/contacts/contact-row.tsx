@@ -20,8 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { slugify } from "@/lib/id";
 import { ui } from "@/lib/i18n/pt-br";
+import { slugify } from "@/lib/id";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
 import type { Tag } from "@/types/tag";
@@ -66,7 +66,7 @@ export function ContactRow({
           className,
         )}
       >
-        <div className="absolute right-3 top-3 z-10">
+        <div className="absolute top-3 right-3 z-10">
           {hasActions ? (
             <ContactActions
               contact={contact}
@@ -101,11 +101,11 @@ export function ContactRow({
             </AvatarFallback>
           </Avatar>
 
-          <span className="mt-3 max-w-full truncate text-sm font-medium text-foreground">
+          <span className="mt-3 max-w-full truncate font-medium text-foreground text-sm">
             {contact.name}
           </span>
           {tag ? (
-            <span className="mt-1 max-w-full truncate text-xs text-foreground-subtle">
+            <span className="mt-1 max-w-full truncate text-foreground-subtle text-xs">
               {tag.name}
             </span>
           ) : null}
@@ -113,12 +113,12 @@ export function ContactRow({
 
         <Link
           href={href}
-          className="mt-4 rounded-md border-t border-border pt-3 text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="mt-4 rounded-md border-border border-t pt-3 text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          <span className="block truncate text-sm text-foreground">
+          <span className="block truncate text-foreground text-sm">
             {contact.phone ?? ui.noPhone}
           </span>
-          <span className="mt-1 block truncate text-xs text-foreground-muted">
+          <span className="mt-1 block truncate text-foreground-muted text-xs">
             {contact.email ?? ui.noEmail}
           </span>
         </Link>
@@ -129,7 +129,7 @@ export function ContactRow({
   return (
     <div
       className={cn(
-        "group/contact-row grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border px-2 py-2 transition-colors hover:bg-muted/40 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,0.7fr)_auto] sm:px-3",
+        "group/contact-row grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-border border-b px-2 py-2 transition-colors hover:bg-muted/40 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,0.7fr)_auto] sm:px-3",
         active && "bg-muted/60",
         className,
       )}
@@ -147,17 +147,17 @@ export function ContactRow({
 
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-baseline gap-2">
-            <span className="truncate text-sm font-medium text-foreground">
+            <span className="truncate font-medium text-foreground text-sm">
               {contact.name}
             </span>
             {tag ? (
-              <span className="hidden shrink-0 text-xs text-foreground-subtle sm:inline">
+              <span className="hidden shrink-0 text-foreground-subtle text-xs sm:inline">
                 {tag.name}
               </span>
             ) : null}
           </span>
           {tag ? (
-            <span className="mt-0.5 block truncate text-xs text-foreground-subtle sm:hidden">
+            <span className="mt-0.5 block truncate text-foreground-subtle text-xs sm:hidden">
               {tag.name}
             </span>
           ) : null}
@@ -168,10 +168,10 @@ export function ContactRow({
         href={href}
         className="hidden min-w-0 rounded-md text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:block"
       >
-        <span className="block truncate text-sm text-foreground">
+        <span className="block truncate text-foreground text-sm">
           {contact.phone ?? ui.noPhone}
         </span>
-        <span className="mt-0.5 block truncate text-xs text-foreground-muted">
+        <span className="mt-0.5 block truncate text-foreground-muted text-xs">
           {contact.email ?? ui.noEmail}
         </span>
       </Link>

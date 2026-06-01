@@ -1,7 +1,6 @@
 import { Suspense } from "react";
-
-import { Spinner } from "@/components/ui/spinner";
 import { ContactsListPage } from "@/components/contacts/contacts-list-page";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Home() {
   return (

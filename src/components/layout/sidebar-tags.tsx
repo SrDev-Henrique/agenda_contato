@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Tag } from "@/types/tag";
 
@@ -37,7 +36,7 @@ export function SidebarTags({ tags, onNavigate, className }: SidebarTagsProps) {
       <Link
         href="/"
         onClick={onNavigate}
-        className="block w-full truncate rounded-md px-2 py-1 text-left text-xs text-foreground-subtle transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        className="block w-full truncate rounded-md px-2 py-1 text-left text-foreground-subtle text-xs transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
         Todas as tags
       </Link>

@@ -40,7 +40,7 @@ export function EventCard({
               <p className="truncate font-medium text-foreground">
                 {event.title}
               </p>
-              <p className="mt-1 text-xs text-foreground-muted">
+              <p className="mt-1 text-foreground-muted text-xs">
                 {eventTypeLabels[event.type]}
                 {contact ? (
                   <>
@@ -51,12 +51,17 @@ export function EventCard({
               </p>
             </div>
 
-            <Button aria-label="Opções" title="Opções" size="icon-sm" variant="ghost">
+            <Button
+              aria-label="Opções"
+              title="Opções"
+              size="icon-sm"
+              variant="ghost"
+            >
               <Ellipsis />
             </Button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-foreground-muted">
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-foreground-muted text-xs">
             <span className="inline-flex h-7 items-center gap-1.5 rounded-md bg-muted px-2">
               <CalendarDays className="size-3.5" />
               {formatEventDate(event.startsAt)}
@@ -82,13 +87,18 @@ export function EventCard({
                     className="size-7 border-2 border-background"
                   >
                     {attendee.avatarUrl ? (
-                      <AvatarImage src={attendee.avatarUrl} alt={attendee.name} />
+                      <AvatarImage
+                        src={attendee.avatarUrl}
+                        alt={attendee.name}
+                      />
                     ) : null}
-                    <AvatarFallback>{getInitials(attendee.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials(attendee.name)}
+                    </AvatarFallback>
                   </Avatar>
                 ))}
               </div>
-              <p className="min-w-0 truncate text-xs text-foreground-muted">
+              <p className="min-w-0 truncate text-foreground-muted text-xs">
                 {attendees.map((attendee) => attendee.name).join(", ")}
               </p>
             </div>

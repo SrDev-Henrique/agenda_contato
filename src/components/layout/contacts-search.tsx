@@ -138,13 +138,13 @@ export function ContactsSearch({
         <div className={cn("relative w-full max-w-md", className)}>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground-subtle"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-foreground-subtle"
           />
           <Input
             aria-label="Buscar contatos"
             autoComplete="off"
             className={cn(
-              "h-10 rounded-lg border-border bg-background pl-9 pr-3 text-sm shadow-sm placeholder:text-foreground-placeholder focus-visible:border-ring",
+              "h-10 rounded-lg border-border bg-background pr-3 pl-9 text-sm shadow-sm placeholder:text-foreground-placeholder focus-visible:border-ring",
               inputClassName,
             )}
             placeholder={placeholder}
@@ -174,10 +174,10 @@ export function ContactsSearch({
                     <AvatarFallback>{getInitials(contact.name)}</AvatarFallback>
                   </Avatar>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-foreground">
+                    <span className="block truncate font-medium text-foreground text-sm">
                       {contact.name}
                     </span>
-                    <span className="block truncate text-xs text-foreground-muted">
+                    <span className="block truncate text-foreground-muted text-xs">
                       {contact.company ? `${contact.company} · ` : ""}
                       {contact.email}
                     </span>
@@ -213,7 +213,7 @@ export function ContactsSearch({
             })}
           </div>
         ) : (
-          <div className="px-3 py-6 text-center text-sm text-foreground-muted">
+          <div className="px-3 py-6 text-center text-foreground-muted text-sm">
             Nenhum contato encontrado.
           </div>
         )}

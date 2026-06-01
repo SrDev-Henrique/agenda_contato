@@ -12,9 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
 import { groupContactsByLetter } from "@/lib/selectors";
-import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
 import type { Tag } from "@/types/tag";
@@ -57,7 +57,8 @@ export function ContactsList({
   onDeleteContact,
 }: ContactsListProps) {
   const [view, setView] = useState<ContactsListView>(defaultView);
-  const [internalFilter, setInternalFilter] = useState<ContactsListFilter>("all");
+  const [internalFilter, setInternalFilter] =
+    useState<ContactsListFilter>("all");
   const [internalSort, setInternalSort] = useState<ContactsListSort>("az");
 
   const filter = filterProp ?? internalFilter;
@@ -116,13 +117,13 @@ export function ContactsList({
         className,
       )}
     >
-      <header className="flex flex-col gap-4 border-b border-border pb-4">
+      <header className="flex flex-col gap-4 border-border border-b pb-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[0.65rem] font-medium uppercase tracking-wide text-foreground-subtle">
+            <p className="font-medium text-[0.65rem] text-foreground-subtle uppercase tracking-wide">
               {ui.totalContacts(totalCount)}
             </p>
-            <h2 className="mt-1 font-inter text-xl font-semibold leading-none text-foreground">
+            <h2 className="mt-1 font-inter font-semibold text-foreground text-xl leading-none">
               {ui.contacts}
             </h2>
           </div>
@@ -168,7 +169,9 @@ export function ContactsList({
 
           <Select
             value={sort}
-            onValueChange={(value) => handleSortChange(value as ContactsListSort)}
+            onValueChange={(value) =>
+              handleSortChange(value as ContactsListSort)
+            }
           >
             <SelectTrigger size="sm">
               <SelectValue aria-label={sort === "az" ? ui.sortAz : ui.sortZa} />
@@ -184,10 +187,10 @@ export function ContactsList({
       <div className="min-h-0 flex-1 overflow-hidden">
         {visibleContacts.length === 0 ? (
           <div className="flex h-full min-h-72 flex-col items-center justify-center px-6 text-center">
-            <p className="text-sm font-medium text-foreground">
+            <p className="font-medium text-foreground text-sm">
               {ui.noContacts}
             </p>
-            <p className="mt-1 max-w-xs text-xs leading-5 text-foreground-muted">
+            <p className="mt-1 max-w-xs text-foreground-muted text-xs leading-5">
               {ui.noContactsHint}
             </p>
           </div>
@@ -288,7 +291,7 @@ function ContactSection({
 >) {
   return (
     <section className="mb-3 last:mb-0">
-      <h3 className="px-3 pb-1.5 font-inter text-[0.65rem] font-semibold uppercase tracking-wide text-foreground-subtle">
+      <h3 className="px-3 pb-1.5 font-inter font-semibold text-[0.65rem] text-foreground-subtle uppercase tracking-wide">
         {title}
       </h3>
       <div>

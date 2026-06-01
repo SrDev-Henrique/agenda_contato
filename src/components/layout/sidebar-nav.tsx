@@ -9,8 +9,8 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import type { ReadonlyURLSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
 
 import { ui } from "@/lib/i18n/pt-br";
@@ -32,7 +32,12 @@ export const sidebarNavItems: Array<{
 }> = [
   { id: "people", label: ui.navAllPeople, icon: Users, href: "/" },
   { id: "businesses", label: ui.navAllBusinesses, icon: BriefcaseBusiness },
-  { id: "favorites", label: ui.navFavorites, icon: Star, href: "/?favorites=true" },
+  {
+    id: "favorites",
+    label: ui.navFavorites,
+    icon: Star,
+    href: "/?favorites=true",
+  },
   { id: "tags", label: ui.navTags, icon: Tags, expandable: true },
   { id: "events", label: ui.navEvents, icon: CalendarDays, href: "/eventos" },
 ];
@@ -78,8 +83,7 @@ export function SidebarNavList({
   return (
     <nav className={cn("flex flex-col gap-1", className)}>
       {sidebarNavItems.map((item) => {
-        const href =
-          item.id === "people" ? peopleHref : item.href;
+        const href = item.id === "people" ? peopleHref : item.href;
 
         return (
           <SidebarNavItem
@@ -113,7 +117,7 @@ function SidebarNavItem({
   onNavigate?: () => void;
 }) {
   const className = cn(
-    "flex h-7 w-full items-center gap-2 rounded-md px-2 text-left text-xs font-medium text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+    "flex h-7 w-full items-center gap-2 rounded-md px-2 text-left font-medium text-sidebar-foreground text-xs transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
     active && "bg-sidebar-accent text-sidebar-accent-foreground",
   );
 

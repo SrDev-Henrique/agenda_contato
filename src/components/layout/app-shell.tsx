@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
@@ -54,7 +54,7 @@ function AppShellContent({ children }: AppShellProps) {
 
         <main
           className={cn(
-            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pe-2 py-2",
+            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden py-2 pe-2",
           )}
         >
           {children}

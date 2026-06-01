@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { slugify } from "@/lib/id";
 import { ui } from "@/lib/i18n/pt-br";
+import { slugify } from "@/lib/id";
 import { useContactsStore } from "@/store/contacts-store";
 
 type CreateContactDialogProps = {

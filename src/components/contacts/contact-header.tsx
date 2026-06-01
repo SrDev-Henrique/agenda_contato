@@ -39,7 +39,7 @@ export function ContactHeader({
       )}
     >
       <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
-        <Avatar className="size-28 shadow-xl shadow-black/30">
+        <Avatar className="size-28 shadow-black/30 shadow-xl">
           {contact.avatarUrl ? (
             <AvatarImage src={contact.avatarUrl} alt={contact.name} />
           ) : null}
@@ -49,7 +49,7 @@ export function ContactHeader({
         </Avatar>
 
         <div className="flex min-w-0 flex-1 flex-col items-center text-center sm:items-start sm:text-left">
-          <h2 className="max-w-full truncate font-inter text-2xl font-semibold leading-tight text-foreground">
+          <h2 className="max-w-full truncate font-inter font-semibold text-2xl text-foreground leading-tight">
             {contact.name}
           </h2>
 

@@ -30,17 +30,22 @@ export function NoteCard({ note, className }: NoteCardProps) {
               <h3 className="truncate font-medium text-foreground">
                 {note.title}
               </h3>
-              <p className="mt-1 line-clamp-3 text-sm leading-5 text-foreground-muted">
+              <p className="mt-1 line-clamp-3 text-foreground-muted text-sm leading-5">
                 {note.content}
               </p>
             </div>
 
-            <Button aria-label="Opções" title="Opções" size="icon-sm" variant="ghost">
+            <Button
+              aria-label="Opções"
+              title="Opções"
+              size="icon-sm"
+              variant="ghost"
+            >
               <Ellipsis />
             </Button>
           </div>
 
-          <p className="mt-3 text-xs text-foreground-subtle">
+          <p className="mt-3 text-foreground-subtle text-xs">
             Atualizada em {formatNoteDate(note.updatedAt)}
           </p>
         </div>

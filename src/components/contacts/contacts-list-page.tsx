@@ -37,7 +37,7 @@ export function ContactsListPage() {
 
   return (
     <ContactsList
-      className="h-full overflow-y-auto max-md:pb-8 max-md:h-[calc(100vh-2rem)]"
+      className="h-full overflow-y-auto max-md:h-[calc(100vh-2rem)] max-md:pb-8"
       contacts={displayedContacts}
       tags={state.tags}
       totalCount={state.contacts.length}

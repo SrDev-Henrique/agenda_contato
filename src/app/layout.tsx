@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { AppShell } from "@/components/layout/app-shell";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
-import { AppShell } from "@/components/layout/app-shell";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -41,7 +41,7 @@ export default function RootLayout({
         inter.variable,
       )}
     >
-      <body className="flex w-full h-screen overflow-hidden flex-col">
+      <body className="flex h-screen w-full flex-col overflow-hidden">
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

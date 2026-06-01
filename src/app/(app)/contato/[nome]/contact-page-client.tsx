@@ -60,10 +60,10 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
           "items-center justify-center p-6 text-center",
         )}
       >
-        <h1 className="font-inter text-xl font-semibold text-foreground">
+        <h1 className="font-inter font-semibold text-foreground text-xl">
           {isHydrated ? ui.contactNotFound : ui.loading}
         </h1>
-        <p className="mt-2 max-w-md text-sm leading-6 text-foreground-muted">
+        <p className="mt-2 max-w-md text-foreground-muted text-sm leading-6">
           {isHydrated ? ui.contactNotFoundHint : ui.appDescription}
         </p>
         <Button asChild className="mt-5" variant="primary">
@@ -98,7 +98,7 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
           onRemoveTag={(tag) => removeTagFromContact(contact.id, tag.id)}
         />
 
-        <div className="space-y-5 border-t border-border bg-surface-muted p-4">
+        <div className="space-y-5 border-border border-t bg-surface-muted p-4">
           <ContactInfoGrid contact={contact} />
 
           <DetailSection title={ui.reminders}>
@@ -164,7 +164,7 @@ function DetailSection({
 }) {
   return (
     <section>
-      <h2 className="mb-2 font-inter text-sm font-semibold text-foreground">
+      <h2 className="mb-2 font-inter font-semibold text-foreground text-sm">
         {title}
       </h2>
       {children}
@@ -245,7 +245,7 @@ function InfoCard({
       <Icon className="size-4 shrink-0 text-foreground-muted" />
       <span className="min-w-0">
         <span className="sr-only">{label}</span>
-        <span className="block truncate text-sm font-medium text-foreground">
+        <span className="block truncate font-medium text-foreground text-sm">
           {value}
         </span>
       </span>

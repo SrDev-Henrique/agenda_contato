@@ -86,7 +86,9 @@ export function UpcomingActivityTimeline({
           kind: "reminder" as const,
           id: reminder.id,
           date: reminder.scheduledAt,
-          contact: contacts.find((contact) => contact.id === reminder.contactId),
+          contact: contacts.find(
+            (contact) => contact.id === reminder.contactId,
+          ),
           reminder,
         })),
     ];
@@ -113,14 +115,14 @@ export function UpcomingActivityTimeline({
   return (
     <section
       className={cn(
-        "flex h-full overflow-y-auto min-h-0 flex-col rounded-[28px] border border-border bg-surface p-4 text-foreground",
+        "flex h-full min-h-0 flex-col overflow-y-auto rounded-[28px] border border-border bg-surface p-4 text-foreground",
         className,
       )}
     >
-      <header className="flex flex-col gap-4 border-b border-border pb-4">
+      <header className="flex flex-col gap-4 border-border border-b pb-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="font-inter text-xl font-semibold leading-none text-foreground">
+            <h1 className="font-inter font-semibold text-foreground text-xl leading-none">
               {ui.upcomingActivity}
             </h1>
           </div>
@@ -167,7 +169,7 @@ export function UpcomingActivityTimeline({
       <div className="min-h-0 flex-1 overflow-y-auto py-4">
         {activities.length > 0 ? (
           <div className="relative pl-10">
-            <div className="absolute bottom-2 left-4 top-2 w-px bg-border" />
+            <div className="absolute top-2 bottom-2 left-4 w-px bg-border" />
             <div className="space-y-4">
               {activities.map((activity) => (
                 <TimelineItem
@@ -179,8 +181,8 @@ export function UpcomingActivityTimeline({
           </div>
         ) : (
           <div className="flex min-h-80 flex-col items-center justify-center px-6 text-center">
-            <p className="text-sm font-medium text-foreground">{ui.noEvents}</p>
-            <p className="mt-1 max-w-xs text-xs leading-5 text-foreground-muted">
+            <p className="font-medium text-foreground text-sm">{ui.noEvents}</p>
+            <p className="mt-1 max-w-xs text-foreground-muted text-xs leading-5">
               {ui.noEventsHint}
             </p>
           </div>
@@ -197,13 +199,15 @@ function TimelineItem({ activity }: { activity: TimelineActivity }) {
 
   return (
     <article className="relative">
-      <div className="absolute -left-10 top-0 flex size-8 items-center justify-center rounded-full bg-surface text-foreground-muted ring-1 ring-border">
+      <div className="absolute top-0 -left-10 flex size-8 items-center justify-center rounded-full bg-surface text-foreground-muted ring-1 ring-border">
         {renderActivityIcon(activity)}
       </div>
 
       <div className="space-y-2">
-        <div className="flex min-h-8 flex-wrap items-center gap-2 text-sm text-foreground">
-          <span className="text-foreground-muted">{getActivityAction(activity)}</span>
+        <div className="flex min-h-8 flex-wrap items-center gap-2 text-foreground text-sm">
+          <span className="text-foreground-muted">
+            {getActivityAction(activity)}
+          </span>
 
           {activity.contact ? (
             <Link
@@ -217,7 +221,9 @@ function TimelineItem({ activity }: { activity: TimelineActivity }) {
                     alt={activity.contact.name}
                   />
                 ) : null}
-                <AvatarFallback>{getInitials(activity.contact.name)}</AvatarFallback>
+                <AvatarFallback>
+                  {getInitials(activity.contact.name)}
+                </AvatarFallback>
               </Avatar>
               {activity.contact.name}
             </Link>
@@ -229,11 +235,16 @@ function TimelineItem({ activity }: { activity: TimelineActivity }) {
               : activity.reminder.text}
           </span>
 
-          <span className="rounded-md bg-muted px-2 py-1 text-xs text-foreground-muted">
+          <span className="rounded-md bg-muted px-2 py-1 text-foreground-muted text-xs">
             {formatActivityDate(activity.date)}
           </span>
 
-          <Button aria-label="Opções" title="Opções" size="icon-sm" variant="ghost">
+          <Button
+            aria-label="Opções"
+            title="Opções"
+            size="icon-sm"
+            variant="ghost"
+          >
             <Ellipsis />
           </Button>
         </div>
@@ -242,22 +253,22 @@ function TimelineItem({ activity }: { activity: TimelineActivity }) {
           <div className="rounded-lg bg-background p-3 shadow-sm ring-1 ring-border">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-foreground">
+                <p className="truncate font-medium text-foreground text-sm">
                   {activity.event.title}
                 </p>
                 {activity.event.description ? (
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-foreground-muted">
+                  <p className="mt-1 line-clamp-2 text-foreground-muted text-xs leading-5">
                     {activity.event.description}
                   </p>
                 ) : (
-                  <p className="mt-1 text-xs text-foreground-muted">
+                  <p className="mt-1 text-foreground-muted text-xs">
                     {eventTypeLabels[activity.event.type]}
                   </p>
                 )}
               </div>
 
               {activity.attendees.length > 0 ? (
-                <div className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-1 text-xs text-foreground-muted">
+                <div className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-1 text-foreground-muted text-xs">
                   <div className="flex -space-x-2">
                     {activity.attendees.slice(0, 3).map((attendee) => (
                       <Avatar
@@ -265,9 +276,14 @@ function TimelineItem({ activity }: { activity: TimelineActivity }) {
                         className="size-5 border-2 border-muted"
                       >
                         {attendee.avatarUrl ? (
-                          <AvatarImage src={attendee.avatarUrl} alt={attendee.name} />
+                          <AvatarImage
+                            src={attendee.avatarUrl}
+                            alt={attendee.name}
+                          />
                         ) : null}
-                        <AvatarFallback>{getInitials(attendee.name)}</AvatarFallback>
+                        <AvatarFallback>
+                          {getInitials(attendee.name)}
+                        </AvatarFallback>
                       </Avatar>
                     ))}
                   </div>

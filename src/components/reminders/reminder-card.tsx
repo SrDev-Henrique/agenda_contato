@@ -15,7 +15,11 @@ type ReminderCardProps = {
   className?: string;
 };
 
-export function ReminderCard({ reminder, contact, className }: ReminderCardProps) {
+export function ReminderCard({
+  reminder,
+  contact,
+  className,
+}: ReminderCardProps) {
   return (
     <article
       className={cn(
@@ -35,22 +39,24 @@ export function ReminderCard({ reminder, contact, className }: ReminderCardProps
         {contact?.avatarUrl ? (
           <AvatarImage src={contact.avatarUrl} alt={contact.name} />
         ) : null}
-        <AvatarFallback>{getInitials(contact?.name ?? ui.reminders)}</AvatarFallback>
+        <AvatarFallback>
+          {getInitials(contact?.name ?? ui.reminders)}
+        </AvatarFallback>
       </Avatar>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm text-foreground">
+        <p className="truncate text-foreground text-sm">
           {contact ? (
             <span className="font-medium text-primary">{contact.name}</span>
           ) : null}{" "}
           {reminder.text}
         </p>
-        <p className="mt-1 text-xs text-foreground-muted">
+        <p className="mt-1 text-foreground-muted text-xs">
           {formatReminderDate(reminder.scheduledAt)}
         </p>
       </div>
 
-      <div className="hidden shrink-0 rounded-md bg-muted px-2 py-1 text-xs text-foreground-muted sm:block">
+      <div className="hidden shrink-0 rounded-md bg-muted px-2 py-1 text-foreground-muted text-xs sm:block">
         {formatReminderTime(reminder.scheduledAt)}
       </div>
 

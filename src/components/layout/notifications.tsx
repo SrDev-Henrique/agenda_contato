@@ -125,15 +125,15 @@ export function Notifications() {
       </PopoverTrigger>
       <PopoverContent
         align="center"
-        className="me-4 w-80 h-fit max-h-[calc(100vh-10rem)] overflow-y-auto bg-card p-1"
+        className="me-4 h-fit max-h-[calc(100vh-10rem)] w-80 overflow-y-auto bg-card p-1"
       >
         <div className="flex items-baseline justify-between gap-4 px-3 py-2">
-          <div className="text-sm font-semibold text-card-foreground">
+          <div className="font-semibold text-card-foreground text-sm">
             Notificações
           </div>
           {unreadCount > 0 ? (
             <button
-              className="text-xs font-medium text-foreground-muted hover:text-foreground hover:underline"
+              className="font-medium text-foreground-muted text-xs hover:text-foreground hover:underline"
               onClick={handleMarkAllAsRead}
               type="button"
             >
@@ -151,7 +151,7 @@ export function Notifications() {
               )}
               key={notification.id}
             >
-              <div className="relative flex items-start gap-3 pe-3 ps-1">
+              <div className="relative flex items-start gap-3 ps-1 pe-3">
                 <Avatar className="size-9">
                   <AvatarFallback>
                     {getInitials(notification.user)}
@@ -174,7 +174,7 @@ export function Notifications() {
                     </span>
                     .
                   </button>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-muted-foreground text-xs">
                     {notification.timestamp}
                   </div>
                 </div>

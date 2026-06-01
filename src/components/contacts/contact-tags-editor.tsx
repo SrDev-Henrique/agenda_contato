@@ -1,13 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
 import { Plus, X } from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

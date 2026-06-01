@@ -7,7 +7,10 @@ import { CreateContactDialog } from "@/components/contacts/create-contact-dialog
 import { ContactsSearch } from "@/components/layout/contacts-search";
 import { Notifications } from "@/components/layout/notifications";
 import { ProfileMenu } from "@/components/layout/profile-menu";
-import { SidebarNavList, type SidebarItemId } from "@/components/layout/sidebar-nav";
+import {
+  type SidebarItemId,
+  SidebarNavList,
+} from "@/components/layout/sidebar-nav";
 import { SidebarTags } from "@/components/layout/sidebar-tags";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
@@ -35,12 +38,12 @@ export function AppSidebar({
     <>
       <aside
         className={cn(
-          "flex h-full w-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-4 py-5 text-sidebar-foreground",
+          "flex h-full w-full shrink-0 flex-col border-sidebar-border border-r bg-sidebar px-4 py-5 text-sidebar-foreground",
           className,
         )}
       >
         <div className="flex items-center justify-between gap-2">
-          <div className="truncate text-base font-semibold tracking-tight">
+          <div className="truncate font-semibold text-base tracking-tight">
             {ui.appName}
           </div>
           <Notifications />
@@ -68,10 +71,10 @@ export function AppSidebar({
             className="group flex w-full items-center justify-between rounded-lg bg-sidebar-accent px-3 py-2 text-left transition-colors hover:bg-muted"
           >
             <span className="flex flex-col gap-0.5">
-              <span className="text-[0.6rem] font-medium uppercase text-foreground-subtle">
+              <span className="font-medium text-[0.6rem] text-foreground-subtle uppercase">
                 {ui.navUntagged}
               </span>
-              <span className="text-xl leading-none text-sidebar-foreground">
+              <span className="text-sidebar-foreground text-xl leading-none">
                 {untaggedCount}
               </span>
             </span>

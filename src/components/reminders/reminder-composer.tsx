@@ -84,7 +84,7 @@ export function ReminderComposer({
         <PopoverAnchor asChild>
           <textarea
             aria-label={ui.addReminder}
-            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-foreground text-sm outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             placeholder={ui.reminderPlaceholder}
             value={text}
             onChange={(event) => setText(event.target.value)}
@@ -117,17 +117,17 @@ export function ReminderComposer({
                   <AvatarFallback>{getInitials(contact.name)}</AvatarFallback>
                 </Avatar>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-foreground">
+                  <span className="block truncate font-medium text-foreground text-sm">
                     {contact.name}
                   </span>
-                  <span className="block truncate text-xs text-foreground-muted">
+                  <span className="block truncate text-foreground-muted text-xs">
                     {contact.email ?? ui.noEmail}
                   </span>
                 </span>
               </button>
             ))
           ) : (
-            <div className="px-3 py-6 text-center text-sm text-foreground-muted">
+            <div className="px-3 py-6 text-center text-foreground-muted text-sm">
               {ui.noMentionResults}
             </div>
           )}
@@ -135,7 +135,7 @@ export function ReminderComposer({
       </Popover>
 
       <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-foreground-muted">
+        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
           <span className="sr-only">{ui.reminderDate}</span>
           <input
@@ -146,7 +146,7 @@ export function ReminderComposer({
           />
         </label>
 
-        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm text-foreground-muted">
+        <label className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <Clock className="size-4" />
           <span className="sr-only">{ui.reminderTime}</span>
           <input

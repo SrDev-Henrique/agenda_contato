@@ -35,7 +35,7 @@ export function ProfileMenu({ name, avatarUrl, className }: ProfileMenuProps) {
         <AvatarFallback>{getInitials(name)}</AvatarFallback>
       </Avatar>
 
-      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+      <span className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
         {name}
       </span>
 
@@ -57,7 +57,7 @@ export function ProfileMenu({ name, avatarUrl, className }: ProfileMenuProps) {
           </PopoverHeader>
 
           <div className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2">
-            <span className="text-sm font-medium text-foreground">Tema</span>
+            <span className="font-medium text-foreground text-sm">Tema</span>
             <ThemeSwitcher />
           </div>
         </PopoverContent>
