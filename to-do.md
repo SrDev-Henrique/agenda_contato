@@ -22,7 +22,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, store e Provider global prontos |
 | **1 — Shell da aplicação** | Concluída: layout `(app)` + AppShell flex responsivo (`<md` conteúdo + sheet; `md–lg` sidebar + conteúdo; `xl+` sidebar + lista + conteúdo) |
 | **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
-| **3 — Detalhe do contato** | Parcial: rota `/contato/[nome]`, header, tags, seções e criação de lembrete/evento/nota prontos; falta edição inline e fluxo completo de exclusão/404 |
+| **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
 | **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
 | **5–7** | Pendente — mobile, animações e polish final |
 
@@ -46,7 +46,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 |------|-----------|--------|
 | `/` | Lista de contatos em todos os breakpoints | Feito |
 | `/preview` | Vitrine de componentes | Feito |
-| `/contato/[nome]` | Detalhe do contato por slug do nome | Feito parcial |
+| `/contato/[nome]` | Detalhe do contato por slug do nome (edição inline + 404) | Feito |
 | `/eventos` | Timeline de eventos e lembretes futuros | Feito parcial |
 | `/contacts` | Lista de contatos na rota antiga planejada | Pendente / revisar necessidade |
 | `/contacts/[id]` | Detalhe do contato na rota antiga planejada | Substituída por `/contato/[nome]` |
@@ -120,12 +120,12 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 - [x] Rota `/contato/[nome]`
 - [x] Cabeçalho com avatar, tags e ações rápidas
-- [ ] Edição inline dos campos
+- [x] Edição inline dos campos (nome, telefone com máscara, e-mail, localização, endereço, aniversário, parentesco, empresa, cargo)
 - [x] CRUD tags (adicionar/remover/criar)
 - [x] Seções: reminders, events, notes
 - [x] Criar reminder/event/note vinculado ao contato
 - [x] Excluir contato a partir da lista central
-- [ ] Estado 404/not found completo para slug inexistente
+- [x] Estado 404/not found completo para slug inexistente (aguarda hydration; links para `/` e `/eventos`)
 
 **Critério de pronto:** todas as edições persistem no localStorage.
 

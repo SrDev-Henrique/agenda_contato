@@ -35,6 +35,14 @@ export const ui = {
   noContactsHint: "Adicione um contato ou ajuste os filtros.",
   noPhone: "Sem telefone",
   noEmail: "Sem e-mail",
+  noLocation: "Sem localização",
+  noAddress: "Sem endereço",
+  noBirthday: "Sem aniversário",
+  noRelationship: "Sem parentesco",
+  noCompany: "Sem empresa",
+  noJobTitle: "Sem cargo",
+  clickToEdit: "Clique para editar",
+  saveChanges: "Salvar",
 
   // Ações
   favorite: "Favoritar",

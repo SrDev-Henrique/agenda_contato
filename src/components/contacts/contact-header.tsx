@@ -3,6 +3,7 @@
 import { Mail, Phone, Video } from "lucide-react";
 
 import { ContactTagsEditor } from "@/components/contacts/contact-tags-editor";
+import { EditableContactName } from "@/components/contacts/editable-contact-name";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
@@ -19,6 +20,7 @@ type ContactHeaderProps = {
   onEmail?: (contact: Contact) => void;
   onAddTag: (name: string) => void;
   onRemoveTag?: (tag: Tag) => void;
+  onNameSave?: (name: string) => void;
 };
 
 export function ContactHeader({
@@ -30,6 +32,7 @@ export function ContactHeader({
   onEmail,
   onAddTag,
   onRemoveTag,
+  onNameSave,
 }: ContactHeaderProps) {
   return (
     <header
@@ -49,9 +52,17 @@ export function ContactHeader({
         </Avatar>
 
         <div className="flex min-w-0 flex-1 flex-col items-center text-center sm:items-start sm:text-left">
-          <h2 className="max-w-full truncate font-inter font-semibold text-2xl text-foreground leading-tight">
-            {contact.name}
-          </h2>
+          {onNameSave ? (
+            <EditableContactName
+              name={contact.name}
+              onSave={onNameSave}
+              className="w-full text-center sm:text-left"
+            />
+          ) : (
+            <h2 className="max-w-full truncate font-inter font-semibold text-2xl text-foreground leading-tight">
+              {contact.name}
+            </h2>
+          )}
 
           <div className="mt-4 flex items-center gap-2">
             <Button
