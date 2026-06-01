@@ -98,7 +98,7 @@ export function ContactTagsEditor({
         </Badge>
       ))}
 
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="popLayout" initial={false}>
         {isEditing ? (
           <motion.div
             key="tag-input"

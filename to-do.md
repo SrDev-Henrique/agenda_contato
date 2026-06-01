@@ -19,14 +19,14 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 | Fase | Progresso |
 |------|-----------|
-| **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, store e Provider global prontos |
+| **0 — Fundação** | Concluída: tipos, storage, seed, i18n, seletores, Redux (RTK) + `useContactsStore` e Provider global |
 | **1 — Shell da aplicação** | Concluída: layout `(app)` + AppShell flex responsivo (`<md` conteúdo + sheet; `md–lg` sidebar + conteúdo; `xl+` sidebar + lista + conteúdo) |
 | **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
 | **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
 | **4 — Eventos** | Parcial: rota `/eventos` e timeline de eventos/lembretes futuros prontas; falta filtros via searchParams, paginação e CRUD global |
 | **5–7** | Pendente — mobile, animações e polish final |
 
-**Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/contacts-store.tsx`, `src/components/layout/` (incl. `sidebar-nav`, `mobile-nav-sheet`, `app-shell-mobile-header`), `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
+**Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/` (Redux: `agenda-slice`, `index`, `persistence`, facade `contacts-store.tsx`), `src/components/layout/`, `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
 
 **Ainda não existe:** `AddContactFab`, animações (fase 6). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
 
@@ -34,7 +34,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ## Decisões de arquitetura
 
-- A aplicação deverá utilizar **Redux** para os estados globais. Migrar/substituir o store atual em `src/store/contacts-store.tsx` por uma estrutura Redux antes de conectar os fluxos principais às páginas.
+- **Redux Toolkit** para estado global da agenda (`src/store/agenda-slice.ts`, Provider em `providers.tsx`). Hook `useContactsStore()` mantém a API anterior para os consumidores. Estado de UI local (dialogs, edição inline) continua com `useState`.
 - A autenticação deverá utilizar **Better Auth** com PostgreSQL (`pg`) e Drizzle, com email/senha e OAuth por GitHub. Configuração inicial em `src/lib/auth.ts`, cliente em `src/lib/auth-client.ts` e rota `/api/auth/[...all]`.
 - O banco/infra remota será **Supabase**. Helpers SSR/browser ficam em `src/utils/supabase/` e o proxy em `src/proxy.ts` mantém sessões Supabase renovadas.
 
@@ -72,7 +72,8 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 - [x] Utilitário `src/lib/id.ts` (`createId`, `slugify`)
 - [x] Seed em `src/data/seed.ts` (conteúdo exibido em pt-BR)
 - [x] Strings de UI centralizadas em `src/lib/i18n/pt-br.ts`
-- [x] Store `src/store/contacts-store.tsx` + hook `useContactsStore()`
+- [x] Redux (`@reduxjs/toolkit` + `react-redux`): `agenda-slice`, persistência via listener + `localStorage`
+- [x] Facade `src/store/contacts-store.tsx` + hook `useContactsStore()` (mesma API para componentes)
 - [x] Provider conectado nas páginas já implementadas (`/contato/[nome]`, `/eventos`)
 - [x] Provider no layout global da aplicação
 
@@ -189,7 +190,7 @@ src/
   lib/storage/       # feito
   lib/i18n/pt-br.ts  # feito — textos da UI
   lib/selectors.ts   # feito
-  store/             # feito
+  store/             # feito — Redux RTK (agenda-slice, persistence, hooks, facade)
   types/             # feito
 ```
 
