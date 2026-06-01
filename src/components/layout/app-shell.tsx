@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-
+import { Suspense, useState } from "react";
+import { CreateContactDialog } from "@/components/contacts/create-contact-dialog";
+import { AddContactFab } from "@/components/layout/add-contact-fab";
 import { AppShellBreadcrumb } from "@/components/layout/app-shell-breadcrumb";
 import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
@@ -19,9 +20,15 @@ function AppShellContent({ children }: AppShellProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { state, untaggedCount } = useContactsStore();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [createContactOpen, setCreateContactOpen] = useState(false);
 
   const activeItem = getActiveSidebarItem(pathname, searchParams);
   const peopleHref = "/";
+
+  const handleAddContact = () => {
+    setCreateContactOpen(true);
+  };
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col bg-background text-foreground">
@@ -30,6 +37,19 @@ function AppShellContent({ children }: AppShellProps) {
         peopleHref={peopleHref}
         untaggedCount={untaggedCount}
         tags={state.tags}
+        navOpen={mobileNavOpen}
+        onNavOpenChange={setMobileNavOpen}
+        onAddContact={handleAddContact}
+      />
+
+      <AddContactFab
+        navSheetOpen={mobileNavOpen}
+        onAddContact={handleAddContact}
+      />
+
+      <CreateContactDialog
+        open={createContactOpen}
+        onOpenChange={setCreateContactOpen}
       />
 
       <div className="flex h-screen w-full flex-1 flex-row overflow-hidden">
@@ -49,7 +69,7 @@ function AppShellContent({ children }: AppShellProps) {
           )}
         >
           <AppShellBreadcrumb />
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pb-20 md:pb-0">
             {children}
           </div>
         </main>

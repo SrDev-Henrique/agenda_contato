@@ -24,11 +24,12 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | **2 — Lista de contatos** | Concluída: rota `/` como lista em todos os breakpoints, filtros por URL, sidebar e criar contato |
 | **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
 | **4 — Eventos** | Concluída: rota `/eventos`, timeline, filtros via searchParams, paginação client e CRUD global |
-| **5–7** | Pendente — mobile, animações e polish final |
+| **5 — Mobile** | Concluída: MobileNavSheet, AddContactFab, notificações no header mobile e fluxo criar contato |
+| **6–7** | Pendente — animações e polish final |
 
-**Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/` (Redux: `agenda-slice`, `index`, `persistence`, facade `contacts-store.tsx`), `src/components/layout/`, `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
+**Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/` (Redux: `agenda-slice`, `index`, `persistence`, facade `contacts-store.tsx`), `src/components/layout/` (incl. `AddContactFab`), `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
 
-**Ainda não existe:** `AddContactFab`, animações (fase 6). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
+**Ainda não existe:** animações (fase 6). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
 
 ---
 
@@ -97,7 +98,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 - [x] Metadata pt-BR e `lang="pt-BR"` no `<html>`
 - [x] Tema dark no `<html>`
 - [x] Componente shadcn `sheet` (mobile)
-- [ ] `AddContactFab` (fase 5)
+- [x] `AddContactFab` (fase 5)
 
 **Critério de pronto:** navegar `/eventos` ↔ `/contato/[nome]` com layout correto em mobile e desktop (`md+` sidebar + breadcrumb).
 
@@ -147,9 +148,11 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ## Fase 5 — Mobile
 
-- [ ] `MobileNavSheet` — menu hamburger
-- [ ] `AddContactFab` — z-index > sheet; label `ui.addContactShort` ("Add Contato +") ao abrir sheet
-- [ ] Mesmo fluxo criar contato
+- [x] `MobileNavSheet` — menu hamburger
+- [x] `AddContactFab` — z-index > sheet; label `ui.addContactShort` ("Add Contato +") ao abrir sheet
+- [x] Adicionar um botão fixo no bottom right como atalho para adicionar um novo contato
+- [x] Adicionar o componente notifications no mobile
+- [x] Mesmo fluxo criar contato
 
 **Critério de pronto:** FAB clicável com sheet aberto.
 

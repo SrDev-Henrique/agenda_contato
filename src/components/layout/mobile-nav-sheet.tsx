@@ -1,9 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
 
-import { CreateContactDialog } from "@/components/contacts/create-contact-dialog";
 import { ContactsSearch } from "@/components/layout/contacts-search";
 import { ProfileMenu } from "@/components/layout/profile-menu";
 import {
@@ -30,6 +28,7 @@ type MobileNavSheetProps = {
   untaggedCount: number;
   tags?: Tag[];
   trigger: React.ReactNode;
+  onAddContact: () => void;
 };
 
 export function MobileNavSheet({
@@ -40,85 +39,81 @@ export function MobileNavSheet({
   untaggedCount,
   tags = [],
   trigger,
+  onAddContact,
 }: MobileNavSheetProps) {
-  const [createOpen, setCreateOpen] = useState(false);
   const close = () => onOpenChange(false);
 
   return (
-    <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetTrigger asChild>{trigger}</SheetTrigger>
-        <SheetContent
-          side="right"
-          className="flex w-[min(100vw-2rem,280px)] flex-col gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
-        >
-          <SheetHeader className="border-sidebar-border border-b px-4 py-4">
-            <SheetTitle className="text-left font-semibold text-base">
-              {ui.appName}
-            </SheetTitle>
-          </SheetHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent
+        side="right"
+        className="z-160 flex w-[min(100vw-2rem,280px)] flex-col gap-0 border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
+      >
+        <SheetHeader className="border-sidebar-border border-b px-4 py-4">
+          <SheetTitle className="text-left font-semibold text-base">
+            {ui.appName}
+          </SheetTitle>
+        </SheetHeader>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4">
-            <ContactsSearch
-              className="max-w-none"
-              contentClassName="w-[min(100vw-3rem,320px)]"
-              inputClassName="h-8 rounded-md border-sidebar-border bg-sidebar-accent/70 pl-8 text-xs shadow-none"
-              placeholder={ui.searchPlaceholder}
-              syncWithUrl
-            />
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4">
+          <ContactsSearch
+            className="max-w-none"
+            contentClassName="w-[min(100vw-3rem,320px)]"
+            inputClassName="h-8 rounded-md border-sidebar-border bg-sidebar-accent/70 pl-8 text-xs shadow-none"
+            placeholder={ui.searchPlaceholder}
+            syncWithUrl
+          />
 
-            <SidebarNavList
-              activeItem={activeItem}
-              peopleHref={peopleHref}
-              onNavigate={close}
-              className="mt-4"
-            />
+          <SidebarNavList
+            activeItem={activeItem}
+            peopleHref={peopleHref}
+            onNavigate={close}
+            className="mt-4"
+          />
 
-            {activeItem === "tags" ? (
-              <SidebarTags tags={tags} onNavigate={close} />
-            ) : null}
+          {activeItem === "tags" ? (
+            <SidebarTags tags={tags} onNavigate={close} />
+          ) : null}
 
-            <div className="mt-5">
-              <button
-                type="button"
-                className="group flex w-full items-center justify-between rounded-lg bg-sidebar-accent px-3 py-2 text-left transition-colors hover:bg-muted"
-              >
-                <span className="flex flex-col gap-0.5">
-                  <span className="font-medium text-[0.6rem] text-foreground-subtle uppercase">
-                    {ui.navUntagged}
-                  </span>
-                  <span className="text-sidebar-foreground text-xl leading-none">
-                    {untaggedCount}
-                  </span>
-                </span>
-                <ChevronRight className="size-3.5 text-foreground-subtle transition-transform group-hover:translate-x-0.5" />
-              </button>
-            </div>
-
-            <Button
-              className="mt-3 w-full"
-              variant="primary"
+          <div className="mt-5">
+            <button
               type="button"
-              onClick={() => {
-                close();
-                setCreateOpen(true);
-              }}
+              className="group flex w-full items-center justify-between rounded-lg bg-sidebar-accent px-3 py-2 text-left transition-colors hover:bg-muted"
             >
-              {ui.addContact}
-              <span aria-hidden="true">+</span>
-            </Button>
-
-            <div className="mt-auto pt-6">
-              <ProfileMenu
-                name="Dexter Adams"
-                className="border-0 bg-transparent px-0 py-0"
-              />
-            </div>
+              <span className="flex flex-col gap-0.5">
+                <span className="font-medium text-[0.6rem] text-foreground-subtle uppercase">
+                  {ui.navUntagged}
+                </span>
+                <span className="text-sidebar-foreground text-xl leading-none">
+                  {untaggedCount}
+                </span>
+              </span>
+              <ChevronRight className="size-3.5 text-foreground-subtle transition-transform group-hover:translate-x-0.5" />
+            </button>
           </div>
-        </SheetContent>
-      </Sheet>
 
-      <CreateContactDialog open={createOpen} onOpenChange={setCreateOpen} />
-    </>
+          <Button
+            className="mt-3 w-full"
+            variant="primary"
+            type="button"
+            onClick={() => {
+              close();
+              onAddContact();
+            }}
+          >
+            {ui.addContact}
+            <span aria-hidden="true">+</span>
+          </Button>
+
+          <div className="mt-auto pt-6">
+            <ProfileMenu
+              name="Dexter Adams"
+              className="border-0 bg-transparent px-0 py-0"
+            />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
