@@ -1,6 +1,7 @@
 "use client";
 
 import { Grid2X2, List } from "lucide-react";
+import { motion, type Variants } from "motion/react";
 import { useMemo, useState } from "react";
 
 import { ContactRow } from "@/components/contacts/contact-row";
@@ -14,8 +15,10 @@ import {
 } from "@/components/ui/select";
 import { ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
+import { useAppMotion } from "@/lib/motion";
 import { groupContactsByLetter } from "@/lib/selectors";
 import { cn } from "@/lib/utils";
+import { useShouldAnimateOnKeyChange } from "@/hooks/use-previous";
 import type { Contact } from "@/types/contact";
 import type { Tag } from "@/types/tag";
 
@@ -109,6 +112,8 @@ export function ContactsList({
   const pinnedContacts = visibleContacts.filter((contact) => contact.pinned);
   const unpinnedContacts = visibleContacts.filter((contact) => !contact.pinned);
   const groupedContacts = groupContactsByLetter(unpinnedContacts);
+  const listAnimationKey = `${filter}-${sort}-${view}`;
+  const shouldStaggerList = useShouldAnimateOnKeyChange(listAnimationKey);
 
   return (
     <section
@@ -196,9 +201,11 @@ export function ContactsList({
           </div>
         ) : view === "grid" ? (
           <ContactsGrid
+            key={listAnimationKey}
             contacts={visibleContacts}
             tags={tags}
             activeContactSlug={activeContactSlug}
+            animate={shouldStaggerList}
             onEditContact={onEditContact}
             onToggleFavorite={onToggleFavorite}
             onTogglePin={onTogglePin}
@@ -206,10 +213,12 @@ export function ContactsList({
           />
         ) : (
           <ContactsListGroups
+            key={listAnimationKey}
             pinnedContacts={pinnedContacts}
             groupedContacts={groupedContacts}
             tags={tags}
             activeContactSlug={activeContactSlug}
+            animate={shouldStaggerList}
             onEditContact={onEditContact}
             onToggleFavorite={onToggleFavorite}
             onTogglePin={onTogglePin}
@@ -226,6 +235,7 @@ function ContactsListGroups({
   groupedContacts,
   tags,
   activeContactSlug,
+  animate = true,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -235,18 +245,27 @@ function ContactsListGroups({
   groupedContacts: Map<string, Contact[]>;
   tags: Tag[];
   activeContactSlug?: string;
+  animate?: boolean;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
 >) {
+  const { staggerContainer, staggerItem } = useAppMotion();
+
   return (
-    <div className="h-full overflow-y-auto pt-3">
+    <motion.div
+      className="h-full overflow-y-auto pt-3"
+      variants={staggerContainer}
+      initial={animate ? "initial" : false}
+      animate="animate"
+    >
       {pinnedContacts.length > 0 ? (
         <ContactSection
           title={ui.pinned}
           contacts={pinnedContacts}
           tags={tags}
           activeContactSlug={activeContactSlug}
+          staggerItem={staggerItem}
           onEditContact={onEditContact}
           onToggleFavorite={onToggleFavorite}
           onTogglePin={onTogglePin}
@@ -261,13 +280,14 @@ function ContactsListGroups({
           contacts={contacts}
           tags={tags}
           activeContactSlug={activeContactSlug}
+          staggerItem={staggerItem}
           onEditContact={onEditContact}
           onToggleFavorite={onToggleFavorite}
           onTogglePin={onTogglePin}
           onDeleteContact={onDeleteContact}
         />
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -276,6 +296,7 @@ function ContactSection({
   contacts,
   tags,
   activeContactSlug,
+  staggerItem,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -285,6 +306,7 @@ function ContactSection({
   contacts: Contact[];
   tags: Tag[];
   activeContactSlug?: string;
+  staggerItem: Variants;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
@@ -296,19 +318,20 @@ function ContactSection({
       </h3>
       <div>
         {contacts.map((contact) => (
-          <ContactRow
-            key={contact.id}
-            contact={contact}
-            active={
-              activeContactSlug !== undefined &&
-              slugify(contact.name) === activeContactSlug
-            }
-            tag={getPrimaryTag(tags, contact)}
-            onEdit={onEditContact}
-            onToggleFavorite={onToggleFavorite}
-            onTogglePin={onTogglePin}
-            onDelete={onDeleteContact}
-          />
+          <motion.div key={contact.id} variants={staggerItem}>
+            <ContactRow
+              contact={contact}
+              active={
+                activeContactSlug !== undefined &&
+                slugify(contact.name) === activeContactSlug
+              }
+              tag={getPrimaryTag(tags, contact)}
+              onEdit={onEditContact}
+              onToggleFavorite={onToggleFavorite}
+              onTogglePin={onTogglePin}
+              onDelete={onDeleteContact}
+            />
+          </motion.div>
         ))}
       </div>
     </section>
@@ -319,6 +342,7 @@ function ContactsGrid({
   contacts,
   tags,
   activeContactSlug,
+  animate = true,
   onEditContact,
   onToggleFavorite,
   onTogglePin,
@@ -327,29 +351,38 @@ function ContactsGrid({
   contacts: Contact[];
   tags: Tag[];
   activeContactSlug?: string;
+  animate?: boolean;
 } & Pick<
   ContactsListProps,
   "onEditContact" | "onToggleFavorite" | "onTogglePin" | "onDeleteContact"
 >) {
+  const { staggerContainer, staggerItem } = useAppMotion();
+
   return (
-    <div className="grid gap-3 overflow-y-auto pt-4 sm:grid-cols-2 xl:grid-cols-3">
+    <motion.div
+      className="grid gap-3 overflow-y-auto pt-4 sm:grid-cols-2 xl:grid-cols-3"
+      variants={staggerContainer}
+      initial={animate ? "initial" : false}
+      animate="animate"
+    >
       {contacts.map((contact) => (
-        <ContactRow
-          key={contact.id}
-          contact={contact}
-          active={
-            activeContactSlug !== undefined &&
-            slugify(contact.name) === activeContactSlug
-          }
-          tag={getPrimaryTag(tags, contact)}
-          variant="grid"
-          onEdit={onEditContact}
-          onToggleFavorite={onToggleFavorite}
-          onTogglePin={onTogglePin}
-          onDelete={onDeleteContact}
-        />
+        <motion.div key={contact.id} variants={staggerItem}>
+          <ContactRow
+            contact={contact}
+            active={
+              activeContactSlug !== undefined &&
+              slugify(contact.name) === activeContactSlug
+            }
+            tag={getPrimaryTag(tags, contact)}
+            variant="grid"
+            onEdit={onEditContact}
+            onToggleFavorite={onToggleFavorite}
+            onTogglePin={onTogglePin}
+            onDelete={onDeleteContact}
+          />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
 

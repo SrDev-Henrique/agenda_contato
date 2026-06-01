@@ -11,6 +11,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -44,8 +45,10 @@ import type {
   EventListKindFilter,
   EventListPeriod,
 } from "@/hooks/use-event-list-filters";
+import { useShouldAnimateOnKeyChange } from "@/hooks/use-previous";
 import { eventTypeLabels, ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
+import { useAppMotion } from "@/lib/motion";
 import { isDateInCurrentWeek } from "@/lib/selectors";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
@@ -106,7 +109,9 @@ export function UpcomingActivityTimeline({
   onDeleteEvent,
   onDeleteReminder,
 }: UpcomingActivityTimelineProps) {
-  const [pagesByFilter, setPagesByFilter] = useState<Record<string, number>>({});
+  const [pagesByFilter, setPagesByFilter] = useState<Record<string, number>>(
+    {},
+  );
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TimelineActivity | null>(
     null,
@@ -115,6 +120,8 @@ export function UpcomingActivityTimeline({
   const filterKey = `${period}:${kindFilter}`;
   const loadedPages = pagesByFilter[filterKey] ?? 1;
   const visibleCount = loadedPages * TIMELINE_PAGE_SIZE;
+  const { staggerContainer, staggerItem } = useAppMotion();
+  const shouldStaggerTimeline = useShouldAnimateOnKeyChange(filterKey);
 
   const activities = useMemo(() => {
     const now = new Date();
@@ -245,16 +252,26 @@ export function UpcomingActivityTimeline({
           {visibleActivities.length > 0 ? (
             <div className="relative pl-10">
               <div className="absolute top-2 bottom-2 left-4 w-px bg-border" />
-              <div className="space-y-4">
+              <motion.div
+                key={filterKey}
+                className="space-y-4"
+                variants={staggerContainer}
+                initial={shouldStaggerTimeline ? "initial" : false}
+                animate="animate"
+              >
                 {visibleActivities.map((activity) => (
-                  <TimelineItem
+                  <motion.div
                     key={`${activity.kind}-${activity.id}`}
-                    activity={activity}
-                    onEditEvent={(event) => setEditingEvent(event)}
-                    onDelete={(item) => setDeleteTarget(item)}
-                  />
+                    variants={staggerItem}
+                  >
+                    <TimelineItem
+                      activity={activity}
+                      onEditEvent={(event) => setEditingEvent(event)}
+                      onDelete={(item) => setDeleteTarget(item)}
+                    />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {remainingCount > 0 ? (
                 <div className="mt-6 flex justify-center">
@@ -276,7 +293,9 @@ export function UpcomingActivityTimeline({
             </div>
           ) : (
             <div className="flex min-h-80 flex-col items-center justify-center px-6 text-center">
-              <p className="font-medium text-foreground text-sm">{ui.noEvents}</p>
+              <p className="font-medium text-foreground text-sm">
+                {ui.noEvents}
+              </p>
               <p className="mt-1 max-w-xs text-foreground-muted text-xs leading-5">
                 {ui.noEventsHint}
               </p>
@@ -354,9 +373,7 @@ function TimelineItem({
     : undefined;
 
   const activityLabel =
-    activity.kind === "event"
-      ? activity.event.title
-      : activity.reminder.text;
+    activity.kind === "event" ? activity.event.title : activity.reminder.text;
 
   return (
     <article className="relative">

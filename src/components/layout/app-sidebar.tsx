@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 
 import { CreateContactDialog } from "@/components/contacts/create-contact-dialog";
@@ -11,9 +12,9 @@ import {
   type SidebarItemId,
   SidebarNavList,
 } from "@/components/layout/sidebar-nav";
-import { SidebarTags } from "@/components/layout/sidebar-tags";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
+import { useAppMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { Tag } from "@/types/tag";
 
@@ -23,16 +24,28 @@ type AppSidebarProps = {
   untaggedCount?: number;
   tags?: Tag[];
   className?: string;
+  tagsPanelOpen?: boolean;
+  tagsNavActive?: boolean;
+  onTagsToggle?: () => void;
 };
 
 export function AppSidebar({
-  activeItem = "tags",
+  activeItem = "people",
   peopleHref = "/",
   untaggedCount = 0,
   tags = [],
   className,
+  tagsPanelOpen = false,
+  tagsNavActive = false,
+  onTagsToggle,
 }: AppSidebarProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const {
+    sidebarChromeStaggerItem,
+    sidebarFooterStaggerContainer,
+    tween,
+    reduceMotion,
+  } = useAppMotion();
 
   return (
     <>
@@ -42,12 +55,28 @@ export function AppSidebar({
           className,
         )}
       >
-        <div className="flex items-center justify-between gap-2">
-          <div className="truncate font-semibold text-base tracking-tight">
+        <motion.div
+          variants={sidebarChromeStaggerItem}
+          initial="initial"
+          animate="animate"
+          className="flex items-center justify-between gap-2"
+        >
+          <motion.div
+            className="truncate font-semibold text-base tracking-tight"
+            initial={{ opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ ...tween, delay: reduceMotion ? 0 : 0.02 }}
+          >
             {ui.appName}
-          </div>
-          <Notifications />
-        </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: reduceMotion ? 1 : 0, scale: reduceMotion ? 1 : 0.88 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ ...tween, delay: reduceMotion ? 0 : 0.08 }}
+          >
+            <Notifications />
+          </motion.div>
+        </motion.div>
 
         <ContactsSearch
           className="mt-4 max-w-none"
@@ -61,43 +90,54 @@ export function AppSidebar({
           activeItem={activeItem}
           peopleHref={peopleHref}
           className="mt-4"
+          tagsExpanded={tagsPanelOpen}
+          tagsNavActive={tagsNavActive}
+          onTagsToggle={onTagsToggle}
+          tags={tags}
         />
 
-        {activeItem === "tags" ? <SidebarTags tags={tags} /> : null}
-
-        <div className="mt-5">
-          <button
-            type="button"
-            className="group flex w-full items-center justify-between rounded-lg bg-sidebar-accent px-3 py-2 text-left transition-colors hover:bg-muted"
-          >
-            <span className="flex flex-col gap-0.5">
-              <span className="font-medium text-[0.6rem] text-foreground-subtle uppercase">
-                {ui.navUntagged}
-              </span>
-              <span className="text-sidebar-foreground text-xl leading-none">
-                {untaggedCount}
-              </span>
-            </span>
-            <ChevronRight className="size-3.5 text-foreground-subtle transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </div>
-
-        <Button
-          className="mt-3 w-full"
-          variant="primary"
-          type="button"
-          onClick={() => setCreateOpen(true)}
+        <motion.div
+          className="mt-5 flex flex-1 flex-col"
+          variants={sidebarFooterStaggerContainer}
+          initial="initial"
+          animate="animate"
         >
-          {ui.addContact}
-          <span aria-hidden="true">+</span>
-        </Button>
+          <motion.div variants={sidebarChromeStaggerItem}>
+            <button
+              type="button"
+              className="group flex w-full items-center justify-between rounded-lg bg-sidebar-accent px-3 py-2 text-left transition-colors hover:bg-muted"
+            >
+              <span className="flex flex-col gap-0.5">
+                <span className="font-medium text-[0.6rem] text-foreground-subtle uppercase">
+                  {ui.navUntagged}
+                </span>
+                <span className="text-sidebar-foreground text-xl leading-none">
+                  {untaggedCount}
+                </span>
+              </span>
+              <ChevronRight className="size-3.5 text-foreground-subtle transition-transform group-hover:translate-x-0.5" />
+            </button>
+          </motion.div>
 
-        <div className="mt-auto pt-6">
-          <ProfileMenu
-            name="Dexter Adams"
-            className="border-0 bg-transparent px-0 py-0"
-          />
-        </div>
+          <motion.div variants={sidebarChromeStaggerItem} className="mt-3">
+            <Button
+              className="w-full"
+              variant="primary"
+              type="button"
+              onClick={() => setCreateOpen(true)}
+            >
+              {ui.addContact}
+              <span aria-hidden="true">+</span>
+            </Button>
+          </motion.div>
+
+          <motion.div variants={sidebarChromeStaggerItem} className="mt-auto pt-6">
+            <ProfileMenu
+              name="Dexter Adams"
+              className="border-0 bg-transparent px-0 py-0"
+            />
+          </motion.div>
+        </motion.div>
       </aside>
 
       <CreateContactDialog open={createOpen} onOpenChange={setCreateOpen} />

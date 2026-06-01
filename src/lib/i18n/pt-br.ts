@@ -14,7 +14,7 @@ export const ui = {
   navFavorites: "Favoritos",
   navEvents: "Eventos",
   navTags: "Tags",
-  navSmartTags: "Tags inteligentes",
+  navAllTags: "Todas as tags",
   navUntagged: "Sem tag",
   breadcrumbNav: "Navegação",
   more: "Mais",

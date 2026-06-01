@@ -9,6 +9,7 @@ import { AppShellMobileHeader } from "@/components/layout/app-shell-mobile-heade
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { getActiveSidebarItem } from "@/components/layout/sidebar-nav";
 import { Spinner } from "@/components/ui/spinner";
+import { useSidebarTagsPanel } from "@/hooks/use-sidebar-tags-panel";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 
@@ -25,6 +26,8 @@ function AppShellContent({ children }: AppShellProps) {
 
   const activeItem = getActiveSidebarItem(pathname, searchParams);
   const peopleHref = "/";
+  const { tagsPanelOpen, toggleTagsPanel, isTagsNavActive } =
+    useSidebarTagsPanel();
 
   const handleAddContact = () => {
     setCreateContactOpen(true);
@@ -40,6 +43,9 @@ function AppShellContent({ children }: AppShellProps) {
         navOpen={mobileNavOpen}
         onNavOpenChange={setMobileNavOpen}
         onAddContact={handleAddContact}
+        tagsPanelOpen={tagsPanelOpen}
+        tagsNavActive={isTagsNavActive}
+        onTagsToggle={toggleTagsPanel}
       />
 
       <AddContactFab
@@ -60,6 +66,9 @@ function AppShellContent({ children }: AppShellProps) {
             untaggedCount={untaggedCount}
             tags={state.tags}
             className="h-screen"
+            tagsPanelOpen={tagsPanelOpen}
+            tagsNavActive={isTagsNavActive}
+            onTagsToggle={toggleTagsPanel}
           />
         </div>
 

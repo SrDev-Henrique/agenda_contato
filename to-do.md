@@ -25,11 +25,12 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | **3 — Detalhe do contato** | Concluída: edição inline dos campos, nome editável, 404 com hydration e persistência no localStorage |
 | **4 — Eventos** | Concluída: rota `/eventos`, timeline, filtros via searchParams, paginação client e CRUD global |
 | **5 — Mobile** | Concluída: MobileNavSheet, AddContactFab, notificações no header mobile e fluxo criar contato |
-| **6–7** | Pendente — animações e polish final |
+| **6 — Animações** | Concluída: transições de página, stagger na lista, timeline sequencial, spring FAB/Sheet, reduced motion |
+| **7** | Pendente — polish final |
 
 **Já no repositório:** `src/app/(app)/layout.tsx` (AppShell como layout), `src/types/`, `src/lib/storage/`, `src/lib/selectors.ts`, `src/lib/id.ts`, `src/lib/i18n/pt-br.ts`, `src/data/seed.ts` (pt-BR), `src/store/` (Redux: `agenda-slice`, `index`, `persistence`, facade `contacts-store.tsx`), `src/components/layout/` (incl. `AddContactFab`), `src/components/contacts/`, `src/components/events/`, páginas em `src/app/(app)/contato/`, `src/app/(app)/eventos/`, `/preview`, `to-do.md`.
 
-**Ainda não existe:** animações (fase 6). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
+**Ainda não existe:** polish final (fase 7). Rotas atuais: `/` (lista), `/contato/[nome]`, `/eventos`, `/preview`.
 
 ---
 
@@ -160,11 +161,11 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
 ## Fase 6 — Animações (`motion`)
 
-- [ ] Transições painel direito / páginas mobile
-- [ ] Stagger na lista ao filtrar
-- [ ] Timeline entrada sequencial
-- [ ] Spring FAB/Sheet
-- [ ] `prefers-reduced-motion`
+- [x] Transições painel direito / páginas mobile
+- [x] Stagger na lista ao filtrar
+- [x] Timeline entrada sequencial
+- [x] Spring FAB/Sheet
+- [x] `prefers-reduced-motion`
 
 ---
 

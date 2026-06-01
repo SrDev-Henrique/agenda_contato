@@ -17,6 +17,9 @@ type AppShellMobileHeaderProps = {
   navOpen: boolean;
   onNavOpenChange: (open: boolean) => void;
   onAddContact: () => void;
+  tagsPanelOpen?: boolean;
+  tagsNavActive?: boolean;
+  onTagsToggle?: () => void;
 };
 
 export function AppShellMobileHeader({
@@ -27,6 +30,9 @@ export function AppShellMobileHeader({
   navOpen,
   onNavOpenChange,
   onAddContact,
+  tagsPanelOpen = false,
+  tagsNavActive = false,
+  onTagsToggle,
 }: AppShellMobileHeaderProps) {
   return (
     <header className="flex shrink-0 items-center justify-between gap-3 border-border border-b px-4 py-3 md:hidden">
@@ -45,6 +51,9 @@ export function AppShellMobileHeader({
           untaggedCount={untaggedCount}
           tags={tags}
           onAddContact={onAddContact}
+          tagsPanelOpen={tagsPanelOpen}
+          tagsNavActive={tagsNavActive}
+          onTagsToggle={onTagsToggle}
           trigger={
             <Button
               type="button"

@@ -8,13 +8,17 @@ import {
   Tags,
   Users,
 } from "lucide-react";
+import { LayoutGroup, motion } from "motion/react";
 import Link from "next/link";
 import type { ReadonlyURLSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
-import type { ComponentType } from "react";
+import { type ComponentType, Fragment } from "react";
 
+import { SidebarTagsPanel } from "@/components/layout/sidebar-tags";
 import { ui } from "@/lib/i18n/pt-br";
+import { useAppMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import type { Tag } from "@/types/tag";
 
 export type SidebarItemId =
   | "people"
@@ -72,6 +76,11 @@ type SidebarNavListProps = {
   peopleHref?: string;
   onNavigate?: () => void;
   className?: string;
+  layoutScope?: "desktop" | "mobile";
+  tagsExpanded?: boolean;
+  tagsNavActive?: boolean;
+  onTagsToggle?: () => void;
+  tags?: Tag[];
 };
 
 export function SidebarNavList({
@@ -79,25 +88,57 @@ export function SidebarNavList({
   peopleHref = "/",
   onNavigate,
   className,
+  layoutScope = "desktop",
+  tagsExpanded = false,
+  tagsNavActive = false,
+  onTagsToggle,
+  tags = [],
 }: SidebarNavListProps) {
-  return (
-    <nav className={cn("flex flex-col gap-1", className)}>
-      {sidebarNavItems.map((item) => {
-        const href = item.id === "people" ? peopleHref : item.href;
+  const { sidebarNavStaggerContainer, sidebarNavStaggerItem } = useAppMotion();
+  const activeIndicatorId = `${layoutScope}-sidebar-active-indicator`;
+  const tagsPanelId = `${layoutScope}-sidebar-tags-panel`;
 
-        return (
-          <SidebarNavItem
-            key={item.id}
-            active={activeItem === item.id}
-            icon={item.icon}
-            label={item.label}
-            expandable={item.expandable}
-            href={href}
-            onNavigate={onNavigate}
-          />
-        );
-      })}
-    </nav>
+  return (
+    <LayoutGroup id={`sidebar-nav-${layoutScope}`}>
+      <motion.nav
+        variants={sidebarNavStaggerContainer}
+        initial="initial"
+        animate="animate"
+        className={cn("flex flex-col gap-1", className)}
+      >
+        {sidebarNavItems.map((item) => {
+          const href = item.id === "people" ? peopleHref : item.href;
+          const isTagsItem = item.id === "tags";
+
+          return (
+            <Fragment key={item.id}>
+              <motion.div variants={sidebarNavStaggerItem}>
+                <SidebarNavItem
+                  active={isTagsItem ? tagsNavActive : activeItem === item.id}
+                  icon={item.icon}
+                  label={item.label}
+                  expandable={item.expandable}
+                  expanded={isTagsItem ? tagsExpanded : false}
+                  href={href}
+                  onNavigate={onNavigate}
+                  onClick={isTagsItem ? onTagsToggle : undefined}
+                  activeIndicatorId={activeIndicatorId}
+                  tagsPanelId={isTagsItem ? tagsPanelId : undefined}
+                />
+              </motion.div>
+              {isTagsItem ? (
+                <SidebarTagsPanel
+                  open={tagsExpanded}
+                  tags={tags}
+                  onNavigate={onNavigate}
+                  id={tagsPanelId}
+                />
+              ) : null}
+            </Fragment>
+          );
+        })}
+      </motion.nav>
+    </LayoutGroup>
   );
 }
 
@@ -106,27 +147,52 @@ function SidebarNavItem({
   icon: Icon,
   label,
   expandable,
+  expanded = false,
   href,
   onNavigate,
+  onClick,
+  activeIndicatorId,
+  tagsPanelId,
 }: {
   active: boolean;
   icon: ComponentType<{ className?: string }>;
   label: string;
   expandable?: boolean;
+  expanded?: boolean;
   href?: string;
   onNavigate?: () => void;
+  onClick?: () => void;
+  activeIndicatorId: string;
+  tagsPanelId?: string;
 }) {
+  const { spring, tween } = useAppMotion();
+
   const className = cn(
-    "flex h-7 w-full items-center gap-2 rounded-md px-2 text-left font-medium text-sidebar-foreground text-xs transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-    active && "bg-sidebar-accent text-sidebar-accent-foreground",
+    "relative flex h-7 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left font-medium text-sidebar-foreground text-xs transition-colors",
+    active
+      ? "text-sidebar-accent-foreground"
+      : "hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground",
   );
 
   const content = (
     <>
-      <Icon className="size-3.5 shrink-0" />
-      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {active ? (
+        <motion.span
+          layoutId={activeIndicatorId}
+          className="absolute inset-0 rounded-md bg-sidebar-accent"
+          transition={spring}
+        />
+      ) : null}
+      <Icon className="relative z-10 size-3.5 shrink-0" />
+      <span className="relative z-10 min-w-0 flex-1 truncate">{label}</span>
       {expandable ? (
-        <ChevronDown className="size-3.5 shrink-0 text-foreground-subtle" />
+        <motion.span
+          className="relative z-10 shrink-0 text-foreground-subtle"
+          animate={{ rotate: expanded ? 180 : 0 }}
+          transition={tween}
+        >
+          <ChevronDown className="size-3.5" />
+        </motion.span>
       ) : null}
     </>
   );
@@ -148,6 +214,9 @@ function SidebarNavItem({
     <button
       type="button"
       aria-current={active ? "page" : undefined}
+      aria-expanded={expandable ? expanded : undefined}
+      aria-controls={tagsPanelId}
+      onClick={onClick}
       className={className}
     >
       {content}

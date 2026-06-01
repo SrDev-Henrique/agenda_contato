@@ -1,12 +1,13 @@
 "use client";
 
 import { Bell, CalendarDays, Plus } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 import { EventComposer } from "@/components/events/event-composer";
 import { ReminderComposer } from "@/components/reminders/reminder-composer";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
+import { useAppMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 import type { Contact } from "@/types/contact";
@@ -37,10 +38,7 @@ export function EventsComposerPanel({
     closeEventComposers,
   } = useContactsStore();
 
-  const reduceMotion = useReducedMotion();
-  const transition = reduceMotion
-    ? { duration: 0 }
-    : { duration: 0.2, ease: "easeOut" as const };
+  const { reduceMotion, tween } = useAppMotion();
 
   const panelKey = addingEvent
     ? "event-composer"
@@ -70,7 +68,7 @@ export function EventsComposerPanel({
           initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-          transition={transition}
+          transition={tween}
         >
           {addingEvent ? (
             <EventComposer
