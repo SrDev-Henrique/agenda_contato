@@ -8,7 +8,6 @@ import type { ContactFilters } from "@/types/app-state";
 export type ContactListFiltersState = {
   favorites?: boolean;
   tag?: string;
-  q?: string;
   sort: "az" | "za";
 };
 
@@ -22,7 +21,6 @@ export function useContactListFilters() {
     return {
       favorites: searchParams.get("favorites") === "true" ? true : undefined,
       tag: searchParams.get("tag") ?? undefined,
-      q: searchParams.get("q") ?? undefined,
       sort: sortParam === "za" ? "za" : "az",
     };
   }, [searchParams]);
@@ -47,14 +45,6 @@ export function useContactListFilters() {
         }
       }
 
-      if ("q" in partial) {
-        if (partial.q?.trim()) {
-          next.set("q", partial.q.trim());
-        } else {
-          next.delete("q");
-        }
-      }
-
       if ("sort" in partial && partial.sort) {
         next.set("sort", partial.sort);
       }
@@ -70,7 +60,6 @@ export function useContactListFilters() {
     return {
       favorites: filters.favorites,
       tagSlug: filters.tag,
-      query: filters.q,
       sort: filters.sort,
     };
   }, [filters]);

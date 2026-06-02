@@ -54,11 +54,6 @@ export function getContactsFiltered(
     }
   }
 
-  if (filters.query?.trim()) {
-    const q = filters.query.trim().toLowerCase();
-    result = result.filter((c) => c.name.toLowerCase().includes(q));
-  }
-
   const sort = filters.sort ?? "az";
   result.sort((a, b) => {
     const cmp = a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" });

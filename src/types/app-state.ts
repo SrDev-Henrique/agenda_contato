@@ -15,6 +15,5 @@ export type AppState = {
 export type ContactFilters = {
   favorites?: boolean;
   tagSlug?: string;
-  query?: string;
   sort?: "az" | "za";
 };

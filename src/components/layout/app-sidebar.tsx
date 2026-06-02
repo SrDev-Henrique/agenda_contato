@@ -89,7 +89,6 @@ export function AppSidebar({
           contentClassName="w-80"
           inputClassName="h-7 rounded-md border-sidebar-border bg-sidebar-accent/70 pl-8 text-xs shadow-none"
           placeholder={ui.searchPlaceholder}
-          syncWithUrl
         />
 
         <SidebarNavList

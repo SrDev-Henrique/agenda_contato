@@ -12,7 +12,10 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { ContactsSearch } from "@/components/layout/contacts-search";
+import {
+  ContactsSearch,
+  previewSearchContacts,
+} from "@/components/layout/contacts-search";
 import { Notifications } from "@/components/layout/notifications";
 import { ProfileMenuView } from "@/components/layout/profile-menu";
 import { Button } from "@/components/ui/button";
@@ -181,7 +184,7 @@ export default function PreviewPage() {
             description="Campo de busca com ícone e resultados filtrados em popup conforme o usuário digita."
           />
           <div className="flex items-center rounded-lg border border-border bg-surface p-5">
-            <ContactsSearch />
+            <ContactsSearch contacts={previewSearchContacts} />
           </div>
         </section>
 

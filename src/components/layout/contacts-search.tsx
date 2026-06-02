@@ -11,7 +11,6 @@ import {
   PopoverAnchor,
   PopoverContent,
 } from "@/components/ui/popover";
-import { useContactListFilters } from "@/hooks/use-contact-list-filters";
 import { slugify } from "@/lib/id";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
@@ -23,17 +22,7 @@ type ContactSearchItem = {
   company?: string;
 };
 
-type ContactsSearchProps = {
-  contacts?: ContactSearchItem[];
-  className?: string;
-  contentClassName?: string;
-  inputClassName?: string;
-  placeholder?: string;
-  syncWithUrl?: boolean;
-  onSelectContact?: (contact: ContactSearchItem) => void;
-};
-
-const defaultContacts: ContactSearchItem[] = [
+export const previewSearchContacts: ContactSearchItem[] = [
   {
     id: "1",
     name: "Ana Beatriz",
@@ -72,18 +61,23 @@ const defaultContacts: ContactSearchItem[] = [
   },
 ];
 
+type ContactsSearchProps = {
+  contacts?: ContactSearchItem[];
+  className?: string;
+  contentClassName?: string;
+  inputClassName?: string;
+  placeholder?: string;
+};
+
 export function ContactsSearch({
-  contacts = defaultContacts,
+  contacts,
   className,
   contentClassName,
   inputClassName,
   placeholder = "Buscar contatos",
-  syncWithUrl = false,
-  onSelectContact,
 }: ContactsSearchProps) {
   const { state } = useContactsStore();
-  const { filters, setFilters } = useContactListFilters();
-  const [localQuery, setLocalQuery] = useState("");
+  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
   const storeContacts = useMemo<ContactSearchItem[]>(
@@ -97,16 +91,7 @@ export function ContactsSearch({
     [state.contacts],
   );
 
-  const sourceContacts = syncWithUrl ? storeContacts : contacts;
-  const query = syncWithUrl ? (filters.q ?? "") : localQuery;
-
-  const setQuery = (value: string) => {
-    if (syncWithUrl) {
-      setFilters({ q: value });
-    } else {
-      setLocalQuery(value);
-    }
-  };
+  const sourceContacts = contacts ?? storeContacts;
 
   const filteredContacts = useMemo(() => {
     const normalizedQuery = normalize(query);
@@ -126,10 +111,9 @@ export function ContactsSearch({
 
   const hasQuery = query.trim().length > 0;
 
-  const handleSelectContact = (contact: ContactSearchItem) => {
-    setQuery(contact.name);
+  const handleSelect = () => {
+    setQuery("");
     setOpen(false);
-    onSelectContact?.(contact);
   };
 
   return (
@@ -163,57 +147,35 @@ export function ContactsSearch({
       <PopoverContent
         align="start"
         className={cn(
-          "w-[min(28rem,calc(100vw-2rem))] p-1 max-sm:max-h-140 max-sm:overflow-y-auto",
+          "z-201 w-[min(28rem,calc(100vw-2rem))] p-1 max-sm:max-h-[40vh] max-sm:overflow-y-auto",
           contentClassName,
         )}
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         {filteredContacts.length > 0 ? (
           <div className="flex flex-col gap-1">
-            {filteredContacts.map((contact) => {
-              const row = (
-                <>
-                  <Avatar>
-                    <AvatarFallback>{getInitials(contact.name)}</AvatarFallback>
-                  </Avatar>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-medium text-foreground text-sm">
-                      {contact.name}
-                    </span>
-                    <span className="block truncate text-foreground-muted text-xs">
-                      {contact.company ? `${contact.company} · ` : ""}
-                      {contact.email}
-                    </span>
+            {filteredContacts.map((contact) => (
+              <Link
+                key={contact.id}
+                href={`/contato/${slugify(contact.name)}`}
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                onClick={handleSelect}
+                onMouseDown={(event) => event.preventDefault()}
+              >
+                <Avatar>
+                  <AvatarFallback>{getInitials(contact.name)}</AvatarFallback>
+                </Avatar>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-medium text-foreground text-sm">
+                    {contact.name}
                   </span>
-                </>
-              );
-
-              if (syncWithUrl) {
-                return (
-                  <Link
-                    key={contact.id}
-                    href={`/contato/${slugify(contact.name)}`}
-                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                    onClick={() => setOpen(false)}
-                    onMouseDown={(event) => event.preventDefault()}
-                  >
-                    {row}
-                  </Link>
-                );
-              }
-
-              return (
-                <button
-                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                  key={contact.id}
-                  type="button"
-                  onClick={() => handleSelectContact(contact)}
-                  onMouseDown={(event) => event.preventDefault()}
-                >
-                  {row}
-                </button>
-              );
-            })}
+                  <span className="block truncate text-foreground-muted text-xs">
+                    {contact.company ? `${contact.company} · ` : ""}
+                    {contact.email}
+                  </span>
+                </span>
+              </Link>
+            ))}
           </div>
         ) : (
           <div className="px-3 py-6 text-center text-foreground-muted text-sm">

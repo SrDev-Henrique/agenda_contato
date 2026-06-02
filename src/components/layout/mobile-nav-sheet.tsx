@@ -76,7 +76,6 @@ export function MobileNavSheet({
               contentClassName="w-[min(100vw-3rem,320px)]"
               inputClassName="h-8 rounded-md border-sidebar-border bg-sidebar-accent/70 pl-8 text-xs shadow-none"
               placeholder={ui.searchPlaceholder}
-              syncWithUrl
             />
 
             <SidebarNavList

@@ -121,7 +121,7 @@ export function EventComposer({
         </PopoverAnchor>
         <PopoverContent
           align="start"
-          className="h-fit w-72 p-1 max-sm:max-h-140 max-sm:overflow-y-auto"
+          className="h-fit w-72 p-1 max-sm:max-h-[40vh] max-sm:overflow-y-auto"
           onOpenAutoFocus={(event) => event.preventDefault()}
         >
           {filteredMentionContacts.map((contact) => (
@@ -151,7 +151,7 @@ export function EventComposer({
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-80 p-1 max-sm:max-h-90 max-sm:overflow-y-auto"
+            className="w-80 p-1 max-sm:max-h-[40vh] max-sm:overflow-y-auto"
           >
             <div className="px-2 py-2 font-medium text-foreground-muted text-xs">
               {ui.eventParticipants}
