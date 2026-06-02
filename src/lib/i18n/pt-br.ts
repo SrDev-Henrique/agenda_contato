@@ -30,6 +30,12 @@ export const ui = {
   onboardingImportContacts: "Importar contatos da sua lista",
   onboardingUseSampleData: "Usar dados de exemplo",
   onboardingComingSoon: "Em breve",
+  onboardingImportUnsupported:
+    "Seu navegador não suporta a seleção de contatos. Use o Chrome no Android ou escolha dados de exemplo.",
+  onboardingImportError:
+    "Não foi possível abrir a lista de contatos. Tente novamente.",
+  onboardingLoadingDummy: "Carregando dados de exemplo...",
+  onboardingLoadingImport: "Importando seus contatos...",
 
   // Navegação / sidebar
   navAllPeople: "Contatos",
