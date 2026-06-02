@@ -40,7 +40,7 @@ export default function RootLayout({
         inter.variable,
       )}
     >
-      <body className="flex h-screen w-full flex-col overflow-hidden">
+      <body className="flex h-dvh w-full flex-col overflow-hidden">
         <Providers>{children}</Providers>
       </body>
     </html>

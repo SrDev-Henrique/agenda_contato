@@ -27,18 +27,25 @@ export function ProfileSettingsPopover({
   onOpenDeleteDialog,
 }: ProfileSettingsPopoverProps) {
   return (
-    <Popover>
+    <Popover modal={false}>
       <PopoverTrigger asChild>
         <Button
           aria-label="Abrir configurações"
           title="Configurações"
           variant="muted"
-          size="icon"
+          size="icon-lg"
+          className="touch-manipulation"
         >
           <Settings />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-64">
+      <PopoverContent
+        align="end"
+        side="top"
+        sideOffset={8}
+        collisionPadding={16}
+        className="z-[200] w-64"
+      >
         <PopoverHeader>
           <PopoverTitle>Configurações</PopoverTitle>
           <PopoverDescription>Preferências da interface</PopoverDescription>

@@ -29,7 +29,7 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
 
   if (isPending || !userId || !onboarded) {
     return (
-      <div className="flex min-h-screen flex-1 items-center justify-center bg-background">
+      <div className="flex min-h-dvh flex-1 items-center justify-center bg-background">
         <Spinner className="size-8" />
       </div>
     );

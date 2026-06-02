@@ -121,7 +121,7 @@ export function MobileNavSheet({
               <span aria-hidden="true">+</span>
             </Button>
 
-            <div className="mt-auto pt-6">
+            <div className="relative z-10 mt-auto pt-6 pb-4">
               <ProfileMenu className="border-0 bg-transparent px-0 py-0" />
             </div>
           </div>

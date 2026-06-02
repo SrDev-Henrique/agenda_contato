@@ -53,7 +53,7 @@ const previewContacts = [
 
 export default function PreviewPage() {
   return (
-    <main className="dark min-h-screen bg-background px-6 py-8 text-foreground md:px-10">
+    <main className="dark min-h-dvh bg-background px-6 py-8 text-foreground md:px-10">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
         <header className="flex flex-col gap-3 border-border border-b pb-8">
           <p className="font-medium text-foreground-subtle text-sm">

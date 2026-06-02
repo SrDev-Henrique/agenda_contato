@@ -30,7 +30,7 @@ export function ProfileMenuView({
     <>
       <div
         className={cn(
-          "flex min-w-0 items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2",
+          "relative z-10 flex min-w-0 items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2",
           className,
         )}
       >

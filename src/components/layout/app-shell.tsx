@@ -58,14 +58,14 @@ function AppShellContent({ children }: AppShellProps) {
         onOpenChange={setCreateContactOpen}
       />
 
-      <div className="flex h-screen w-full flex-1 flex-row overflow-hidden">
+      <div className="flex h-dvh w-full flex-1 flex-row overflow-hidden">
         <div className="app-shell__sidebar h-full shrink-0 flex-col pb-4">
           <AppSidebar
             activeItem={activeItem}
             peopleHref={peopleHref}
             untaggedCount={untaggedCount}
             tags={state.tags}
-            className="h-screen"
+            className="h-dvh"
             tagsPanelOpen={tagsPanelOpen}
             tagsNavActive={isTagsNavActive}
             onTagsToggle={toggleTagsPanel}
@@ -74,7 +74,7 @@ function AppShellContent({ children }: AppShellProps) {
 
         <main
           className={cn(
-            "flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+            "flex h-dvh min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
           )}
         >
           <AppShellBreadcrumb />

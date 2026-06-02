@@ -51,7 +51,10 @@ export function DeleteAccountDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={!isDeleting}>
+      <DialogContent
+        showCloseButton={!isDeleting}
+        className="z-[210] border-border bg-surface"
+      >
         <DialogHeader>
           <DialogTitle>{ui.deleteAccountTitle}</DialogTitle>
           <DialogDescription>{ui.deleteAccountDescription}</DialogDescription>
