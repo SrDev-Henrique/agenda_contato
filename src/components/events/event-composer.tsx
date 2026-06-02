@@ -107,7 +107,7 @@ export function EventComposer({
         <PopoverAnchor asChild>
           <input
             aria-label={ui.title}
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground text-sm outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             placeholder={ui.eventTitlePlaceholder}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
@@ -121,7 +121,7 @@ export function EventComposer({
         </PopoverAnchor>
         <PopoverContent
           align="start"
-          className="w-72 p-1 max-sm:h-140 max-sm:overflow-y-auto"
+          className="h-fit w-72 p-1 max-sm:max-h-140 max-sm:overflow-y-auto"
           onOpenAutoFocus={(event) => event.preventDefault()}
         >
           {filteredMentionContacts.map((contact) => (
@@ -151,7 +151,7 @@ export function EventComposer({
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-80 p-1 max-sm:h-140 max-sm:overflow-y-auto"
+            className="w-80 p-1 max-sm:max-h-140 max-sm:overflow-y-auto"
           >
             <div className="px-2 py-2 font-medium text-foreground-muted text-xs">
               {ui.eventParticipants}

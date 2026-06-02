@@ -144,7 +144,7 @@ export function ContactsSearch({
             aria-label="Buscar contatos"
             autoComplete="off"
             className={cn(
-              "h-10 rounded-lg border-border bg-background pr-3 pl-9 text-sm shadow-sm placeholder:text-foreground-placeholder focus-visible:border-ring",
+              "h-10 rounded-lg border-border bg-background pr-3 pl-9 text-[16px] shadow-sm placeholder:text-foreground-placeholder focus-visible:border-ring",
               inputClassName,
             )}
             placeholder={placeholder}
@@ -163,7 +163,7 @@ export function ContactsSearch({
       <PopoverContent
         align="start"
         className={cn(
-          "w-[min(28rem,calc(100vw-2rem))] p-1 max-sm:h-140 max-sm:overflow-y-auto",
+          "w-[min(28rem,calc(100vw-2rem))] p-1 max-sm:max-h-140 max-sm:overflow-y-auto",
           contentClassName,
         )}
         onOpenAutoFocus={(event) => event.preventDefault()}

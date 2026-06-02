@@ -102,7 +102,7 @@ export function ReminderComposer({
         <PopoverAnchor asChild>
           <textarea
             aria-label={ui.addReminder}
-            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-foreground text-sm outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             placeholder={ui.reminderPlaceholder}
             value={text}
             onChange={(event) => setText(event.target.value)}
