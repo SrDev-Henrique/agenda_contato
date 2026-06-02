@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import { createSeedState } from "@/data/seed";
+import { createEmptyState } from "@/data/seed";
 import { createId, slugify } from "@/lib/id";
 import { getTagUsageCount } from "@/lib/selectors";
 import type { AppState } from "@/types/app-state";
@@ -14,15 +14,19 @@ export type AgendaRootState = {
   agenda: AppState;
   meta: {
     isHydrated: boolean;
+    userId: string | null;
+    isOnboarded: boolean;
     addingEvent: boolean;
     addingReminder: boolean;
   };
 };
 
 const initialState: AgendaRootState = {
-  agenda: createSeedState(),
+  agenda: createEmptyState(),
   meta: {
     isHydrated: false,
+    userId: null,
+    isOnboarded: false,
     addingEvent: false,
     addingReminder: false,
   },
@@ -41,6 +45,13 @@ const agendaSlice = createSlice({
     },
     setHydrated(state, action: PayloadAction<boolean>) {
       state.meta.isHydrated = action.payload;
+    },
+    setSessionMeta(
+      state,
+      action: PayloadAction<{ userId: string | null; isOnboarded: boolean }>,
+    ) {
+      state.meta.userId = action.payload.userId;
+      state.meta.isOnboarded = action.payload.isOnboarded;
     },
     setAddingEvent(state, action: PayloadAction<boolean>) {
       state.meta.addingEvent = action.payload;
@@ -211,6 +222,7 @@ const agendaSlice = createSlice({
 export const {
   hydrate,
   setHydrated,
+  setSessionMeta,
   setAddingEvent,
   setAddingReminder,
   closeEventComposers,

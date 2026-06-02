@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
       });
 
       if (session) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(new URL("/onboarding", request.url));
       }
     }
 

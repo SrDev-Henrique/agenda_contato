@@ -162,3 +162,13 @@ export function createSeedState(): AppState {
     ],
   };
 }
+
+export function createEmptyState(): AppState {
+  return {
+    contacts: [],
+    tags: [],
+    events: [],
+    reminders: [],
+    notes: [],
+  };
+}

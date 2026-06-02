@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useState } from "react";
 
+import { AuthBackdrop } from "@/components/auth/auth-backdrop";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { signIn } from "@/lib/auth-client";
@@ -19,7 +20,7 @@ export default function SignUpPage() {
     try {
       await signIn.social({
         provider: "github",
-        callbackURL: "/",
+        callbackURL: "/onboarding",
       });
     } catch {
       setError(ui.signUpError);
@@ -28,12 +29,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="relative flex min-h-full flex-1 items-center justify-center overflow-hidden px-4 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,oklch(from_var(--accent)_l_c_h/18%),transparent_42%),radial-gradient(circle_at_80%_0%,oklch(from_var(--muted)_l_c_h/40%),transparent_38%)]"
-      />
-
+    <AuthBackdrop>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -71,7 +67,7 @@ export default function SignUpPage() {
           <p className="mt-4 text-center text-destructive text-sm">{error}</p>
         ) : null}
       </motion.div>
-    </div>
+    </AuthBackdrop>
   );
 }
 

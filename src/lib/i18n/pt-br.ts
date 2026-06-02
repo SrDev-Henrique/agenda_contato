@@ -15,6 +15,21 @@ export const ui = {
   connectGithub: "Continuar com GitHub",
   signUpError: "Não foi possível conectar com o GitHub. Tente novamente.",
   signOut: "Sair",
+  deleteAccount: "Excluir conta",
+  deleteAccountTitle: "Excluir conta?",
+  deleteAccountDescription:
+    "Esta ação é irreversível. Sua conta será removida e você precisará conectar o GitHub novamente para recomeçar o onboarding.",
+  deleteAccountConfirm: "Excluir permanentemente",
+  deleteAccountError:
+    "Não foi possível excluir a conta. Saia, entre novamente e tente outra vez.",
+
+  // Onboarding
+  onboardingTitle: "Como deseja começar?",
+  onboardingDescription:
+    "Sua agenda está vazia. Escolha como deseja popular seus contatos, eventos e lembretes.",
+  onboardingImportContacts: "Importar contatos da sua lista",
+  onboardingUseSampleData: "Usar dados de exemplo",
+  onboardingComingSoon: "Em breve",
 
   // Navegação / sidebar
   navAllPeople: "Contatos",

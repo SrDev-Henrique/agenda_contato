@@ -1,44 +1,50 @@
+import { createEmptyState } from "@/data/seed";
+import { isOnboarded } from "@/lib/onboarding/storage";
 import type { AppState } from "@/types/app-state";
-import { createSeedState } from "@/data/seed";
-import { STORAGE_KEY } from "./constants";
+import { getAgendaStorageKey } from "./constants";
 import { appStateSchema } from "./schema";
 
-export function loadState(): AppState {
-  if (typeof window === "undefined") {
-    return createSeedState();
+export function loadState(userId: string | null): AppState {
+  if (typeof window === "undefined" || !userId) {
+    return createEmptyState();
+  }
+
+  if (!isOnboarded(userId)) {
+    return createEmptyState();
   }
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(getAgendaStorageKey(userId));
     if (!raw) {
-      const seed = createSeedState();
-      saveStateImmediate(seed);
-      return seed;
+      return createEmptyState();
     }
 
     const parsed = appStateSchema.safeParse(JSON.parse(raw));
     if (!parsed.success) {
-      const seed = createSeedState();
-      saveStateImmediate(seed);
-      return seed;
+      return createEmptyState();
     }
 
     return parsed.data;
   } catch {
-    const seed = createSeedState();
-    saveStateImmediate(seed);
-    return seed;
+    return createEmptyState();
   }
 }
 
-export function saveStateImmediate(state: AppState): void {
+export function saveStateImmediate(state: AppState, userId: string): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.setItem(
+    getAgendaStorageKey(userId),
+    JSON.stringify(state),
+  );
 }
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
-export function saveStateDebounced(state: AppState, delayMs = 300): void {
+export function saveStateDebounced(
+  state: AppState,
+  userId: string,
+  delayMs = 300,
+): void {
   if (typeof window === "undefined") return;
 
   if (saveTimeout) {
@@ -46,7 +52,7 @@ export function saveStateDebounced(state: AppState, delayMs = 300): void {
   }
 
   saveTimeout = setTimeout(() => {
-    saveStateImmediate(state);
+    saveStateImmediate(state, userId);
     saveTimeout = null;
   }, delayMs);
 }

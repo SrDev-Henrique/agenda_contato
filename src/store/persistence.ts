@@ -16,10 +16,16 @@ const startPersistenceListening =
 
 export function setupPersistenceListener() {
   startPersistenceListening({
-    predicate: (_action, currentState) => currentState.meta.isHydrated,
+    predicate: (_action, currentState) =>
+      currentState.meta.isHydrated &&
+      currentState.meta.isOnboarded &&
+      currentState.meta.userId !== null,
     effect: (_action, listenerApi) => {
       const state = listenerApi.getState();
-      saveStateDebounced(state.agenda);
+      const userId = state.meta.userId;
+      if (!userId) return;
+
+      saveStateDebounced(state.agenda, userId);
     },
   });
 }

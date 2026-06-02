@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { AppShell } from "@/components/layout/app-shell";
+import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { auth } from "@/lib/auth";
 
 export default async function MainLayout({
@@ -17,5 +17,5 @@ export default async function MainLayout({
     redirect("/sign-up");
   }
 
-  return <AppShell>{children}</AppShell>;
+  return <OnboardingGate>{children}</OnboardingGate>;
 }

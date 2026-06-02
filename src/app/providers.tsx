@@ -1,11 +1,17 @@
 "use client";
 
 import { ThemeProvider } from "@teispace/next-themes";
+import dynamic from "next/dynamic";
 import { Provider } from "react-redux";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { store } from "@/store";
-import { StoreHydration } from "@/store/store-hydration";
+
+const StoreHydration = dynamic(
+  () =>
+    import("@/store/store-hydration").then((mod) => mod.StoreHydration),
+  { ssr: false },
+);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
