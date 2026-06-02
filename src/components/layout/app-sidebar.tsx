@@ -2,8 +2,8 @@
 
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 import { useState } from "react";
-
 import { CreateContactDialog } from "@/components/contacts/create-contact-dialog";
 import { ContactsSearch } from "@/components/layout/contacts-search";
 import { Notifications } from "@/components/layout/notifications";
@@ -70,7 +70,7 @@ export function AppSidebar({
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...tween, delay: reduceMotion ? 0 : 0.02 }}
           >
-            {ui.appName}
+            <Link href="/">{ui.appName}</Link>
           </motion.div>
           <motion.div
             initial={{

@@ -358,7 +358,7 @@ function ContactsGrid({
 
   return (
     <motion.div
-      className="grid gap-3 overflow-y-auto pt-4 sm:grid-cols-2 xl:grid-cols-3"
+      className="grid h-full gap-3 overflow-y-auto pt-4 sm:grid-cols-2 xl:grid-cols-3"
       variants={staggerContainer}
       initial={animate ? "initial" : false}
       animate="animate"

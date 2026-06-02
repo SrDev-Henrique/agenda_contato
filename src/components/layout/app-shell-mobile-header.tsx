@@ -8,6 +8,7 @@ import type { SidebarItemId } from "@/components/layout/sidebar-nav";
 import { Button } from "@/components/ui/button";
 import { ui } from "@/lib/i18n/pt-br";
 import type { Tag } from "@/types/tag";
+import Link from "next/link";
 
 type AppShellMobileHeaderProps = {
   activeItem: SidebarItemId;
@@ -36,9 +37,11 @@ export function AppShellMobileHeader({
 }: AppShellMobileHeaderProps) {
   return (
     <header className="flex shrink-0 items-center justify-between gap-3 border-border border-b px-4 py-3 md:hidden">
-      <div className="min-w-0 flex-1 truncate font-semibold text-base tracking-tight">
-        {ui.appName}
-      </div>
+      <Link href="/">
+        <div className="min-w-0 flex-1 truncate font-semibold text-base tracking-tight">
+          {ui.appName}
+        </div>
+      </Link>
 
       <div className="flex shrink-0 items-center gap-1">
         <Notifications />

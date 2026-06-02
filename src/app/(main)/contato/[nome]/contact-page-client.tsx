@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { ContactEventsSection } from "@/components/contacts/contact-events-section";
-import { ContactNotesSection } from "@/components/contacts/contact-notes-section";
 import { ContactHeader } from "@/components/contacts/contact-header";
 import { ContactInfoGrid } from "@/components/contacts/contact-info-grid";
 import { ContactNotFound } from "@/components/contacts/contact-not-found";
+import { ContactNotesSection } from "@/components/contacts/contact-notes-section";
 import { ContactRemindersSection } from "@/components/contacts/contact-reminders-section";
 import { appMainPanelClassName } from "@/components/layout/app-shell";
 import { slugify } from "@/lib/id";

@@ -78,7 +78,7 @@ function AppShellContent({ children }: AppShellProps) {
           )}
         >
           <AppShellBreadcrumb />
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pb-20 md:pb-0">
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden pb-8 md:pb-0">
             {children}
           </div>
         </main>

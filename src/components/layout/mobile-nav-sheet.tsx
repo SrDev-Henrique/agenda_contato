@@ -20,6 +20,7 @@ import {
 import { ui } from "@/lib/i18n/pt-br";
 import { useAppMotion } from "@/lib/motion";
 import type { Tag } from "@/types/tag";
+import Link from "next/link";
 
 type MobileNavSheetProps = {
   open: boolean;
@@ -66,7 +67,7 @@ export function MobileNavSheet({
         >
           <SheetHeader className="border-sidebar-border border-b px-4 py-4">
             <SheetTitle className="text-left font-bebas-neue text-2xl text-accent leading-none tracking-wide">
-              {ui.appName}
+              <Link href="/">{ui.appName}</Link>
             </SheetTitle>
           </SheetHeader>
 
