@@ -1,9 +1,41 @@
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-import { updateSession } from "@/utils/supabase/middleware";
+import { auth } from "@/lib/auth";
+
+const PUBLIC_PREFIXES = ["/sign-up", "/preview", "/api/auth"];
+
+function isPublicPath(pathname: string) {
+  return PUBLIC_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
 
 export async function proxy(request: NextRequest) {
-  return updateSession(request);
+  const { pathname } = request.nextUrl;
+
+  if (isPublicPath(pathname)) {
+    if (pathname.startsWith("/sign-up")) {
+      const session = await auth.api.getSession({
+        headers: request.headers,
+      });
+
+      if (session) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
+
+    return NextResponse.next();
+  }
+
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/sign-up", request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   ArrowRight,
   Bell,
@@ -11,25 +10,27 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { ProfileMenu } from "@/components/layout/profile-menu";
-import { Notifications } from "@/components/layout/notifications";
-import { ContactsSearch } from "@/components/layout/contacts-search";
+import type { Metadata } from "next";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { ContactsSearch } from "@/components/layout/contacts-search";
+import { Notifications } from "@/components/layout/notifications";
+import { ProfileMenuView } from "@/components/layout/profile-menu";
+import { Button } from "@/components/ui/button";
 import { createSeedState } from "@/data/seed";
-import { ContactRowPreview } from "./contact-row-preview";
-import { ContactsListPreview } from "./contacts-list-preview";
-import { ContactTagsEditorPreview } from "./contact-tags-editor-preview";
 import { ContactHeaderPreview } from "./contact-header-preview";
-import { RemindersPreview } from "./reminders-preview";
+import { ContactRowPreview } from "./contact-row-preview";
+import { ContactTagsEditorPreview } from "./contact-tags-editor-preview";
+import { ContactsListPreview } from "./contacts-list-preview";
 import { EventsPreview } from "./events-preview";
 import { NotesPreview } from "./notes-preview";
+import { RemindersPreview } from "./reminders-preview";
 
 export const metadata: Metadata = {
   title: "Prévia de componentes — Alloy",
   description: "Vitrine dos componentes visuais da agenda Alloy.",
 };
+
+export const dynamic = "force-dynamic";
 
 const iconOnlyButtons = [
   { label: "Buscar", icon: Search },
@@ -54,8 +55,8 @@ export default function PreviewPage() {
   return (
     <main className="dark min-h-screen bg-background px-6 py-8 text-foreground md:px-10">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-        <header className="flex flex-col gap-3 border-b border-border pb-8">
-          <p className="text-sm font-medium text-foreground-subtle">
+        <header className="flex flex-col gap-3 border-border border-b pb-8">
+          <p className="font-medium text-foreground-subtle text-sm">
             Biblioteca visual
           </p>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -63,7 +64,7 @@ export default function PreviewPage() {
               <h1 className="text-5xl leading-none md:text-7xl">
                 Componentes Alloy
               </h1>
-              <p className="max-w-2xl text-sm leading-6 text-foreground-muted md:text-base">
+              <p className="max-w-2xl text-foreground-muted text-sm leading-6 md:text-base">
                 Vitrine de referência para construir a agenda com uma interface
                 compacta, escura e focada em produtividade.
               </p>
@@ -110,7 +111,11 @@ export default function PreviewPage() {
               <Users data-icon="inline-start" />
               Todos os contatos
             </Button>
-            <Button className="justify-start" variant="ghost" aria-current="page">
+            <Button
+              className="justify-start"
+              variant="ghost"
+              aria-current="page"
+            >
               <Star data-icon="inline-start" />
               Favoritos
             </Button>
@@ -151,7 +156,10 @@ export default function PreviewPage() {
             description="Identidade compacta do usuário com acesso rápido às preferências visuais da aplicação."
           />
           <div className="flex items-center rounded-lg border border-border bg-surface p-5">
-            <ProfileMenu name="Henrique Albuquerque" className="w-full max-w-sm" />
+            <ProfileMenuView
+              name="Henrique Albuquerque"
+              className="w-full max-w-sm"
+            />
           </div>
         </section>
 
@@ -273,7 +281,7 @@ function SectionIntro({
   return (
     <div className="flex flex-col justify-center gap-2">
       <h2 className="text-3xl leading-none">{title}</h2>
-      <p className="max-w-md text-sm leading-6 text-foreground-muted">
+      <p className="max-w-md text-foreground-muted text-sm leading-6">
         {description}
       </p>
     </div>

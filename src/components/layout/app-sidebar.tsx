@@ -132,10 +132,7 @@ export function AppSidebar({
           </motion.div>
 
           <motion.div variants={sidebarChromeStaggerItem} className="mt-auto pt-6">
-            <ProfileMenu
-              name="Dexter Adams"
-              className="border-0 bg-transparent px-0 py-0"
-            />
+            <ProfileMenu className="border-0 bg-transparent px-0 py-0" />
           </motion.div>
         </motion.div>
       </aside>

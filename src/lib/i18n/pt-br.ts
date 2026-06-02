@@ -8,6 +8,14 @@ export const ui = {
   appName: "Agendly",
   appDescription: "Agenda de contatos",
 
+  // Autenticação
+  signUpTitle: "Conecte sua conta",
+  signUpDescription:
+    "Para acessar sua agenda de contatos, eventos e lembretes, entre com sua conta do GitHub.",
+  connectGithub: "Continuar com GitHub",
+  signUpError: "Não foi possível conectar com o GitHub. Tente novamente.",
+  signOut: "Sair",
+
   // Navegação / sidebar
   navAllPeople: "Contatos",
   navAllBusinesses: "Todos os negócios",

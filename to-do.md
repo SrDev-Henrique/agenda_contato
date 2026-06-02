@@ -1,4 +1,4 @@
-# Plano de desenvolvimento — Agenda de contatos (Alloy)
+# Plano de desenvolvimento — Agenda de contatos (Agendly)
 
 Checklist de implementação. Marque `[x]` conforme concluir cada item.
 
@@ -64,7 +64,7 @@ Checklist de implementação. Marque `[x]` conforme concluir cada item.
 | `?kind=events` | Apenas eventos na timeline |
 | `?kind=reminders` | Apenas lembretes na timeline |
 
-**Persistência:** `localStorage` chave `alloy-agenda:v1` (implementado em `src/lib/storage/`)
+**Persistência:** `localStorage` chave `agendly-agenda:v1` (implementado em `src/lib/storage/`)
 
 ---
 

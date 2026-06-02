@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/layout/app-shell";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 
@@ -18,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alloy — Agenda de contatos",
+  title: "Agendly — Agenda de contatos",
   description: "Agenda de contatos com lembretes, eventos e notas.",
 };
 
@@ -42,9 +41,7 @@ export default function RootLayout({
       )}
     >
       <body className="flex h-screen w-full flex-col overflow-hidden">
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

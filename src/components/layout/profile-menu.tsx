@@ -1,8 +1,9 @@
 "use client";
 
 import { useTheme } from "@teispace/next-themes";
-import { Moon, Settings, Sun } from "lucide-react";
+import { LogOut, Moon, Settings, Sun } from "lucide-react";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,15 +15,69 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/spinner";
+import { signOut, useSession } from "@/lib/auth-client";
+import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 
 type ProfileMenuProps = {
-  name: string;
-  avatarUrl?: string;
   className?: string;
+  name?: string;
+  avatarUrl?: string;
 };
 
-export function ProfileMenu({ name, avatarUrl, className }: ProfileMenuProps) {
+export function ProfileMenu({
+  className,
+  name: nameOverride,
+  avatarUrl: avatarUrlOverride,
+}: ProfileMenuProps) {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+
+  const name = nameOverride ?? session?.user.name ?? ui.appName;
+  const avatarUrl = avatarUrlOverride ?? session?.user.image ?? undefined;
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.replace("/sign-up");
+  };
+
+  if (isPending && !nameOverride) {
+    return (
+      <div
+        className={cn(
+          "flex min-w-0 items-center justify-center gap-3 rounded-lg border border-border bg-surface px-3 py-2",
+          className,
+        )}
+      >
+        <Spinner className="size-5" />
+      </div>
+    );
+  }
+
+  return (
+    <ProfileMenuView
+      className={className}
+      name={name}
+      avatarUrl={avatarUrl}
+      onSignOut={nameOverride ? undefined : handleSignOut}
+    />
+  );
+}
+
+type ProfileMenuViewProps = {
+  className?: string;
+  name: string;
+  avatarUrl?: string;
+  onSignOut?: () => void;
+};
+
+export function ProfileMenuView({
+  className,
+  name,
+  avatarUrl,
+  onSignOut,
+}: ProfileMenuViewProps) {
   return (
     <div
       className={cn(
@@ -56,9 +111,23 @@ export function ProfileMenu({ name, avatarUrl, className }: ProfileMenuProps) {
             <PopoverDescription>Preferências da interface</PopoverDescription>
           </PopoverHeader>
 
-          <div className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2">
-            <span className="font-medium text-foreground text-sm">Tema</span>
-            <ThemeSwitcher />
+          <div className="space-y-2">
+            <div className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2">
+              <span className="font-medium text-foreground text-sm">Tema</span>
+              <ThemeSwitcher />
+            </div>
+
+            {onSignOut ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-start gap-2"
+                onClick={onSignOut}
+              >
+                <LogOut className="size-4" />
+                {ui.signOut}
+              </Button>
+            ) : null}
           </div>
         </PopoverContent>
       </Popover>
