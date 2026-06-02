@@ -1,43 +1,108 @@
 "use client";
 
-import { CalendarDays, Check, Clock, Plus, Send, Users, X } from "lucide-react";
+import { CalendarDays, Clock, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { ActivityContactSelect } from "@/components/activity/activity-contact-select";
+import { EventAttendeesField } from "@/components/events/event-attendees-field";
+import { EventTypeSelect } from "@/components/events/event-type-select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-  PopoverTrigger,
 } from "@/components/ui/popover";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
-import type { Event } from "@/types/event";
+import type { Event, EventType } from "@/types/event";
 
 type EventComposerProps = {
   contacts: Contact[];
   onCreateEvent: (data: Omit<Event, "id">) => void;
+  event?: Event;
+  onUpdateEvent?: (id: string, patch: Partial<Event>) => void;
   onCancel?: () => void;
   className?: string;
   defaultContactId?: string;
+  allowContactChange?: boolean;
 };
 
 export function EventComposer({
   contacts,
   onCreateEvent,
+  event,
+  onUpdateEvent,
   onCancel,
   className,
   defaultContactId = "",
+  allowContactChange = false,
 }: EventComposerProps) {
-  const [title, setTitle] = useState("");
-  const [selectedContactId, setSelectedContactId] = useState(defaultContactId);
-  const [attendeeContactIds, setAttendeeContactIds] = useState<string[]>(() =>
-    defaultContactId ? [defaultContactId] : [],
+  if (event && onUpdateEvent) {
+    return (
+      <EventComposerForm
+        key={`${event.id}:${event.startsAt}:${event.type}:${event.description ?? ""}`}
+        contacts={contacts}
+        defaultContactId={defaultContactId}
+        allowContactChange={allowContactChange}
+        className={className}
+        onCancel={onCancel}
+        initialEvent={event}
+        onSubmit={(payload) => onUpdateEvent(event.id, payload)}
+      />
+    );
+  }
+
+  return (
+    <EventComposerForm
+      key="create"
+      contacts={contacts}
+      defaultContactId={defaultContactId}
+      allowContactChange={allowContactChange}
+      className={className}
+      onCancel={onCancel}
+      onSubmit={(payload) => onCreateEvent(payload)}
+    />
   );
-  const [date, setDate] = useState(() => getDateInputValue(new Date()));
-  const [time, setTime] = useState("10:00");
+}
+
+type EventComposerFormProps = {
+  contacts: Contact[];
+  defaultContactId: string;
+  allowContactChange: boolean;
+  className?: string;
+  onCancel?: () => void;
+  initialEvent?: Event;
+  onSubmit: (data: Omit<Event, "id">) => void;
+};
+
+function EventComposerForm({
+  contacts,
+  defaultContactId,
+  allowContactChange,
+  className,
+  onCancel,
+  initialEvent,
+  onSubmit,
+}: EventComposerFormProps) {
+  const isEditing = Boolean(initialEvent);
+  const startsAt = initialEvent ? new Date(initialEvent.startsAt) : new Date();
+
+  const [title, setTitle] = useState(initialEvent?.title ?? "");
+  const [selectedContactId, setSelectedContactId] = useState(
+    initialEvent?.contactId ?? defaultContactId,
+  );
+  const [attendeeContactIds, setAttendeeContactIds] = useState<string[]>(
+    initialEvent?.attendeeContactIds ??
+      (defaultContactId ? [defaultContactId] : []),
+  );
+  const [type, setType] = useState<EventType>(initialEvent?.type ?? "meeting");
+  const [description, setDescription] = useState(
+    initialEvent?.description ?? "",
+  );
+  const [date, setDate] = useState(() => getDateInputValue(startsAt));
+  const [time, setTime] = useState(() => getTimeInputValue(startsAt));
 
   const mentionQuery = getMentionQuery(title);
   const mentionOpen = mentionQuery !== null;
@@ -54,46 +119,35 @@ export function EventComposer({
       .slice(0, 5);
   }, [contacts, mentionQuery]);
 
-  const attendees = useMemo(
-    () =>
-      attendeeContactIds
-        .map((id) => contacts.find((contact) => contact.id === id))
-        .filter((contact): contact is Contact => Boolean(contact)),
-    [attendeeContactIds, contacts],
-  );
-
   const canSubmit = title.trim() && date && time;
 
-  const handleCreateEvent = () => {
+  const handleSubmit = () => {
     if (!canSubmit) {
       return;
     }
 
-    onCreateEvent({
+    onSubmit({
       title: title.trim(),
+      description: description.trim() || undefined,
       contactId: selectedContactId || undefined,
       startsAt: new Date(`${date}T${time}`).toISOString(),
-      type: "meeting",
+      type,
       attendeeContactIds:
         attendeeContactIds.length > 0 ? attendeeContactIds : undefined,
     });
 
-    setTitle("");
-    setSelectedContactId(defaultContactId);
-    setAttendeeContactIds(defaultContactId ? [defaultContactId] : []);
+    if (!isEditing) {
+      setTitle("");
+      setDescription("");
+      setType("meeting");
+      setSelectedContactId(defaultContactId);
+      setAttendeeContactIds(defaultContactId ? [defaultContactId] : []);
+    }
   };
 
   const handleSelectMentionContact = (contact: Contact) => {
     setSelectedContactId(contact.id);
     setTitle(replaceMentionQuery(title, contact.name));
-  };
-
-  const handleToggleAttendee = (contactId: string) => {
-    setAttendeeContactIds((currentIds) =>
-      currentIds.includes(contactId)
-        ? currentIds.filter((id) => id !== contactId)
-        : [...currentIds, contactId],
-    );
   };
 
   return (
@@ -107,14 +161,14 @@ export function EventComposer({
         <PopoverAnchor asChild>
           <input
             aria-label={ui.title}
-            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-lg border border-border bg-background px-3 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50"
             placeholder={ui.eventTitlePlaceholder}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             onKeyDown={(event) => {
               if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
                 event.preventDefault();
-                handleCreateEvent();
+                handleSubmit();
               }
             }}
           />
@@ -135,41 +189,27 @@ export function EventComposer({
         </PopoverContent>
       </Popover>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="background"
-              className="h-9 w-fit justify-start sm:min-w-56"
-            >
-              <Users data-icon="inline-start" />
-              {attendees.length > 0
-                ? `${attendees.length} participantes`
-                : ui.eventParticipantsPlaceholder}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="w-80 p-1 max-sm:max-h-[40vh] max-sm:overflow-y-auto"
-          >
-            <div className="px-2 py-2 font-medium text-foreground-muted text-xs">
-              {ui.eventParticipants}
-            </div>
-            {contacts.map((contact) => {
-              const selected = attendeeContactIds.includes(contact.id);
+      <textarea
+        aria-label={ui.description}
+        className="mt-3 min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50"
+        placeholder={ui.eventDescriptionPlaceholder}
+        value={description}
+        onChange={(event) => setDescription(event.target.value)}
+      />
 
-              return (
-                <ContactOption
-                  key={contact.id}
-                  contact={contact}
-                  selected={selected}
-                  onClick={() => handleToggleAttendee(contact.id)}
-                />
-              );
-            })}
-          </PopoverContent>
-        </Popover>
+      {allowContactChange ? (
+        <div className="mt-3">
+          <ActivityContactSelect
+            id="event-composer-contact"
+            contacts={contacts}
+            value={selectedContactId}
+            onValueChange={setSelectedContactId}
+          />
+        </div>
+      ) : null}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <EventTypeSelect value={type} onValueChange={setType} />
 
         <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
@@ -198,9 +238,9 @@ export function EventComposer({
             type="button"
             variant="primary"
             disabled={!canSubmit}
-            onClick={handleCreateEvent}
+            onClick={handleSubmit}
           >
-            {ui.createEvent}
+            {isEditing ? ui.save : ui.createEvent}
             <Send data-icon="inline-end" />
           </Button>
 
@@ -212,48 +252,27 @@ export function EventComposer({
         </div>
       </div>
 
-      {attendees.length > 0 ? (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {attendees.map((attendee) => (
-            <button
-              key={attendee.id}
-              type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-full bg-muted px-2 text-foreground text-xs transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-              onClick={() => handleToggleAttendee(attendee.id)}
-            >
-              <Avatar className="size-5">
-                {attendee.avatarUrl ? (
-                  <AvatarImage src={attendee.avatarUrl} alt={attendee.name} />
-                ) : null}
-                <AvatarFallback>{getInitials(attendee.name)}</AvatarFallback>
-              </Avatar>
-              {attendee.name}
-              <X className="size-3" aria-label={ui.removeParticipant} />
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <EventAttendeesField
+        contacts={contacts}
+        attendeeContactIds={attendeeContactIds}
+        onChange={setAttendeeContactIds}
+        className="mt-3"
+      />
     </div>
   );
 }
 
 type ContactOptionProps = {
   contact: Contact;
-  selected?: boolean;
   onClick: () => void;
   onMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-function ContactOption({
-  contact,
-  selected = false,
-  onClick,
-  onMouseDown,
-}: ContactOptionProps) {
+function ContactOption({ contact, onClick, onMouseDown }: ContactOptionProps) {
   return (
     <button
       type="button"
-      className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
       onClick={onClick}
       onMouseDown={onMouseDown}
     >
@@ -271,11 +290,6 @@ function ContactOption({
           {contact.email ?? ui.noEmail}
         </span>
       </span>
-      {selected ? (
-        <Check className="size-4 text-primary" />
-      ) : (
-        <Plus className="size-4 text-foreground-muted" />
-      )}
     </button>
   );
 }
@@ -290,7 +304,16 @@ function replaceMentionQuery(value: string, name: string) {
 }
 
 function getDateInputValue(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getTimeInputValue(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 function normalize(value: string) {
@@ -303,11 +326,7 @@ function normalize(value: string) {
 
 function getInitials(name: string) {
   const words = name.trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) {
-    return "C";
-  }
-
+  if (words.length === 0) return "C";
   return words
     .slice(0, 2)
     .map((word) => word[0])

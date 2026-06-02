@@ -7,8 +7,15 @@ import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 
 export function EventsPageClient() {
-  const { state, addEvent, addReminder, updateEvent, deleteEvent, deleteReminder } =
-    useContactsStore();
+  const {
+    state,
+    addEvent,
+    addReminder,
+    updateEvent,
+    updateReminder,
+    deleteEvent,
+    deleteReminder,
+  } = useContactsStore();
   const { filters, setFilters } = useEventListFilters();
 
   return (
@@ -24,6 +31,7 @@ export function EventsPageClient() {
       onCreateEvent={addEvent}
       onCreateReminder={addReminder}
       onUpdateEvent={updateEvent}
+      onUpdateReminder={updateReminder}
       onDeleteEvent={deleteEvent}
       onDeleteReminder={deleteReminder}
     />

@@ -14,7 +14,7 @@ export function ThemeSwitcher() {
       type="button"
       aria-label={`Ativar tema ${isDark ? "claro" : "escuro"}`}
       aria-pressed={isDark}
-      className="relative h-5 w-10 rounded-full bg-muted text-muted-foreground transition-colors duration-300 hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="relative h-5 w-10 rounded-full bg-muted text-muted-foreground transition-colors duration-300 hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
       onClick={() => setTheme(nextTheme)}
     >
       <motion.span

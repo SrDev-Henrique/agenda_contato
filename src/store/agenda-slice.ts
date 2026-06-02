@@ -1,8 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { createEmptyState } from "@/data/seed";
+import { inferReminderType } from "@/lib/activity-display";
 import { createId, slugify } from "@/lib/id";
 import { getTagUsageCount } from "@/lib/selectors";
+import { normalizeAppState } from "@/lib/storage/normalize-state";
 import type { AppState } from "@/types/app-state";
 import type { Contact } from "@/types/contact";
 import type { Event } from "@/types/event";
@@ -41,7 +43,7 @@ const agendaSlice = createSlice({
   initialState,
   reducers: {
     hydrate(state, action: PayloadAction<AppState>) {
-      state.agenda = action.payload;
+      state.agenda = normalizeAppState(action.payload);
     },
     setHydrated(state, action: PayloadAction<boolean>) {
       state.meta.isHydrated = action.payload;
@@ -106,7 +108,9 @@ const agendaSlice = createSlice({
     deleteContact(state, action: PayloadAction<{ id: string }>) {
       const { id } = action.payload;
       state.agenda.contacts = state.agenda.contacts.filter((c) => c.id !== id);
-      state.agenda.events = state.agenda.events.filter((e) => e.contactId !== id);
+      state.agenda.events = state.agenda.events.filter(
+        (e) => e.contactId !== id,
+      );
       state.agenda.reminders = state.agenda.reminders.filter(
         (r) => r.contactId !== id,
       );
@@ -178,6 +182,7 @@ const agendaSlice = createSlice({
     ) {
       const reminder: Reminder = {
         ...action.payload,
+        type: action.payload.type ?? inferReminderType(action.payload.text),
         id: createId(),
         createdAt: nowIso(),
       };

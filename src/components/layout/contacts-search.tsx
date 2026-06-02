@@ -158,7 +158,7 @@ export function ContactsSearch({
               <Link
                 key={contact.id}
                 href={`/contato/${slugify(contact.name)}`}
-                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
                 onClick={handleSelect}
                 onMouseDown={(event) => event.preventDefault()}
               >

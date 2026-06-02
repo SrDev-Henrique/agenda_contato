@@ -90,7 +90,7 @@ export function ContactRow({
 
         <Link
           href={href}
-          className="flex min-h-0 flex-1 flex-col items-center justify-center rounded-md text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="flex min-h-0 flex-1 flex-col items-center justify-center rounded-md text-center outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
         >
           <Avatar className="size-16">
             {contact.avatarUrl ? (
@@ -113,7 +113,7 @@ export function ContactRow({
 
         <Link
           href={href}
-          className="mt-4 rounded-md border-border border-t pt-3 text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="mt-4 rounded-md border-border border-t pt-3 text-center outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
         >
           <span className="block truncate text-foreground text-sm">
             {contact.phone ?? ui.noPhone}
@@ -136,7 +136,7 @@ export function ContactRow({
     >
       <Link
         href={href}
-        className="flex min-w-0 items-center gap-3 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="flex min-w-0 items-center gap-3 rounded-md outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
       >
         <Avatar size="lg">
           {contact.avatarUrl ? (
@@ -166,7 +166,7 @@ export function ContactRow({
 
       <Link
         href={href}
-        className="hidden min-w-0 rounded-md text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:block"
+        className="hidden min-w-0 rounded-md text-left outline-none focus-visible:ring-1 focus-visible:ring-ring/50 sm:block"
       >
         <span className="block truncate text-foreground text-sm">
           {contact.phone ?? ui.noPhone}

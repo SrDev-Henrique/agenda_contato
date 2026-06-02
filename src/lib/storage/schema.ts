@@ -26,20 +26,22 @@ export const contactSchema = z.object({
   updatedAt: z.string(),
 });
 
+export const eventTypeSchema = z.enum([
+  "meeting",
+  "call",
+  "birthday",
+  "party",
+  "reminder",
+  "other",
+]);
+
 export const eventSchema = z.object({
   id: z.string(),
   contactId: z.string().optional(),
   title: z.string(),
   description: z.string().optional(),
   startsAt: z.string(),
-  type: z.enum([
-    "meeting",
-    "call",
-    "birthday",
-    "party",
-    "reminder",
-    "other",
-  ]),
+  type: eventTypeSchema,
   attendeeContactIds: z.array(z.string()).optional(),
 });
 
@@ -49,6 +51,7 @@ export const reminderSchema = z.object({
   text: z.string(),
   scheduledAt: z.string(),
   createdAt: z.string(),
+  type: eventTypeSchema.optional(),
 });
 
 export const noteSchema = z.object({

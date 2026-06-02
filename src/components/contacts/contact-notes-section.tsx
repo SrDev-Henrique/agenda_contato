@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 
 import { ContactAddActivityButton } from "@/components/contacts/contact-add-activity-button";
 import { ContactDetailSection } from "@/components/contacts/contact-detail-section";
 import { NoteCard } from "@/components/notes/note-card";
 import { NoteComposer } from "@/components/notes/note-composer";
+import {
+  EditableListItem,
+  EditableListPanel,
+} from "@/components/shared/editable-list-item";
 import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import { ui } from "@/lib/i18n/pt-br";
-import { useAppMotion } from "@/lib/motion";
 import type { Contact } from "@/types/contact";
 import type { Note } from "@/types/note";
 
@@ -31,7 +33,6 @@ export function ContactNotesSection({
   const [adding, setAdding] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [deletingNote, setDeletingNote] = useState<Note | null>(null);
-  const { reduceMotion, tween } = useAppMotion();
 
   const panelKey = adding
     ? "composer"
@@ -60,54 +61,50 @@ export function ContactNotesSection({
 
   return (
     <ContactDetailSection title={ui.notes}>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={panelKey}
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-          transition={tween}
-        >
-          {adding ? (
-            <NoteComposer
-              contactId={contact.id}
-              onCreateNote={handleCreate}
-              onCancel={() => setAdding(false)}
-            />
-          ) : notes.length === 0 ? (
-            <ContactAddActivityButton
-              label={ui.addNote}
-              onClick={() => setAdding(true)}
-            />
-          ) : (
-            <div className="space-y-2">
-              {notes.map((note) =>
-                editingNote?.id === note.id ? (
+      <EditableListPanel panelKey={panelKey}>
+        {adding ? (
+          <NoteComposer
+            contactId={contact.id}
+            onCreateNote={handleCreate}
+            onCancel={() => setAdding(false)}
+          />
+        ) : notes.length === 0 ? (
+          <ContactAddActivityButton
+            label={ui.addNote}
+            onClick={() => setAdding(true)}
+          />
+        ) : (
+          <div className="space-y-2">
+            {notes.map((note) => (
+              <EditableListItem
+                key={note.id}
+                itemId={note.id}
+                isEditing={editingNote?.id === note.id}
+                card={
+                  <NoteCard
+                    note={note}
+                    onEdit={setEditingNote}
+                    onDelete={setDeletingNote}
+                  />
+                }
+                composer={
                   <NoteComposer
-                    key={note.id}
                     contactId={contact.id}
                     note={note}
                     onCreateNote={handleCreate}
                     onUpdateNote={handleUpdate}
                     onCancel={() => setEditingNote(null)}
                   />
-                ) : (
-                  <NoteCard
-                    key={note.id}
-                    note={note}
-                    onEdit={setEditingNote}
-                    onDelete={setDeletingNote}
-                  />
-                ),
-              )}
-              <ContactAddActivityButton
-                label={ui.addNote}
-                onClick={() => setAdding(true)}
+                }
               />
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+            ))}
+            <ContactAddActivityButton
+              label={ui.addNote}
+              onClick={() => setAdding(true)}
+            />
+          </div>
+        )}
+      </EditableListPanel>
 
       <ConfirmDeleteDialog
         open={deletingNote !== null}

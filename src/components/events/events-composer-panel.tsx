@@ -11,7 +11,7 @@ import { useAppMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
 import type { Contact } from "@/types/contact";
-import type { Event } from "@/types/event";
+import type { Event, EventType } from "@/types/event";
 
 type EventsComposerPanelProps = {
   contacts: Contact[];
@@ -20,6 +20,7 @@ type EventsComposerPanelProps = {
     text: string;
     contactId: string;
     scheduledAt: string;
+    type: EventType;
   }) => void;
   className?: string;
 };
@@ -55,6 +56,7 @@ export function EventsComposerPanel({
     text: string;
     contactId: string;
     scheduledAt: string;
+    type: EventType;
   }) => {
     onCreateReminder(data);
     closeEventComposers();
@@ -75,6 +77,7 @@ export function EventsComposerPanel({
               key="event-composer"
               contacts={contacts}
               onCreateEvent={handleCreateEvent}
+              allowContactChange
               onCancel={closeEventComposers}
             />
           ) : addingReminder ? (
@@ -82,6 +85,7 @@ export function EventsComposerPanel({
               key="reminder-composer"
               contacts={contacts}
               onCreateReminder={handleCreateReminder}
+              allowContactChange
               onCancel={closeEventComposers}
             />
           ) : (

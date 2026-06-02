@@ -9,7 +9,7 @@ export function ContactDetailSection({
 }: ContactDetailSectionProps) {
   return (
     <section>
-      <h2 className="mb-2 font-medium text-foreground-subtle text-xs uppercase tracking-wide">
+      <h2 className="mb-2 font-medium text-lg text-muted-foreground uppercase tracking-wide md:text-xl">
         {title}
       </h2>
       {children}

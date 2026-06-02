@@ -117,7 +117,7 @@ export function ContactTagsEditor({
               ref={inputRef}
               autoFocus
               aria-label={ui.newTag}
-              className="h-7 rounded-lg bg-background px-2 text-xs"
+              className="h-7 rounded-lg bg-background px-2 text-[16px]"
               placeholder={placeholder}
               value={value}
               onBlur={() => {

@@ -4,12 +4,12 @@ import { CalendarDays } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 
-import {
-  ActivityListItem,
-  type ActivityListItemData,
-} from "@/components/events/activity-list-item";
-import { EditEventDialog } from "@/components/events/edit-event-dialog";
+import { EventCard } from "@/components/events/event-card";
+import { EventComposer } from "@/components/events/event-composer";
 import { EventsComposerPanel } from "@/components/events/events-composer-panel";
+import { ReminderCard } from "@/components/reminders/reminder-card";
+import { ReminderComposer } from "@/components/reminders/reminder-composer";
+import { EditableListItem } from "@/components/shared/editable-list-item";
 import { Button } from "@/components/ui/button";
 import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import {
@@ -29,7 +29,7 @@ import { useAppMotion } from "@/lib/motion";
 import { isDateInCurrentWeek } from "@/lib/selectors";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
-import type { Event } from "@/types/event";
+import type { Event, EventType } from "@/types/event";
 import type { Reminder } from "@/types/reminder";
 
 const TIMELINE_PAGE_SIZE = 10;
@@ -65,8 +65,10 @@ type UpcomingActivityTimelineProps = {
     text: string;
     contactId: string;
     scheduledAt: string;
+    type: EventType;
   }) => void;
   onUpdateEvent: (id: string, patch: Partial<Event>) => void;
+  onUpdateReminder: (id: string, patch: Partial<Reminder>) => void;
   onDeleteEvent: (id: string) => void;
   onDeleteReminder: (id: string) => void;
 };
@@ -83,6 +85,7 @@ export function UpcomingActivityTimeline({
   onCreateEvent,
   onCreateReminder,
   onUpdateEvent,
+  onUpdateReminder,
   onDeleteEvent,
   onDeleteReminder,
 }: UpcomingActivityTimelineProps) {
@@ -90,6 +93,26 @@ export function UpcomingActivityTimeline({
     {},
   );
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
+
+  const resolvedEditingEvent = useMemo(() => {
+    if (!editingEvent) {
+      return null;
+    }
+
+    return events.find((item) => item.id === editingEvent.id) ?? editingEvent;
+  }, [editingEvent, events]);
+
+  const resolvedEditingReminder = useMemo(() => {
+    if (!editingReminder) {
+      return null;
+    }
+
+    return (
+      reminders.find((item) => item.id === editingReminder.id) ?? editingReminder
+    );
+  }, [editingReminder, reminders]);
+
   const [deleteTarget, setDeleteTarget] = useState<TimelineActivity | null>(
     null,
   );
@@ -150,6 +173,16 @@ export function UpcomingActivityTimeline({
   const visibleActivities = activities.slice(0, visibleCount);
   const remainingCount = activities.length - visibleCount;
   const nextBatchSize = Math.min(remainingCount, TIMELINE_PAGE_SIZE);
+
+  const handleUpdateEvent = (id: string, patch: Partial<Event>) => {
+    onUpdateEvent(id, patch);
+    setEditingEvent(null);
+  };
+
+  const handleUpdateReminder = (id: string, patch: Partial<Reminder>) => {
+    onUpdateReminder(id, patch);
+    setEditingReminder(null);
+  };
 
   const handleConfirmDelete = () => {
     if (!deleteTarget) {
@@ -238,23 +271,60 @@ export function UpcomingActivityTimeline({
                     key={`${activity.kind}-${activity.id}`}
                     variants={staggerItem}
                   >
-                    <div className="rounded-xl border border-border/80 bg-background p-4 shadow-sm dark:border-white/10">
-                      <ActivityListItem
-                        activity={toListItemData(activity)}
-                        appearance="events"
-                        menu={{
-                          activityLabel:
-                            activity.kind === "event"
-                              ? activity.event.title
-                              : activity.reminder.text,
-                          onEditEvent:
-                            activity.kind === "event"
-                              ? (event) => setEditingEvent(event)
-                              : undefined,
-                          onDelete: () => setDeleteTarget(activity),
-                        }}
+                    {activity.kind === "event" ? (
+                      <EditableListItem
+                        itemId={activity.id}
+                        isEditing={resolvedEditingEvent?.id === activity.id}
+                        card={
+                          <EventCard
+                            event={activity.event}
+                            contact={activity.contact}
+                            attendees={activity.attendees}
+                            onEdit={setEditingEvent}
+                            onDelete={() => setDeleteTarget(activity)}
+                          />
+                        }
+                        composer={
+                          resolvedEditingEvent ? (
+                            <EventComposer
+                              contacts={contacts}
+                              event={resolvedEditingEvent}
+                              onCreateEvent={onCreateEvent}
+                              onUpdateEvent={handleUpdateEvent}
+                              allowContactChange
+                              onCancel={() => setEditingEvent(null)}
+                            />
+                          ) : null
+                        }
                       />
-                    </div>
+                    ) : (
+                      <EditableListItem
+                        itemId={activity.id}
+                        isEditing={
+                          resolvedEditingReminder?.id === activity.id
+                        }
+                        card={
+                          <ReminderCard
+                            reminder={activity.reminder}
+                            contact={activity.contact}
+                            onEdit={setEditingReminder}
+                            onDelete={() => setDeleteTarget(activity)}
+                          />
+                        }
+                        composer={
+                          resolvedEditingReminder ? (
+                            <ReminderComposer
+                              contacts={contacts}
+                              reminder={resolvedEditingReminder}
+                              onCreateReminder={onCreateReminder}
+                              onUpdateReminder={handleUpdateReminder}
+                              allowContactChange
+                              onCancel={() => setEditingReminder(null)}
+                            />
+                          ) : null
+                        }
+                      />
+                    )}
                   </motion.div>
                 ))}
               </motion.div>
@@ -291,18 +361,6 @@ export function UpcomingActivityTimeline({
         </div>
       </section>
 
-      <EditEventDialog
-        event={editingEvent}
-        contacts={contacts}
-        open={editingEvent !== null}
-        onOpenChange={(open) => {
-          if (!open) {
-            setEditingEvent(null);
-          }
-        }}
-        onSave={onUpdateEvent}
-      />
-
       <ConfirmDeleteDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
@@ -324,25 +382,4 @@ export function UpcomingActivityTimeline({
       />
     </>
   );
-}
-
-function toListItemData(activity: TimelineActivity): ActivityListItemData {
-  if (activity.kind === "event") {
-    return {
-      kind: "event",
-      id: activity.id,
-      at: activity.date,
-      contact: activity.contact,
-      attendees: activity.attendees,
-      event: activity.event,
-    };
-  }
-
-  return {
-    kind: "reminder",
-    id: activity.id,
-    at: activity.date,
-    contact: activity.contact,
-    reminder: activity.reminder,
-  };
 }

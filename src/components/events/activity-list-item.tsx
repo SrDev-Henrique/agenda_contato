@@ -19,6 +19,7 @@ import {
   getEventActionLabel,
   getReminderActionLabel,
   isCalendarStyleEvent,
+  resolveReminderType,
   shouldShowEventDetailCard,
 } from "@/lib/activity-display";
 import { ui } from "@/lib/i18n/pt-br";
@@ -42,7 +43,7 @@ export type ActivityListItemData = {
 type ActivityListItemProps = {
   activity: ActivityListItemData;
   variant?: "timeline" | "compact";
-  appearance?: "default" | "profile" | "events";
+  appearance?: "default" | "events";
   unread?: boolean;
   className?: string;
   onPress?: () => void;
@@ -66,7 +67,6 @@ export function ActivityListItem({
   menu,
 }: ActivityListItemProps) {
   const isCompact = variant === "compact";
-  const isProfile = appearance === "profile";
   const isEvents = appearance === "events";
   const useDateBadge =
     activity.kind === "event" &&
@@ -76,14 +76,12 @@ export function ActivityListItem({
   const iconKind = getActivityIconKind(
     activity.kind,
     activity.event,
-    activity.reminder?.text,
+    activity.reminder,
   );
 
   const timestamp = formatActivityTimestamp(activity.at);
   const actionLabel = getActionLabel(activity);
-  const inlineText = isProfile
-    ? getProfileInlineText(activity)
-    : getInlineText(activity);
+  const inlineText = getInlineText(activity);
   const showDetailCard =
     activity.kind === "event" &&
     activity.event &&
@@ -95,8 +93,7 @@ export function ActivityListItem({
     <div
       className={cn(
         "group relative flex gap-3",
-        isCompact && !isProfile ? "items-start py-2" : "items-center",
-        isProfile && "py-0",
+        isCompact ? "items-start py-2" : "items-center",
         unread && "rounded-lg bg-primary/5",
         className,
       )}
@@ -110,7 +107,7 @@ export function ActivityListItem({
 
       {useDateBadge ? (
         <DateBadge at={activity.at} compact={isCompact} elevated={isEvents} />
-      ) : isProfile && activity.kind === "reminder" ? null : (
+      ) : (
         <ActivityIconRing
           kind={iconKind}
           compact={isCompact}
@@ -122,7 +119,7 @@ export function ActivityListItem({
         <div
           className={cn(
             "flex gap-2",
-            isCompact && !isProfile ? "flex-col" : "flex-wrap items-center",
+            isCompact ? "flex-col" : "flex-wrap items-center",
           )}
         >
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
@@ -139,7 +136,7 @@ export function ActivityListItem({
             {activity.contact && !useDateBadge ? (
               <ContactLink
                 contact={activity.contact}
-                accent={isProfile || isEvents}
+                accent={isEvents}
               />
             ) : null}
 
@@ -148,7 +145,6 @@ export function ActivityListItem({
                 className={cn(
                   "min-w-0 text-foreground",
                   (isEvents || useDateBadge) && "font-medium",
-                  isProfile && "text-foreground-muted",
                 )}
               >
                 {inlineText}
@@ -159,7 +155,7 @@ export function ActivityListItem({
           <div
             className={cn(
               "flex shrink-0 items-center gap-1",
-              isCompact && !isProfile && "w-full justify-between",
+              isCompact && "w-full justify-between",
             )}
           >
             <time
@@ -361,7 +357,7 @@ function EventDetailCard({
       className={cn(
         "rounded-lg p-3 ring-1",
         elevated
-          ? "border border-border/60 bg-card shadow-sm"
+          ? "border border-border/30 bg-muted/30 ring-1 ring-border/20"
           : "bg-background/80 ring-border",
       )}
     >
@@ -461,7 +457,7 @@ function getActivityMenuEditHandler(
 
 function getActionLabel(activity: ActivityListItemData) {
   if (activity.kind === "reminder" && activity.reminder) {
-    return getReminderActionLabel(activity.reminder.text);
+    return getReminderActionLabel(activity.reminder);
   }
 
   if (activity.kind === "event" && activity.event) {
@@ -471,21 +467,9 @@ function getActionLabel(activity: ActivityListItemData) {
   return ui.reminder;
 }
 
-function getProfileInlineText(activity: ActivityListItemData) {
-  if (activity.kind === "reminder" && activity.reminder) {
-    return activity.reminder.text;
-  }
-
-  if (activity.kind === "event" && activity.event) {
-    return activity.event.description ?? activity.event.title;
-  }
-
-  return null;
-}
-
 function getInlineText(activity: ActivityListItemData) {
   if (activity.kind === "reminder" && activity.reminder) {
-    if (looksLikeCongratulateOrCall(activity.reminder.text)) {
+    if (shouldHideReminderInlineText(activity.reminder)) {
       return null;
     }
     return activity.reminder.text;
@@ -494,6 +478,10 @@ function getInlineText(activity: ActivityListItemData) {
   if (activity.kind === "event" && activity.event) {
     if (isCalendarStyleEvent(activity.event)) {
       return activity.event.title;
+    }
+
+    if (shouldShowEventDetailCard(activity.event)) {
+      return null;
     }
 
     if (activity.event.description) {
@@ -506,11 +494,11 @@ function getInlineText(activity: ActivityListItemData) {
   return null;
 }
 
-function looksLikeCongratulateOrCall(text: string) {
-  const lower = text.toLowerCase();
-  return (
-    lower.includes("lig") || lower.includes("sentir") || lower.includes("falta")
-  );
+function shouldHideReminderInlineText(
+  reminder: NonNullable<ActivityListItemData["reminder"]>,
+) {
+  const type = resolveReminderType(reminder);
+  return type === "call" || type === "birthday";
 }
 
 function getInitials(name: string) {

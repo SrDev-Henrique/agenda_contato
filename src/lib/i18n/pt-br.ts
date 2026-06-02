@@ -132,6 +132,7 @@ export const ui = {
   noMentionResults: "Nenhum contato encontrado",
   addEvent: "Adicionar evento",
   eventTitlePlaceholder: "Título do evento, use @ para mencionar um contato",
+  eventDescriptionPlaceholder: "Detalhes do evento (opcional)",
   eventParticipants: "Participantes",
   eventParticipantsPlaceholder: "Adicionar participantes",
   eventDate: "Dia do evento",
@@ -168,6 +169,9 @@ export const ui = {
   addEventShort: "Evento",
   options: "Opções",
   editEvent: "Editar evento",
+  editEventDescription:
+    "Altere o título, o tipo, os participantes, o contato e a data do evento.",
+  editReminder: "Editar lembrete",
   eventType: "Tipo de evento",
   deleteEventTitle: "Excluir evento",
   deleteEventDescription:

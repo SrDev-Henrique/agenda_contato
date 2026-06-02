@@ -89,7 +89,7 @@ export function EditableField({
         }}
         onBlur={commit}
         onKeyDown={handleKeyDown}
-        className={cn("h-8 text-sm", inputClassName)}
+        className={cn("h-8 text-[16px]", inputClassName)}
         aria-label={emptyLabel}
       />
     );

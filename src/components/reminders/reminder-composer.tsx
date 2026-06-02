@@ -3,6 +3,8 @@
 import { CalendarDays, Clock, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { ActivityContactSelect } from "@/components/activity/activity-contact-select";
+import { EventTypeSelect } from "@/components/events/event-type-select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +15,7 @@ import {
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
+import type { EventType } from "@/types/event";
 import type { Reminder } from "@/types/reminder";
 
 type ReminderComposerProps = {
@@ -21,12 +24,14 @@ type ReminderComposerProps = {
     text: string;
     contactId: string;
     scheduledAt: string;
+    type: EventType;
   }) => void;
   reminder?: Reminder;
   onUpdateReminder?: (id: string, patch: Partial<Reminder>) => void;
   onCancel?: () => void;
   className?: string;
   defaultContactId?: string;
+  allowContactChange?: boolean;
 };
 
 export function ReminderComposer({
@@ -37,12 +42,71 @@ export function ReminderComposer({
   onCancel,
   className,
   defaultContactId = "",
+  allowContactChange = false,
 }: ReminderComposerProps) {
-  const isEditing = Boolean(reminder && onUpdateReminder);
-  const scheduledAt = reminder ? new Date(reminder.scheduledAt) : new Date();
-  const [text, setText] = useState(reminder?.text ?? "");
+  if (reminder && onUpdateReminder) {
+    return (
+      <ReminderComposerForm
+        key={`${reminder.id}:${reminder.scheduledAt}:${reminder.type}`}
+        contacts={contacts}
+        defaultContactId={defaultContactId}
+        allowContactChange={allowContactChange}
+        className={className}
+        onCancel={onCancel}
+        initialReminder={reminder}
+        onSubmit={(payload) => onUpdateReminder(reminder.id, payload)}
+      />
+    );
+  }
+
+  return (
+    <ReminderComposerForm
+      key="create"
+      contacts={contacts}
+      defaultContactId={defaultContactId}
+      allowContactChange={allowContactChange}
+      className={className}
+      onCancel={onCancel}
+      onSubmit={(payload) => onCreateReminder(payload)}
+    />
+  );
+}
+
+type ReminderComposerFormProps = {
+  contacts: Contact[];
+  defaultContactId: string;
+  allowContactChange: boolean;
+  className?: string;
+  onCancel?: () => void;
+  initialReminder?: Reminder;
+  onSubmit: (data: {
+    text: string;
+    contactId: string;
+    scheduledAt: string;
+    type: EventType;
+  }) => void;
+};
+
+function ReminderComposerForm({
+  contacts,
+  defaultContactId,
+  allowContactChange,
+  className,
+  onCancel,
+  initialReminder,
+  onSubmit,
+}: ReminderComposerFormProps) {
+  const isEditing = Boolean(initialReminder);
+  const scheduledAt = initialReminder
+    ? new Date(initialReminder.scheduledAt)
+    : new Date();
+
+  const [text, setText] = useState(initialReminder?.text ?? "");
   const [selectedContactId, setSelectedContactId] = useState(
-    reminder?.contactId ?? defaultContactId,
+    initialReminder?.contactId ?? defaultContactId,
+  );
+  const [type, setType] = useState<EventType>(
+    initialReminder?.type ?? "reminder",
   );
   const [date, setDate] = useState(() => getDateInputValue(scheduledAt));
   const [time, setTime] = useState(() => getTimeInputValue(scheduledAt));
@@ -73,17 +137,16 @@ export function ReminderComposer({
       text: text.trim(),
       contactId: selectedContactId,
       scheduledAt: new Date(`${date}T${time}`).toISOString(),
+      type,
     };
 
-    if (isEditing && reminder && onUpdateReminder) {
-      onUpdateReminder(reminder.id, payload);
-      return;
+    onSubmit(payload);
+
+    if (!isEditing) {
+      setText("");
+      setType("reminder");
+      setSelectedContactId(defaultContactId);
     }
-
-    onCreateReminder(payload);
-
-    setText("");
-    setSelectedContactId(defaultContactId);
   };
 
   const handleSelectContact = (contact: Contact) => {
@@ -102,7 +165,7 @@ export function ReminderComposer({
         <PopoverAnchor asChild>
           <textarea
             aria-label={ui.addReminder}
-            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="min-h-24 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50"
             placeholder={ui.reminderPlaceholder}
             value={text}
             onChange={(event) => setText(event.target.value)}
@@ -124,7 +187,7 @@ export function ReminderComposer({
               <button
                 key={contact.id}
                 type="button"
-                className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="flex w-fit items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => handleSelectContact(contact)}
               >
@@ -152,7 +215,20 @@ export function ReminderComposer({
         </PopoverContent>
       </Popover>
 
+      {allowContactChange ? (
+        <div className="mt-3">
+          <ActivityContactSelect
+            id="reminder-composer-contact"
+            contacts={contacts}
+            value={selectedContactId}
+            onValueChange={setSelectedContactId}
+          />
+        </div>
+      ) : null}
+
       <div className="mt-3 flex flex-wrap items-center gap-2">
+        <EventTypeSelect value={type} onValueChange={setType} />
+
         <label className="flex h-9 w-fit items-center gap-2 rounded-lg border border-border bg-background px-3 text-foreground-muted text-sm">
           <CalendarDays className="size-4" />
           <span className="sr-only">{ui.reminderDate}</span>
@@ -207,7 +283,10 @@ function replaceMentionQuery(value: string, name: string) {
 }
 
 function getDateInputValue(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function getTimeInputValue(date: Date) {

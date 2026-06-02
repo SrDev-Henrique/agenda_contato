@@ -2,6 +2,7 @@ import { createEmptyState } from "@/data/seed";
 import { isOnboarded } from "@/lib/onboarding/storage";
 import type { AppState } from "@/types/app-state";
 import { getAgendaStorageKey } from "./constants";
+import { normalizeAppState } from "./normalize-state";
 import { appStateSchema } from "./schema";
 
 export function loadState(userId: string | null): AppState {
@@ -24,7 +25,7 @@ export function loadState(userId: string | null): AppState {
       return createEmptyState();
     }
 
-    return parsed.data;
+    return normalizeAppState(parsed.data);
   } catch {
     return createEmptyState();
   }

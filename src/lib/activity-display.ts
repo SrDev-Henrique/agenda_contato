@@ -1,5 +1,6 @@
 import { eventTypeLabels, ui } from "@/lib/i18n/pt-br";
-import type { Event } from "@/types/event";
+import type { Event, EventType } from "@/types/event";
+import type { Reminder } from "@/types/reminder";
 
 export function isFullDayDate(value: string) {
   const date = new Date(value);
@@ -75,10 +76,31 @@ export function isCalendarStyleEvent(event: Event) {
   );
 }
 
-export function getReminderActionLabel(text: string) {
-  if (looksLikeCallReminder(text)) return ui.activityCall;
-  if (looksLikeCongratulateReminder(text)) return ui.activityCongratulate;
-  return ui.reminder;
+export function inferReminderType(text: string): EventType {
+  if (looksLikeCallReminder(text)) return "call";
+  if (looksLikeCongratulateReminder(text)) return "birthday";
+  return "reminder";
+}
+
+export function resolveReminderType(reminder: Pick<Reminder, "type" | "text">) {
+  return reminder.type ?? inferReminderType(reminder.text);
+}
+
+export function getReminderActionLabel(reminder: Pick<Reminder, "type" | "text">) {
+  const type = resolveReminderType(reminder);
+
+  switch (type) {
+    case "call":
+      return ui.activityCall;
+    case "birthday":
+      return ui.activityCongratulate;
+    case "meeting":
+      return ui.activityMeetingWith;
+    case "party":
+      return ui.activityParty;
+    default:
+      return type === "reminder" ? ui.reminder : eventTypeLabels[type];
+  }
 }
 
 export function getEventActionLabel(event: Event) {
@@ -104,22 +126,8 @@ export type ActivityIconKind =
   | "users"
   | "calendar";
 
-export function getActivityIconKind(
-  kind: "event" | "reminder",
-  event?: Event,
-  reminderText?: string,
-): ActivityIconKind {
-  if (kind === "reminder") {
-    if (reminderText && looksLikeCallReminder(reminderText)) return "phone";
-    if (reminderText && looksLikeCongratulateReminder(reminderText)) {
-      return "gift";
-    }
-    return "bell";
-  }
-
-  if (!event) return "calendar";
-
-  switch (event.type) {
+function getIconKindForEventType(type: EventType): ActivityIconKind {
+  switch (type) {
     case "call":
       return "phone";
     case "meeting":
@@ -127,9 +135,28 @@ export function getActivityIconKind(
     case "birthday":
     case "party":
       return "gift";
+    case "reminder":
+      return "bell";
     default:
       return "users";
   }
+}
+
+export function getActivityIconKind(
+  kind: "event" | "reminder",
+  event?: Event,
+  reminder?: Pick<Reminder, "type" | "text">,
+): ActivityIconKind {
+  if (kind === "reminder") {
+    const type = reminder
+      ? resolveReminderType(reminder)
+      : "reminder";
+    return getIconKindForEventType(type);
+  }
+
+  if (!event) return "calendar";
+
+  return getIconKindForEventType(event.type);
 }
 
 export function shouldShowEventDetailCard(event: Event) {

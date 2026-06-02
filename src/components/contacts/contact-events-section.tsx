@@ -4,9 +4,12 @@ import { useMemo, useState } from "react";
 
 import { ContactAddActivityButton } from "@/components/contacts/contact-add-activity-button";
 import { ContactDetailSection } from "@/components/contacts/contact-detail-section";
-import { EditEventDialog } from "@/components/events/edit-event-dialog";
 import { EventCard } from "@/components/events/event-card";
 import { EventComposer } from "@/components/events/event-composer";
+import {
+  EditableListItem,
+  EditableListPanel,
+} from "@/components/shared/editable-list-item";
 import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import { ui } from "@/lib/i18n/pt-br";
 import type { Contact } from "@/types/contact";
@@ -42,9 +45,28 @@ export function ContactEventsSection({
     [events],
   );
 
+  const resolvedEditingEvent = useMemo(() => {
+    if (!editingEvent) {
+      return null;
+    }
+
+    return events.find((item) => item.id === editingEvent.id) ?? editingEvent;
+  }, [editingEvent, events]);
+
+  const panelKey = adding
+    ? "composer"
+    : sortedEvents.length === 0
+      ? "empty"
+      : "list";
+
   const handleCreate = (data: Omit<Event, "id">) => {
     onCreateEvent({ ...data, contactId: contact.id });
     setAdding(false);
+  };
+
+  const handleUpdate = (id: string, patch: Partial<Event>) => {
+    onUpdateEvent(id, patch);
+    setEditingEvent(null);
   };
 
   const handleConfirmDelete = () => {
@@ -58,46 +80,63 @@ export function ContactEventsSection({
 
   return (
     <ContactDetailSection title={ui.upcomingEvents}>
-      {adding ? (
-        <EventComposer
-          contacts={contacts}
-          defaultContactId={contact.id}
-          onCreateEvent={handleCreate}
-          onCancel={() => setAdding(false)}
-        />
-      ) : (
-        <div className="space-y-2">
-          {sortedEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              contact={contact}
-              variant="profile"
-              attendees={contacts.filter((item) =>
-                event.attendeeContactIds?.includes(item.id),
-              )}
-              onEdit={setEditingEvent}
-              onDelete={setDeletingEvent}
-            />
-          ))}
+      <EditableListPanel panelKey={panelKey}>
+        {adding ? (
+          <EventComposer
+            contacts={contacts}
+            defaultContactId={contact.id}
+            onCreateEvent={handleCreate}
+            onCancel={() => setAdding(false)}
+          />
+        ) : sortedEvents.length === 0 ? (
           <ContactAddActivityButton
             label={ui.addEvent}
             onClick={() => setAdding(true)}
           />
-        </div>
-      )}
+        ) : (
+          <div className="space-y-2">
+            {sortedEvents.map((event) => {
+              const editing = resolvedEditingEvent?.id === event.id;
+              const editingEventData = editing ? resolvedEditingEvent : event;
 
-      <EditEventDialog
-        event={editingEvent}
-        contacts={contacts}
-        open={editingEvent !== null}
-        onOpenChange={(open) => {
-          if (!open) {
-            setEditingEvent(null);
-          }
-        }}
-        onSave={onUpdateEvent}
-      />
+              return (
+                <EditableListItem
+                  key={event.id}
+                  itemId={event.id}
+                  isEditing={editing}
+                  card={
+                    <EventCard
+                      event={event}
+                      contact={contact}
+                      attendees={contacts.filter((item) =>
+                        event.attendeeContactIds?.includes(item.id),
+                      )}
+                      onEdit={setEditingEvent}
+                      onDelete={setDeletingEvent}
+                    />
+                  }
+                  composer={
+                    editingEventData ? (
+                      <EventComposer
+                        contacts={contacts}
+                        defaultContactId={contact.id}
+                        event={editingEventData}
+                        onCreateEvent={handleCreate}
+                        onUpdateEvent={handleUpdate}
+                        onCancel={() => setEditingEvent(null)}
+                      />
+                    ) : null
+                  }
+                />
+              );
+            })}
+            <ContactAddActivityButton
+              label={ui.addEvent}
+              onClick={() => setAdding(true)}
+            />
+          </div>
+        )}
+      </EditableListPanel>
 
       <ConfirmDeleteDialog
         open={deletingEvent !== null}

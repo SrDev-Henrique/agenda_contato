@@ -63,7 +63,7 @@ export function NoteComposer({
     >
       <input
         aria-label={ui.title}
-        className="h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground text-sm outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="h-11 w-full rounded-lg border border-border bg-background px-3 text-[16px] text-foreground outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50"
         placeholder={ui.noteTitlePlaceholder}
         value={title}
         onChange={(event) => setTitle(event.target.value)}
@@ -71,7 +71,7 @@ export function NoteComposer({
 
       <textarea
         aria-label={ui.notes}
-        className="mt-2 min-h-28 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-foreground text-sm leading-5 outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="mt-2 min-h-28 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-foreground text-sm leading-5 outline-none transition-colors placeholder:text-foreground-placeholder focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50"
         placeholder={ui.noteContentPlaceholder}
         value={content}
         onChange={(event) => setContent(event.target.value)}
