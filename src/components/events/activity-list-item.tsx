@@ -89,6 +89,8 @@ export function ActivityListItem({
     activity.event &&
     shouldShowEventDetailCard(activity.event);
 
+  const menuOnEdit = menu ? getActivityMenuEditHandler(activity, menu) : undefined;
+
   const row = (
     <div
       className={cn(
@@ -179,17 +181,7 @@ export function ActivityListItem({
                 editLabel={
                   activity.kind === "event" ? ui.editEvent : ui.edit
                 }
-                onEdit={
-                  activity.kind === "event" &&
-                  activity.event &&
-                  menu.onEditEvent
-                    ? () => menu.onEditEvent!(activity.event!)
-                    : activity.kind === "reminder" &&
-                        activity.reminder &&
-                        menu.onEditReminder
-                      ? () => menu.onEditReminder!(activity.reminder!)
-                      : undefined
-                }
+                onEdit={menuOnEdit}
                 onDelete={menu.onDelete}
               />
             ) : null}
@@ -442,6 +434,29 @@ function AttendeeStack({
       ) : null}
     </div>
   );
+}
+
+function getActivityMenuEditHandler(
+  activity: ActivityListItemData,
+  menu: NonNullable<ActivityListItemProps["menu"]>,
+): (() => void) | undefined {
+  if (activity.kind === "event" && activity.event && menu.onEditEvent) {
+    const event = activity.event;
+    const onEditEvent = menu.onEditEvent;
+    return () => onEditEvent(event);
+  }
+
+  if (
+    activity.kind === "reminder" &&
+    activity.reminder &&
+    menu.onEditReminder
+  ) {
+    const reminder = activity.reminder;
+    const onEditReminder = menu.onEditReminder;
+    return () => onEditReminder(reminder);
+  }
+
+  return undefined;
 }
 
 function getActionLabel(activity: ActivityListItemData) {
