@@ -162,7 +162,10 @@ export function ContactsSearch({
       </PopoverAnchor>
       <PopoverContent
         align="start"
-        className={cn("w-[min(28rem,calc(100vw-2rem))] p-1", contentClassName)}
+        className={cn(
+          "w-[min(28rem,calc(100vw-2rem))] p-1 max-sm:h-140 max-sm:overflow-y-auto",
+          contentClassName,
+        )}
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         {filteredContacts.length > 0 ? (

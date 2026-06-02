@@ -116,7 +116,7 @@ export function ReminderComposer({
         </PopoverAnchor>
         <PopoverContent
           align="start"
-          className="w-72 p-1"
+          className="w-72 p-1 max-sm:h-140 max-sm:overflow-y-auto"
           onOpenAutoFocus={(event) => event.preventDefault()}
         >
           {filteredContacts.length > 0 ? (

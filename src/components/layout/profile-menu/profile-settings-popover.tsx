@@ -44,7 +44,7 @@ export function ProfileSettingsPopover({
         side="top"
         sideOffset={8}
         collisionPadding={16}
-        className="z-[200] w-64"
+        className="z-200 w-64"
       >
         <PopoverHeader>
           <PopoverTitle>Configurações</PopoverTitle>
