@@ -1,16 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ContactDetailSection } from "@/components/contacts/contact-detail-section";
 import { ContactEventsSection } from "@/components/contacts/contact-events-section";
+import { ContactNotesSection } from "@/components/contacts/contact-notes-section";
 import { ContactHeader } from "@/components/contacts/contact-header";
 import { ContactInfoGrid } from "@/components/contacts/contact-info-grid";
 import { ContactNotFound } from "@/components/contacts/contact-not-found";
 import { ContactRemindersSection } from "@/components/contacts/contact-reminders-section";
 import { appMainPanelClassName } from "@/components/layout/app-shell";
-import { NoteCard } from "@/components/notes/note-card";
-import { NoteComposer } from "@/components/notes/note-composer";
-import { ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
 import { cn } from "@/lib/utils";
 import { useContactsStore } from "@/store/contacts-store";
@@ -33,6 +30,12 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
     addReminder,
     addEvent,
     addNote,
+    updateEvent,
+    deleteEvent,
+    updateReminder,
+    deleteReminder,
+    updateNote,
+    deleteNote,
     getContactEvents,
     getContactReminders,
     getContactNotes,
@@ -95,6 +98,8 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
             onCreateReminder={(data) =>
               addReminder({ ...data, contactId: contact.id })
             }
+            onUpdateReminder={updateReminder}
+            onDeleteReminder={deleteReminder}
           />
 
           <ContactEventsSection
@@ -104,16 +109,17 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
             onCreateEvent={(data) =>
               addEvent({ ...data, contactId: contact.id })
             }
+            onUpdateEvent={updateEvent}
+            onDeleteEvent={deleteEvent}
           />
 
-          <ContactDetailSection title={ui.notes}>
-            <div className="space-y-2">
-              {notes.map((note) => (
-                <NoteCard key={note.id} note={note} />
-              ))}
-              <NoteComposer contactId={contact.id} onCreateNote={addNote} />
-            </div>
-          </ContactDetailSection>
+          <ContactNotesSection
+            contact={contact}
+            notes={notes}
+            onCreateNote={addNote}
+            onUpdateNote={updateNote}
+            onDeleteNote={deleteNote}
+          />
         </div>
       </div>
     </section>

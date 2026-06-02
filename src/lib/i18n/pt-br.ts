@@ -175,6 +175,9 @@ export const ui = {
   deleteReminderTitle: "Excluir lembrete",
   deleteReminderDescription:
     "Esta ação não pode ser desfeita. O lembrete será removido permanentemente.",
+  deleteNoteTitle: "Excluir nota",
+  deleteNoteDescription:
+    "Esta ação não pode ser desfeita. A nota será removida permanentemente.",
 
   // Formulários genéricos
   title: "Título",

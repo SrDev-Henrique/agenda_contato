@@ -1,7 +1,5 @@
 "use client";
 
-import { Ellipsis } from "lucide-react";
-
 import {
   formatActivityTimestamp,
   formatDateBadge,
@@ -10,7 +8,7 @@ import {
   isCalendarStyleEvent,
 } from "@/lib/activity-display";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { ItemOptionsMenu } from "@/components/ui/item-options-menu";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
@@ -22,6 +20,8 @@ type EventCardProps = {
   attendees?: Contact[];
   className?: string;
   variant?: "default" | "profile";
+  onEdit?: (event: Event) => void;
+  onDelete?: (event: Event) => void;
 };
 
 export function EventCard({
@@ -30,6 +30,8 @@ export function EventCard({
   attendees = [],
   className,
   variant = "default",
+  onEdit,
+  onDelete,
 }: EventCardProps) {
   if (variant === "profile") {
     return (
@@ -38,6 +40,8 @@ export function EventCard({
         contact={contact}
         attendees={attendees}
         className={className}
+        onEdit={onEdit}
+        onDelete={onDelete}
       />
     );
   }
@@ -81,14 +85,12 @@ export function EventCard({
               ) : null}
             </div>
 
-            <Button
-              aria-label={ui.options}
-              title={ui.options}
-              size="icon-sm"
-              variant="ghost"
-            >
-              <Ellipsis />
-            </Button>
+            <ItemOptionsMenu
+              label={event.title}
+              editLabel={ui.editEvent}
+              onEdit={onEdit ? () => onEdit(event) : undefined}
+              onDelete={onDelete ? () => onDelete(event) : undefined}
+            />
           </div>
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
@@ -114,11 +116,15 @@ function EventCardProfile({
   contact,
   attendees,
   className,
+  onEdit,
+  onDelete,
 }: {
   event: Event;
   contact?: Contact;
   attendees: Contact[];
   className?: string;
+  onEdit?: (event: Event) => void;
+  onDelete?: (event: Event) => void;
 }) {
   const { month, day } = formatDateBadge(event.startsAt);
 
@@ -148,15 +154,13 @@ function EventCardProfile({
           {attendees.length > 0 ? (
             <AttendeeStack attendees={attendees} maxVisible={3} />
           ) : null}
-          <Button
-            aria-label={ui.options}
-            title={ui.options}
-            size="icon-sm"
-            variant="ghost"
-            className="opacity-70"
-          >
-            <Ellipsis />
-          </Button>
+          <ItemOptionsMenu
+            label={event.title}
+            editLabel={ui.editEvent}
+            onEdit={onEdit ? () => onEdit(event) : undefined}
+            onDelete={onDelete ? () => onDelete(event) : undefined}
+            triggerClassName="opacity-70"
+          />
         </div>
       </div>
     </article>

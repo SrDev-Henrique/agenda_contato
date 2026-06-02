@@ -13,6 +13,7 @@ import {
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
+import type { Reminder } from "@/types/reminder";
 
 type ReminderComposerProps = {
   contacts: Contact[];
@@ -21,6 +22,8 @@ type ReminderComposerProps = {
     contactId: string;
     scheduledAt: string;
   }) => void;
+  reminder?: Reminder;
+  onUpdateReminder?: (id: string, patch: Partial<Reminder>) => void;
   onCancel?: () => void;
   className?: string;
   defaultContactId?: string;
@@ -29,14 +32,20 @@ type ReminderComposerProps = {
 export function ReminderComposer({
   contacts,
   onCreateReminder,
+  reminder,
+  onUpdateReminder,
   onCancel,
   className,
   defaultContactId = "",
 }: ReminderComposerProps) {
-  const [text, setText] = useState("");
-  const [selectedContactId, setSelectedContactId] = useState(defaultContactId);
-  const [date, setDate] = useState(() => getDateInputValue(new Date()));
-  const [time, setTime] = useState("09:00");
+  const isEditing = Boolean(reminder && onUpdateReminder);
+  const scheduledAt = reminder ? new Date(reminder.scheduledAt) : new Date();
+  const [text, setText] = useState(reminder?.text ?? "");
+  const [selectedContactId, setSelectedContactId] = useState(
+    reminder?.contactId ?? defaultContactId,
+  );
+  const [date, setDate] = useState(() => getDateInputValue(scheduledAt));
+  const [time, setTime] = useState(() => getTimeInputValue(scheduledAt));
 
   const mentionQuery = getMentionQuery(text);
   const mentionOpen = mentionQuery !== null;
@@ -55,16 +64,23 @@ export function ReminderComposer({
 
   const canSubmit = text.trim() && selectedContactId && date && time;
 
-  const handleCreateReminder = () => {
+  const handleSubmit = () => {
     if (!canSubmit) {
       return;
     }
 
-    onCreateReminder({
+    const payload = {
       text: text.trim(),
       contactId: selectedContactId,
       scheduledAt: new Date(`${date}T${time}`).toISOString(),
-    });
+    };
+
+    if (isEditing && reminder && onUpdateReminder) {
+      onUpdateReminder(reminder.id, payload);
+      return;
+    }
+
+    onCreateReminder(payload);
 
     setText("");
     setSelectedContactId(defaultContactId);
@@ -93,7 +109,7 @@ export function ReminderComposer({
             onKeyDown={(event) => {
               if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
                 event.preventDefault();
-                handleCreateReminder();
+                handleSubmit();
               }
             }}
           />
@@ -164,9 +180,9 @@ export function ReminderComposer({
             type="button"
             variant="primary"
             disabled={!canSubmit}
-            onClick={handleCreateReminder}
+            onClick={handleSubmit}
           >
-            {ui.createReminder}
+            {isEditing ? ui.save : ui.createReminder}
             <Send data-icon="inline-end" />
           </Button>
 
@@ -192,6 +208,12 @@ function replaceMentionQuery(value: string, name: string) {
 
 function getDateInputValue(date: Date) {
   return date.toISOString().slice(0, 10);
+}
+
+function getTimeInputValue(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 function normalize(value: string) {

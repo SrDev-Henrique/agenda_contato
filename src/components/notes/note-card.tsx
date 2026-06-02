@@ -1,17 +1,19 @@
 "use client";
 
-import { Ellipsis, NotebookText } from "lucide-react";
+import { NotebookText } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { ItemOptionsMenu } from "@/components/ui/item-options-menu";
 import { cn } from "@/lib/utils";
 import type { Note } from "@/types/note";
 
 type NoteCardProps = {
   note: Note;
   className?: string;
+  onEdit?: (note: Note) => void;
+  onDelete?: (note: Note) => void;
 };
 
-export function NoteCard({ note, className }: NoteCardProps) {
+export function NoteCard({ note, className, onEdit, onDelete }: NoteCardProps) {
   return (
     <article
       className={cn(
@@ -35,14 +37,11 @@ export function NoteCard({ note, className }: NoteCardProps) {
               </p>
             </div>
 
-            <Button
-              aria-label="Opções"
-              title="Opções"
-              size="icon-sm"
-              variant="ghost"
-            >
-              <Ellipsis />
-            </Button>
+            <ItemOptionsMenu
+              label={note.title}
+              onEdit={onEdit ? () => onEdit(note) : undefined}
+              onDelete={onDelete ? () => onDelete(note) : undefined}
+            />
           </div>
 
           <p className="mt-3 text-foreground-subtle text-xs">

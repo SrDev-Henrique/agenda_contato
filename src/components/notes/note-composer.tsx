@@ -11,21 +11,36 @@ import type { Note } from "@/types/note";
 type NoteComposerProps = {
   contactId: string;
   onCreateNote: (data: Omit<Note, "id" | "createdAt" | "updatedAt">) => void;
+  note?: Note;
+  onUpdateNote?: (id: string, patch: Partial<Note>) => void;
+  onCancel?: () => void;
   className?: string;
 };
 
 export function NoteComposer({
   contactId,
   onCreateNote,
+  note,
+  onUpdateNote,
+  onCancel,
   className,
 }: NoteComposerProps) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const isEditing = Boolean(note && onUpdateNote);
+  const [title, setTitle] = useState(note?.title ?? "");
+  const [content, setContent] = useState(note?.content ?? "");
 
   const canSubmit = title.trim() && content.trim();
 
-  const handleCreateNote = () => {
+  const handleSubmit = () => {
     if (!canSubmit) {
+      return;
+    }
+
+    if (isEditing && note && onUpdateNote) {
+      onUpdateNote(note.id, {
+        title: title.trim(),
+        content: content.trim(),
+      });
       return;
     }
 
@@ -63,21 +78,27 @@ export function NoteComposer({
         onKeyDown={(event) => {
           if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
             event.preventDefault();
-            handleCreateNote();
+            handleSubmit();
           }
         }}
       />
 
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex items-center justify-end gap-2">
         <Button
           type="button"
           variant="primary"
           disabled={!canSubmit}
-          onClick={handleCreateNote}
+          onClick={handleSubmit}
         >
-          {ui.createNote}
+          {isEditing ? ui.save : ui.createNote}
           <Send data-icon="inline-end" />
         </Button>
+
+        {onCancel ? (
+          <Button type="button" variant="destructive" onClick={onCancel}>
+            {ui.cancel}
+          </Button>
+        ) : null}
       </div>
     </div>
   );

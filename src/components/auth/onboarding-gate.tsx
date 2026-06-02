@@ -5,29 +5,24 @@ import { useEffect } from "react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Spinner } from "@/components/ui/spinner";
-import { useSession } from "@/lib/auth-client";
 import { isOnboarded } from "@/lib/onboarding/storage";
 
 type OnboardingGateProps = {
+  userId: string;
   children: React.ReactNode;
 };
 
-export function OnboardingGate({ children }: OnboardingGateProps) {
+export function OnboardingGate({ userId, children }: OnboardingGateProps) {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
-
-  const userId = session?.user?.id;
-  const onboarded = userId ? isOnboarded(userId) : false;
+  const onboarded = isOnboarded(userId);
 
   useEffect(() => {
-    if (isPending || !userId) return;
-
     if (!isOnboarded(userId)) {
       router.replace("/onboarding");
     }
-  }, [isPending, router, userId]);
+  }, [router, userId]);
 
-  if (isPending || !userId || !onboarded) {
+  if (!onboarded) {
     return (
       <div className="flex min-h-dvh flex-1 items-center justify-center bg-background">
         <Spinner className="size-8" />

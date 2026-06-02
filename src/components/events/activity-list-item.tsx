@@ -3,24 +3,14 @@
 import {
   Bell,
   CalendarDays,
-  Edit,
-  Ellipsis,
   Gift,
   Phone,
-  Trash2,
   Users,
   Video,
 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ItemOptionsMenu } from "@/components/ui/item-options-menu";
 import {
   formatActivityTimestamp,
   formatDateBadge,
@@ -60,6 +50,7 @@ type ActivityListItemProps = {
   menu?: {
     activityLabel: string;
     onEditEvent?: (event: Event) => void;
+    onEditReminder?: (reminder: Reminder) => void;
     onDelete?: () => void;
   };
 };
@@ -93,8 +84,6 @@ export function ActivityListItem({
   const inlineText = isProfile
     ? getProfileInlineText(activity)
     : getInlineText(activity);
-  const showProfileMenu =
-    isProfile && menu && !menu.onEditEvent && !menu.onDelete;
   const showDetailCard =
     activity.kind === "event" &&
     activity.event &&
@@ -181,24 +170,28 @@ export function ActivityListItem({
             >
               {timestamp}
             </time>
-            {menu && (menu.onEditEvent || menu.onDelete) ? (
-              <ActivityActionsMenu
-                activity={activity}
-                activityLabel={menu.activityLabel}
-                onEditEvent={menu.onEditEvent}
+            {menu &&
+            (menu.onEditEvent ||
+              menu.onEditReminder ||
+              menu.onDelete) ? (
+              <ItemOptionsMenu
+                label={menu.activityLabel}
+                editLabel={
+                  activity.kind === "event" ? ui.editEvent : ui.edit
+                }
+                onEdit={
+                  activity.kind === "event" &&
+                  activity.event &&
+                  menu.onEditEvent
+                    ? () => menu.onEditEvent!(activity.event!)
+                    : activity.kind === "reminder" &&
+                        activity.reminder &&
+                        menu.onEditReminder
+                      ? () => menu.onEditReminder!(activity.reminder!)
+                      : undefined
+                }
                 onDelete={menu.onDelete}
               />
-            ) : null}
-            {showProfileMenu ? (
-              <Button
-                aria-label={`${ui.options}: ${menu.activityLabel}`}
-                title={ui.options}
-                size="icon-sm"
-                variant="ghost"
-                className="opacity-70"
-              >
-                <Ellipsis />
-              </Button>
             ) : null}
           </div>
         </div>
@@ -448,56 +441,6 @@ function AttendeeStack({
         <span className="text-foreground-muted text-xs">+{extra}</span>
       ) : null}
     </div>
-  );
-}
-
-function ActivityActionsMenu({
-  activity,
-  activityLabel,
-  onEditEvent,
-  onDelete,
-}: {
-  activity: ActivityListItemData;
-  activityLabel: string;
-  onEditEvent?: (event: Event) => void;
-  onDelete?: () => void;
-}) {
-  const event =
-    activity.kind === "event" ? activity.event : undefined;
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          aria-label={`${ui.options}: ${activityLabel}`}
-          title={ui.options}
-          size="icon-sm"
-          variant="ghost"
-          className="opacity-70 group-hover:opacity-100"
-        >
-          <Ellipsis />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44">
-        {activity.kind === "event" && event && onEditEvent ? (
-          <DropdownMenuItem onSelect={() => onEditEvent(event)}>
-            <Edit />
-            {ui.editEvent}
-          </DropdownMenuItem>
-        ) : null}
-        {onDelete ? (
-          <>
-            {activity.kind === "event" && onEditEvent ? (
-              <DropdownMenuSeparator />
-            ) : null}
-            <DropdownMenuItem variant="destructive" onSelect={onDelete}>
-              <Trash2 />
-              {ui.delete}
-            </DropdownMenuItem>
-          </>
-        ) : null}
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }
 

@@ -17,5 +17,7 @@ export default async function MainLayout({
     redirect("/sign-up");
   }
 
-  return <OnboardingGate>{children}</OnboardingGate>;
+  return (
+    <OnboardingGate userId={session.user.id}>{children}</OnboardingGate>
+  );
 }

@@ -177,13 +177,15 @@ export function ContactRow({
       </Link>
 
       {hasActions ? (
-        <ContactActions
-          contact={contact}
-          onEdit={onEdit}
-          onToggleFavorite={onToggleFavorite}
-          onTogglePin={onTogglePin}
-          onDelete={onDelete}
-        />
+        <div className="relative z-10 shrink-0">
+          <ContactActions
+            contact={contact}
+            onEdit={onEdit}
+            onToggleFavorite={onToggleFavorite}
+            onTogglePin={onTogglePin}
+            onDelete={onDelete}
+          />
+        </div>
       ) : (
         <Button
           aria-label="Opções indisponíveis"
@@ -214,10 +216,12 @@ function ContactActions({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          type="button"
           aria-label={`Abrir ações de ${contact.name}`}
           title="Ações"
           size="icon-sm"
           variant="ghost"
+          onClick={(event) => event.stopPropagation()}
         >
           <Ellipsis />
         </Button>

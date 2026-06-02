@@ -11,14 +11,7 @@ import {
 import { EditEventDialog } from "@/components/events/edit-event-dialog";
 import { EventsComposerPanel } from "@/components/events/events-composer-panel";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import {
   Select,
   SelectContent,
@@ -310,45 +303,25 @@ export function UpcomingActivityTimeline({
         onSave={onUpdateEvent}
       />
 
-      <Dialog
+      <ConfirmDeleteDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
           if (!open) {
             setDeleteTarget(null);
           }
         }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {deleteTarget?.kind === "reminder"
-                ? ui.deleteReminderTitle
-                : ui.deleteEventTitle}
-            </DialogTitle>
-            <DialogDescription>
-              {deleteTarget?.kind === "reminder"
-                ? ui.deleteReminderDescription
-                : ui.deleteEventDescription}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setDeleteTarget(null)}
-            >
-              {ui.cancel}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-            >
-              {ui.delete}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        title={
+          deleteTarget?.kind === "reminder"
+            ? ui.deleteReminderTitle
+            : ui.deleteEventTitle
+        }
+        description={
+          deleteTarget?.kind === "reminder"
+            ? ui.deleteReminderDescription
+            : ui.deleteEventDescription
+        }
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }

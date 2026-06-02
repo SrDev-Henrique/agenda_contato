@@ -30,6 +30,7 @@ import {
   updateContact as updateContactAction,
   updateEvent,
   updateNote,
+  updateReminder,
 } from "@/store/agenda-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -69,6 +70,7 @@ type ContactsStoreValue = {
   updateEvent: (id: string, patch: Partial<Event>) => void;
   deleteEvent: (id: string) => void;
   addReminder: (data: Omit<Reminder, "id" | "createdAt">) => void;
+  updateReminder: (id: string, patch: Partial<Reminder>) => void;
   deleteReminder: (id: string) => void;
   addNote: (data: Omit<Note, "id" | "createdAt" | "updatedAt">) => void;
   updateNote: (id: string, patch: Partial<Note>) => void;
@@ -192,6 +194,13 @@ export function useContactsStore(): ContactsStoreValue {
     [dispatch],
   );
 
+  const updateReminderHandler = useCallback(
+    (id: string, patch: Partial<Reminder>) => {
+      dispatch(updateReminder({ id, patch }));
+    },
+    [dispatch],
+  );
+
   const deleteReminderHandler = useCallback(
     (id: string) => {
       dispatch(deleteReminder({ id }));
@@ -274,6 +283,7 @@ export function useContactsStore(): ContactsStoreValue {
       updateEvent: updateEventHandler,
       deleteEvent: deleteEventHandler,
       addReminder: addReminderHandler,
+      updateReminder: updateReminderHandler,
       deleteReminder: deleteReminderHandler,
       addNote: addNoteHandler,
       updateNote: updateNoteHandler,
@@ -311,6 +321,7 @@ export function useContactsStore(): ContactsStoreValue {
       updateEventHandler,
       deleteEventHandler,
       addReminderHandler,
+      updateReminderHandler,
       deleteReminderHandler,
       addNoteHandler,
       updateNoteHandler,

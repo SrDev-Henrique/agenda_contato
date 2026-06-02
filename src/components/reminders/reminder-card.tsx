@@ -10,6 +10,8 @@ type ReminderCardProps = {
   contact?: Contact;
   className?: string;
   appearance?: "default" | "profile";
+  onEdit?: (reminder: Reminder) => void;
+  onDelete?: (reminder: Reminder) => void;
 };
 
 export function ReminderCard({
@@ -17,6 +19,8 @@ export function ReminderCard({
   contact,
   className,
   appearance = "default",
+  onEdit,
+  onDelete,
 }: ReminderCardProps) {
   return (
     <article
@@ -38,8 +42,12 @@ export function ReminderCard({
         variant="compact"
         appearance={appearance}
         menu={
-          appearance === "profile"
-            ? { activityLabel: reminder.text }
+          appearance === "profile" && (onEdit || onDelete)
+            ? {
+                activityLabel: reminder.text,
+                onEditReminder: onEdit,
+                onDelete: onDelete ? () => onDelete(reminder) : undefined,
+              }
             : undefined
         }
       />

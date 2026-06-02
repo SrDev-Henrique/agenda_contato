@@ -183,6 +183,17 @@ const agendaSlice = createSlice({
       };
       state.agenda.reminders.push(reminder);
     },
+    updateReminder(
+      state,
+      action: PayloadAction<{ id: string; patch: Partial<Reminder> }>,
+    ) {
+      const reminder = state.agenda.reminders.find(
+        (r) => r.id === action.payload.id,
+      );
+      if (reminder) {
+        Object.assign(reminder, action.payload.patch);
+      }
+    },
     deleteReminder(state, action: PayloadAction<{ id: string }>) {
       state.agenda.reminders = state.agenda.reminders.filter(
         (r) => r.id !== action.payload.id,
@@ -236,6 +247,7 @@ export const {
   updateEvent,
   deleteEvent,
   addReminder,
+  updateReminder,
   deleteReminder,
   addNote,
   updateNote,
