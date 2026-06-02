@@ -15,7 +15,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { signOut, useSession } from "@/lib/auth-client";
 import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
@@ -43,16 +43,7 @@ export function ProfileMenu({
   };
 
   if (isPending && !nameOverride) {
-    return (
-      <div
-        className={cn(
-          "flex min-w-0 items-center justify-center gap-3 rounded-lg border border-border bg-surface px-3 py-2",
-          className,
-        )}
-      >
-        <Spinner className="size-5" />
-      </div>
-    );
+    return <ProfileMenuSkeleton className={className} />;
   }
 
   return (
@@ -131,6 +122,25 @@ export function ProfileMenuView({
           </div>
         </PopoverContent>
       </Popover>
+    </div>
+  );
+}
+
+function ProfileMenuSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      className={cn(
+        "flex min-w-0 items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2",
+        className,
+      )}
+    >
+      <span className="sr-only">Carregando perfil</span>
+      <Skeleton className="size-10 shrink-0 rounded-full" />
+      <Skeleton className="h-4 min-w-0 flex-1 rounded-md" />
+      <Skeleton className="size-8 shrink-0 rounded-lg" />
     </div>
   );
 }
