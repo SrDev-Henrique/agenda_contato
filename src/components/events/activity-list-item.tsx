@@ -113,7 +113,7 @@ export function ActivityListItem({
       {unread ? (
         <span
           aria-hidden
-          className="absolute top-3 -left-1 size-1.5 rounded-full bg-primary"
+          className="absolute top-3 -left-1 size-1.5 rounded-full bg-accent"
         />
       ) : null}
 
@@ -228,7 +228,7 @@ export function ActivityListItem({
   if (href) {
     return (
       <Link
-        className="block rounded-lg transition-colors hover:bg-muted/60"
+        className="block rounded-lg transition-colors hover:bg-accent/10"
         href={href}
         onClick={onPress}
       >

@@ -47,7 +47,6 @@ export const ui = {
 
   // Navegação / sidebar
   navAllPeople: "Contatos",
-  navAllBusinesses: "Todos os negócios",
   navFavorites: "Favoritos",
   navEvents: "Eventos",
   navTags: "Tags",

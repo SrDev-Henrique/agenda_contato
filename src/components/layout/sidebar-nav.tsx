@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BriefcaseBusiness,
   CalendarDays,
   ChevronDown,
   Star,
@@ -35,7 +34,6 @@ export const sidebarNavItems: Array<{
   href?: string;
 }> = [
   { id: "people", label: ui.navAllPeople, icon: Users, href: "/" },
-  { id: "businesses", label: ui.navAllBusinesses, icon: BriefcaseBusiness },
   {
     id: "favorites",
     label: ui.navFavorites,

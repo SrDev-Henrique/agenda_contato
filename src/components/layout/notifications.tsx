@@ -38,7 +38,7 @@ export function Notifications({ previewActivities }: NotificationsProps) {
         >
           <BellIcon aria-hidden="true" />
           {pendingCount > 0 ? (
-            <Badge className="absolute -top-2 left-full min-w-5 -translate-x-1/2 px-1">
+            <Badge className="absolute -top-2 left-full min-w-5 -translate-x-1/2 bg-accent/40 px-1 text-accent">
               {pendingCount > 99 ? "99+" : pendingCount}
             </Badge>
           ) : null}
@@ -46,7 +46,7 @@ export function Notifications({ previewActivities }: NotificationsProps) {
       </PopoverTrigger>
       <PopoverContent
         align="center"
-        className="me-4 h-fit max-h-[calc(100vh-10rem)] w-88 overflow-y-auto bg-card p-1"
+        className="me-4 h-fit max-h-[calc(100vh-10rem)] w-88 overflow-y-auto bg-card/80 p-1 backdrop-blur-sm"
       >
         <div className="flex items-baseline justify-between gap-4 px-3 py-2">
           <div className="font-semibold text-card-foreground text-sm">
@@ -63,7 +63,7 @@ export function Notifications({ previewActivities }: NotificationsProps) {
           ) : null}
         </div>
         <Separator className="my-2" />
-        <div className="flex flex-col divide-y divide-border/60 px-1">
+        <div className="flex flex-col gap-2 divide-y divide-border/60 px-1">
           {activities.length === 0 ? (
             <p className="px-3 py-6 text-center text-foreground-muted text-sm">
               {ui.notificationsEmptyToday}
