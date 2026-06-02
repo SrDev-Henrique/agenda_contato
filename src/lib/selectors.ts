@@ -1,5 +1,4 @@
-import type { AppState } from "@/types/app-state";
-import type { ContactFilters } from "@/types/app-state";
+import type { AppState, ContactFilters } from "@/types/app-state";
 import type { Contact } from "@/types/contact";
 import type { Event } from "@/types/event";
 import type { Tag } from "@/types/tag";
@@ -62,12 +61,13 @@ export function getUnpinnedContacts(
   return getContactsFiltered(state, filters).filter((c) => !c.pinned);
 }
 
-export function groupContactsByLetter(contacts: Contact[]): Map<string, Contact[]> {
+export function groupContactsByLetter(
+  contacts: Contact[],
+): Map<string, Contact[]> {
   const groups = new Map<string, Contact[]>();
 
   for (const contact of contacts) {
-    const letter =
-      contact.name.trim().charAt(0).toUpperCase() || "#";
+    const letter = contact.name.trim().charAt(0).toUpperCase() || "#";
     const key = /[A-ZÀ-ÖØ-Þ]/.test(letter) ? letter : "#";
     const list = groups.get(key) ?? [];
     list.push(contact);
@@ -81,6 +81,10 @@ export function groupContactsByLetter(contacts: Contact[]): Map<string, Contact[
 
 export function getUntaggedCount(state: AppState): number {
   return state.contacts.filter((c) => c.tagIds.length === 0).length;
+}
+
+export function getTagUsageCount(state: AppState, tagId: string): number {
+  return state.contacts.filter((c) => c.tagIds.includes(tagId)).length;
 }
 
 export function getTagsWithCounts(
@@ -98,14 +102,14 @@ export function getAllEventsSorted(state: AppState): Event[] {
   );
 }
 
-export function getEventsForContact(state: AppState, contactId: string): Event[] {
+export function getEventsForContact(
+  state: AppState,
+  contactId: string,
+): Event[] {
   return getAllEventsSorted(state).filter((e) => e.contactId === contactId);
 }
 
-export function getRemindersForContact(
-  state: AppState,
-  contactId: string,
-) {
+export function getRemindersForContact(state: AppState, contactId: string) {
   return state.reminders
     .filter((r) => r.contactId === contactId)
     .sort(

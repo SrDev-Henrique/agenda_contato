@@ -15,6 +15,7 @@ export const ui = {
   navEvents: "Eventos",
   navTags: "Tags",
   navAllTags: "Todas as tags",
+  deleteTag: "Excluir tag",
   navUntagged: "Sem tag",
   breadcrumbNav: "Navegação",
   more: "Mais",

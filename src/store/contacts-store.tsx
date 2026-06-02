@@ -23,6 +23,8 @@ import {
   deleteEvent,
   deleteNote,
   deleteReminder,
+  deleteTag as deleteTagAction,
+  removeTagFromContact as removeTagFromContactAction,
   setAddingEvent,
   setAddingReminder,
   updateContact as updateContactAction,
@@ -61,6 +63,7 @@ type ContactsStoreValue = {
   togglePinned: (id: string) => void;
   addTagToContact: (contactId: string, tagId: string) => void;
   removeTagFromContact: (contactId: string, tagId: string) => void;
+  deleteTag: (tagId: string) => void;
   createTag: (name: string) => Tag | null;
   addEvent: (data: Omit<Event, "id">) => void;
   updateEvent: (id: string, patch: Partial<Event>) => void;
@@ -149,17 +152,16 @@ export function useContactsStore(): ContactsStoreValue {
 
   const removeTagFromContact = useCallback(
     (contactId: string, tagId: string) => {
-      const contact = agenda.contacts.find((c) => c.id === contactId);
-      if (contact) {
-        dispatch(
-          updateContactAction({
-            id: contactId,
-            patch: { tagIds: contact.tagIds.filter((t) => t !== tagId) },
-          }),
-        );
-      }
+      dispatch(removeTagFromContactAction({ contactId, tagId }));
     },
-    [agenda.contacts, dispatch],
+    [dispatch],
+  );
+
+  const deleteTag = useCallback(
+    (tagId: string) => {
+      dispatch(deleteTagAction({ tagId }));
+    },
+    [dispatch],
   );
 
   const addEventHandler = useCallback(
@@ -257,6 +259,7 @@ export function useContactsStore(): ContactsStoreValue {
       togglePinned,
       addTagToContact,
       removeTagFromContact,
+      deleteTag,
       createTag: (name) => {
         const trimmed = name.trim();
         if (!trimmed) return null;
@@ -303,6 +306,7 @@ export function useContactsStore(): ContactsStoreValue {
       togglePinned,
       addTagToContact,
       removeTagFromContact,
+      deleteTag,
       addEventHandler,
       updateEventHandler,
       deleteEventHandler,

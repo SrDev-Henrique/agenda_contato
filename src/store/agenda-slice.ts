@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { createSeedState } from "@/data/seed";
 import { createId, slugify } from "@/lib/id";
+import { getTagUsageCount } from "@/lib/selectors";
 import type { AppState } from "@/types/app-state";
 import type { Contact } from "@/types/contact";
 import type { Event } from "@/types/event";
@@ -113,6 +114,35 @@ const agendaSlice = createSlice({
       state.agenda.tags.push(tag);
       state.agenda.tags.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     },
+    removeTagFromContact(
+      state,
+      action: PayloadAction<{ contactId: string; tagId: string }>,
+    ) {
+      const { contactId, tagId } = action.payload;
+      const contact = state.agenda.contacts.find((c) => c.id === contactId);
+      if (!contact?.tagIds.includes(tagId)) return;
+
+      const usageBefore = getTagUsageCount(state.agenda, tagId);
+
+      contact.tagIds = contact.tagIds.filter((id) => id !== tagId);
+      contact.updatedAt = nowIso();
+
+      if (usageBefore === 1) {
+        state.agenda.tags = state.agenda.tags.filter((t) => t.id !== tagId);
+      }
+    },
+    deleteTag(state, action: PayloadAction<{ tagId: string }>) {
+      const { tagId } = action.payload;
+      const now = nowIso();
+
+      state.agenda.tags = state.agenda.tags.filter((t) => t.id !== tagId);
+
+      for (const contact of state.agenda.contacts) {
+        if (!contact.tagIds.includes(tagId)) continue;
+        contact.tagIds = contact.tagIds.filter((id) => id !== tagId);
+        contact.updatedAt = now;
+      }
+    },
     addEvent(state, action: PayloadAction<Omit<Event, "id">>) {
       const event: Event = { ...action.payload, id: createId() };
       state.agenda.events.push(event);
@@ -188,6 +218,8 @@ export const {
   updateContact,
   deleteContact,
   addTag,
+  removeTagFromContact,
+  deleteTag,
   addEvent,
   updateEvent,
   deleteEvent,
