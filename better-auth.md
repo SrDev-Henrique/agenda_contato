@@ -16,6 +16,7 @@ description: Learn how to configure Better Auth in your project.
     <Callout type="info">
       If you're using a separate client and server setup, make sure to install Better Auth in both parts of your project.
     </Callout>
+
   </Step>
 
   <Step>
@@ -42,6 +43,7 @@ description: Learn how to configure Better Auth in your project.
     ```txt title=".env"
     BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
     ```
+
   </Step>
 
   <Step>
@@ -64,6 +66,7 @@ description: Learn how to configure Better Auth in your project.
       //...
     });
     ```
+
   </Step>
 
   <Step>
@@ -166,6 +169,7 @@ description: Learn how to configure Better Auth in your project.
       [databases](/docs/adapters/other-relational-databases) for more information,
       or use one of the supported ORMs.
     </Callout>
+
   </Step>
 
   <Step>
@@ -194,6 +198,7 @@ description: Learn how to configure Better Auth in your project.
     <Callout>
       If you instead want to create the schema manually, you can find the core schema required in the [database section](/docs/concepts/database#core-schema).
     </Callout>
+
   </Step>
 
   <Step>
@@ -221,6 +226,7 @@ description: Learn how to configure Better Auth in your project.
     <Callout type="info">
       You can use even more authentication methods like [passkey](/docs/plugins/passkey), [username](/docs/plugins/username), [magic link](/docs/plugins/magic-link) and more through plugins.
     </Callout>
+
   </Step>
 
   <Step>
@@ -487,6 +493,7 @@ description: Learn how to configure Better Auth in your project.
         ```
       </Tab>
     </Tabs>
+
   </Step>
 
   <Step>
@@ -506,18 +513,18 @@ description: Learn how to configure Better Auth in your project.
 
     <Tabs
       items={["react", "vue", "svelte", "solid",
+
 "vanilla"]}
-      defaultValue="react"
-    >
-      <Tab value="vanilla">
-        ```ts title="lib/auth-client.ts"
+defaultValue="react" >
+<Tab value="vanilla">
+`ts title="lib/auth-client.ts"
         import { createAuthClient } from "better-auth/client"
         export const authClient = createAuthClient({
             /** The base URL of the server (optional if you're using the same domain) */ // [!code highlight]
             baseURL: "http://localhost:3000" // [!code highlight]
         })
-        ```
-      </Tab>
+        `
+</Tab>
 
       <Tab value="react" title="lib/auth-client.ts">
         ```ts title="lib/auth-client.ts"
@@ -567,11 +574,13 @@ description: Learn how to configure Better Auth in your project.
     ```ts
     export const { signIn, signUp, useSession } = createAuthClient()
     ```
+
   </Step>
 
   <Step>
     ### 🎉 That's it!
 
     That's it! You're now ready to use better-auth in your application. Continue to [basic usage](/docs/basic-usage) to learn how to use the auth instance to sign in users.
+
   </Step>
 </Steps>

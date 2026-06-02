@@ -5,15 +5,17 @@ import { useEffect, useRef } from "react";
 
 import { AuthBackdrop } from "@/components/auth/auth-backdrop";
 import { Spinner } from "@/components/ui/spinner";
-import { createSeedState } from "@/data/seed";
 import { useSession } from "@/lib/auth-client";
 import { ui } from "@/lib/i18n/pt-br";
 import { applyOnboardingState } from "@/lib/import/apply-onboarding-state";
 import { buildImportedAppState } from "@/lib/import/build-imported-state";
 import { consumeImportPending } from "@/lib/import/import-pending-storage";
+import { buildSampleAppState } from "@/lib/onboarding/build-sample-state";
 import { useAppDispatch } from "@/store/hooks";
+import type { Contact } from "@/types/contact";
 
-const LOADING_DURATION_MS = 1000;
+const MIN_LOADING_MS = 1500;
+const GITHUB_FETCH_TIMEOUT_MS = 12_000;
 
 type OnboardingLoadingSource = "dummy" | "import";
 
@@ -21,12 +23,49 @@ function parseSource(value: string | null): OnboardingLoadingSource {
   return value === "import" ? "import" : "dummy";
 }
 
+async function fetchGithubContacts(): Promise<Contact[]> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(
+    () => controller.abort(),
+    GITHUB_FETCH_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch("/api/onboarding/github-contacts", {
+      credentials: "include",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) return [];
+
+    const data = (await response.json()) as { contacts?: Contact[] };
+    return data.contacts ?? [];
+  } catch {
+    return [];
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function scheduleRedirect(
+  router: ReturnType<typeof useRouter>,
+  startedAt: number,
+  isActive: () => boolean,
+): number {
+  const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
+  return window.setTimeout(() => {
+    if (isActive()) {
+      router.replace("/");
+    }
+  }, Math.max(0, remaining));
+}
+
 export default function OnboardingLoadingClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const { data: session, isPending } = useSession();
-  const appliedRef = useRef(false);
+  const stateAppliedRef = useRef(false);
 
   const source = parseSource(searchParams.get("source"));
   const loadingMessage =
@@ -38,41 +77,70 @@ export default function OnboardingLoadingClient() {
     if (isPending) return;
 
     const userId = session?.user?.id;
-    if (!userId) return;
-
-    if (!appliedRef.current) {
-      appliedRef.current = true;
-
-      if (source === "import") {
-        const contacts = consumeImportPending();
-
-        if (!contacts?.length) {
-          router.replace("/onboarding");
-          return;
-        }
-
-        applyOnboardingState(
-          dispatch,
-          userId,
-          buildImportedAppState(contacts),
-          "import",
-        );
-      } else {
-        applyOnboardingState(dispatch, userId, createSeedState(), "dummy");
-      }
+    if (!userId) {
+      router.replace("/sign-up");
+      return;
     }
 
-    let cancelled = false;
+    let active = true;
+    let redirectTimeoutId: number | undefined;
+    const onboardUserId = userId;
 
-    const timeoutId = window.setTimeout(() => {
-      if (!cancelled) {
-        router.replace("/");
+    void (async () => {
+      const startedAt = Date.now();
+      let goHome = true;
+
+      try {
+        if (source === "import") {
+          const contacts = consumeImportPending();
+
+          if (!contacts?.length) {
+            goHome = false;
+            if (active) router.replace("/onboarding");
+            return;
+          }
+
+          if (!stateAppliedRef.current) {
+            stateAppliedRef.current = true;
+            applyOnboardingState(
+              dispatch,
+              onboardUserId,
+              buildImportedAppState(contacts),
+              "import",
+            );
+          }
+        } else if (!stateAppliedRef.current) {
+          const githubContacts = await fetchGithubContacts();
+          stateAppliedRef.current = true;
+          applyOnboardingState(
+            dispatch,
+            onboardUserId,
+            buildSampleAppState(githubContacts),
+            "dummy",
+          );
+        }
+      } catch {
+        if (!stateAppliedRef.current) {
+          stateAppliedRef.current = true;
+          applyOnboardingState(
+            dispatch,
+            onboardUserId,
+            buildSampleAppState([]),
+            "dummy",
+          );
+        }
       }
-    }, LOADING_DURATION_MS);
+
+      if (!active || !goHome) return;
+
+      redirectTimeoutId = scheduleRedirect(router, startedAt, () => active);
+    })();
 
     return () => {
-      cancelled = true;
-      window.clearTimeout(timeoutId);
+      active = false;
+      if (redirectTimeoutId !== undefined) {
+        window.clearTimeout(redirectTimeoutId);
+      }
     };
   }, [dispatch, isPending, router, session?.user?.id, source]);
 

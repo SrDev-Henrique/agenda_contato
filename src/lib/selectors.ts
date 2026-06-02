@@ -1,7 +1,28 @@
 import type { AppState, ContactFilters } from "@/types/app-state";
 import type { Contact } from "@/types/contact";
 import type { Event } from "@/types/event";
+import type { Reminder } from "@/types/reminder";
 import type { Tag } from "@/types/tag";
+
+export type TodayActivity =
+  | {
+      kind: "event";
+      id: string;
+      at: string;
+      event: Event;
+      contact?: Contact;
+    }
+  | {
+      kind: "reminder";
+      id: string;
+      at: string;
+      reminder: Reminder;
+      contact?: Contact;
+    };
+
+export function getActivityReadKey(activity: TodayActivity): string {
+  return `${activity.kind}:${activity.id}`;
+}
 
 export function getContactById(
   state: AppState,
@@ -159,4 +180,48 @@ export function filterEventsByWeek(
   if (week === "all") return events;
 
   return events.filter((e) => isDateInCurrentWeek(e.startsAt));
+}
+
+export function isSameCalendarDay(
+  value: string | Date,
+  now = new Date(),
+): boolean {
+  const date = new Date(value);
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+  );
+}
+
+export function getTodayActivities(
+  state: AppState,
+  now = new Date(),
+): TodayActivity[] {
+  const items: TodayActivity[] = [
+    ...state.events
+      .filter((event) => isSameCalendarDay(event.startsAt, now))
+      .map((event) => ({
+        kind: "event" as const,
+        id: event.id,
+        at: event.startsAt,
+        event,
+        contact: event.contactId
+          ? getContactById(state, event.contactId)
+          : undefined,
+      })),
+    ...state.reminders
+      .filter((reminder) => isSameCalendarDay(reminder.scheduledAt, now))
+      .map((reminder) => ({
+        kind: "reminder" as const,
+        id: reminder.id,
+        at: reminder.scheduledAt,
+        reminder,
+        contact: getContactById(state, reminder.contactId),
+      })),
+  ];
+
+  return items.sort(
+    (a, b) => new Date(a.at).getTime() - new Date(b.at).getTime(),
+  );
 }

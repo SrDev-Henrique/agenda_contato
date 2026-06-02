@@ -1,10 +1,17 @@
 "use client";
 
-import { CalendarDays, Clock, Ellipsis, Users } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 
+import {
+  formatActivityTimestamp,
+  formatDateBadge,
+  formatEventTimeRange,
+  getEventActionLabel,
+  isCalendarStyleEvent,
+} from "@/lib/activity-display";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { eventTypeLabels } from "@/lib/i18n/pt-br";
+import { ui } from "@/lib/i18n/pt-br";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/contact";
 import type { Event } from "@/types/event";
@@ -14,6 +21,7 @@ type EventCardProps = {
   contact?: Contact;
   attendees?: Contact[];
   className?: string;
+  variant?: "default" | "profile";
 };
 
 export function EventCard({
@@ -21,39 +29,61 @@ export function EventCard({
   contact,
   attendees = [],
   className,
+  variant = "default",
 }: EventCardProps) {
+  if (variant === "profile") {
+    return (
+      <EventCardProfile
+        event={event}
+        contact={contact}
+        attendees={attendees}
+        className={className}
+      />
+    );
+  }
+
+  const useBadge = isCalendarStyleEvent(event);
+  const { month, day } = formatDateBadge(event.startsAt);
+
   return (
     <article
       className={cn(
-        "rounded-lg bg-background p-3 text-sm shadow-sm ring-1 ring-border",
+        "rounded-lg bg-background/80 p-3 text-sm ring-1 ring-border",
         className,
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-foreground-muted">
-          <CalendarDays className="size-4" />
-        </div>
+        {useBadge ? (
+          <DateBadge month={month} day={day} />
+        ) : null}
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate font-medium text-foreground">
-                {event.title}
-              </p>
-              <p className="mt-1 text-foreground-muted text-xs">
-                {eventTypeLabels[event.type]}
-                {contact ? (
-                  <>
-                    {" "}
-                    com <span className="text-primary">{contact.name}</span>
-                  </>
-                ) : null}
-              </p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 space-y-1">
+              {!useBadge ? (
+                <p className="text-foreground-muted text-xs">
+                  {getEventActionLabel(event)}
+                  {contact ? (
+                    <>
+                      {" "}
+                      <span className="font-medium text-primary">
+                        {contact.name}
+                      </span>
+                    </>
+                  ) : null}
+                </p>
+              ) : null}
+              <p className="font-medium text-foreground">{event.title}</p>
+              {event.description ? (
+                <p className="line-clamp-3 text-foreground-muted text-xs leading-5">
+                  {event.description}
+                </p>
+              ) : null}
             </div>
 
             <Button
-              aria-label="Opções"
-              title="Opções"
+              aria-label={ui.options}
+              title={ui.options}
               size="icon-sm"
               variant="ghost"
             >
@@ -61,47 +91,17 @@ export function EventCard({
             </Button>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-foreground-muted text-xs">
-            <span className="inline-flex h-7 items-center gap-1.5 rounded-md bg-muted px-2">
-              <CalendarDays className="size-3.5" />
-              {formatEventDate(event.startsAt)}
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <time className="rounded-md bg-muted px-2 py-1 text-foreground-muted text-xs">
+              {formatActivityTimestamp(event.startsAt)}
+            </time>
+            <span className="text-foreground-muted text-xs">
+              {formatEventTimeRange(event.startsAt)}
             </span>
-            <span className="inline-flex h-7 items-center gap-1.5 rounded-md bg-muted px-2">
-              <Clock className="size-3.5" />
-              {formatEventTime(event.startsAt)}
-            </span>
-            {attendees.length > 0 ? (
-              <span className="inline-flex h-7 items-center gap-1.5 rounded-md bg-muted px-2">
-                <Users className="size-3.5" />
-                {attendees.length}
-              </span>
-            ) : null}
           </div>
 
           {attendees.length > 0 ? (
-            <div className="mt-3 flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {attendees.slice(0, 4).map((attendee) => (
-                  <Avatar
-                    key={attendee.id}
-                    className="size-7 border-2 border-background"
-                  >
-                    {attendee.avatarUrl ? (
-                      <AvatarImage
-                        src={attendee.avatarUrl}
-                        alt={attendee.name}
-                      />
-                    ) : null}
-                    <AvatarFallback>
-                      {getInitials(attendee.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                ))}
-              </div>
-              <p className="min-w-0 truncate text-foreground-muted text-xs">
-                {attendees.map((attendee) => attendee.name).join(", ")}
-              </p>
-            </div>
+            <AttendeeStack attendees={attendees} className="mt-3" />
           ) : null}
         </div>
       </div>
@@ -109,18 +109,105 @@ export function EventCard({
   );
 }
 
-function formatEventDate(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "short",
-  }).format(new Date(value));
+function EventCardProfile({
+  event,
+  contact,
+  attendees,
+  className,
+}: {
+  event: Event;
+  contact?: Contact;
+  attendees: Contact[];
+  className?: string;
+}) {
+  const { month, day } = formatDateBadge(event.startsAt);
+
+  return (
+    <article
+      className={cn(
+        "rounded-lg bg-muted/50 px-3 py-2.5 text-sm ring-1 ring-border",
+        className,
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <DateBadge month={month} day={day} />
+
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <p className="font-medium text-accent leading-snug">{event.title}</p>
+          <p className="text-foreground-muted text-xs">
+            {formatEventTimeRange(event.startsAt)}
+          </p>
+          {event.description && !contact ? (
+            <p className="line-clamp-2 text-foreground-muted text-xs leading-5">
+              {event.description}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2">
+          {attendees.length > 0 ? (
+            <AttendeeStack attendees={attendees} maxVisible={3} />
+          ) : null}
+          <Button
+            aria-label={ui.options}
+            title={ui.options}
+            size="icon-sm"
+            variant="ghost"
+            className="opacity-70"
+          >
+            <Ellipsis />
+          </Button>
+        </div>
+      </div>
+    </article>
+  );
 }
 
-function formatEventTime(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
+function DateBadge({ month, day }: { month: string; day: string }) {
+  return (
+    <div className="flex size-11 shrink-0 flex-col items-center justify-center rounded-lg bg-muted text-center ring-1 ring-border">
+      <span className="font-semibold text-[10px] text-foreground-muted leading-none tracking-wide">
+        {month}
+      </span>
+      <span className="font-semibold text-foreground text-sm leading-tight">
+        {day}
+      </span>
+    </div>
+  );
+}
+
+function AttendeeStack({
+  attendees,
+  className,
+  maxVisible = 4,
+}: {
+  attendees: Contact[];
+  className?: string;
+  maxVisible?: number;
+}) {
+  const visible = attendees.slice(0, maxVisible);
+  const extra = attendees.length - visible.length;
+
+  return (
+    <div className={cn("flex items-center gap-1.5", className)}>
+      <div className="flex -space-x-2">
+        {visible.map((attendee) => (
+          <Avatar
+            key={attendee.id}
+            className="size-6 border-2 border-surface"
+          >
+            {attendee.avatarUrl ? (
+              <AvatarImage src={attendee.avatarUrl} alt={attendee.name} />
+            ) : null}
+            <AvatarFallback>{getInitials(attendee.name)}</AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      {extra > 0 ? (
+        <span className="text-foreground-muted text-xs">+{extra}</span>
+      ) : null}
+    </div>
+  );
 }
 
 function getInitials(name: string) {

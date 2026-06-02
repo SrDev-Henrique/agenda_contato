@@ -34,8 +34,16 @@ export const ui = {
     "Seu navegador não suporta a seleção de contatos. Use o Chrome no Android ou escolha dados de exemplo.",
   onboardingImportError:
     "Não foi possível abrir a lista de contatos. Tente novamente.",
-  onboardingLoadingDummy: "Carregando dados de exemplo...",
+  onboardingLoadingDummy:
+    "Carregando dados de exemplo e contatos do GitHub...",
   onboardingLoadingImport: "Importando seus contatos...",
+
+  // Notificações
+  notificationsTitle: "Notificações",
+  notificationsOpen: "Abrir notificações",
+  notificationsMarkAllRead: "Marcar todas como lidas",
+  notificationsEmptyToday: "Nada agendado para hoje.",
+  notificationsReminder: "Lembrete",
 
   // Navegação / sidebar
   navAllPeople: "Contatos",
@@ -151,6 +159,12 @@ export const ui = {
   noEvents: "Nenhum evento agendado",
   noEventsHint: "Adicione um evento para vê-lo na timeline.",
   reminder: "Lembrete",
+  activityCall: "Ligar",
+  activityCongratulate: "Parabenizar",
+  activityMeetingWith: "Reunião com",
+  activityBirthdayOf: "Aniversário de",
+  activityParty: "Festa",
+  activityFullDay: "Dia inteiro",
   addReminderShort: "Lembrete",
   addEventShort: "Evento",
   options: "Opções",

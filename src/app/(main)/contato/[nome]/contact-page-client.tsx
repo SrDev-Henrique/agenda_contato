@@ -1,17 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { ContactDetailSection } from "@/components/contacts/contact-detail-section";
+import { ContactEventsSection } from "@/components/contacts/contact-events-section";
 import { ContactHeader } from "@/components/contacts/contact-header";
 import { ContactInfoGrid } from "@/components/contacts/contact-info-grid";
 import { ContactNotFound } from "@/components/contacts/contact-not-found";
-import { EventCard } from "@/components/events/event-card";
-import { EventComposer } from "@/components/events/event-composer";
+import { ContactRemindersSection } from "@/components/contacts/contact-reminders-section";
 import { appMainPanelClassName } from "@/components/layout/app-shell";
 import { NoteCard } from "@/components/notes/note-card";
 import { NoteComposer } from "@/components/notes/note-composer";
-import { ReminderCard } from "@/components/reminders/reminder-card";
-import { ReminderComposer } from "@/components/reminders/reminder-composer";
 import { ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
 import { cn } from "@/lib/utils";
@@ -90,73 +88,34 @@ export function ContactPageClient({ nome }: ContactPageClientProps) {
         <div className="space-y-5 border-border border-t bg-surface-muted p-4">
           <ContactInfoGrid contact={contact} onUpdate={handleUpdate} />
 
-          <DetailSection title={ui.reminders}>
-            <div className="space-y-2">
-              {reminders.map((reminder) => (
-                <ReminderCard
-                  key={reminder.id}
-                  reminder={reminder}
-                  contact={contact}
-                />
-              ))}
-              <ReminderComposer
-                contacts={contacts}
-                defaultContactId={contact.id}
-                onCreateReminder={(data) =>
-                  addReminder({ ...data, contactId: contact.id })
-                }
-              />
-            </div>
-          </DetailSection>
+          <ContactRemindersSection
+            contact={contact}
+            contacts={contacts}
+            reminders={reminders}
+            onCreateReminder={(data) =>
+              addReminder({ ...data, contactId: contact.id })
+            }
+          />
 
-          <DetailSection title={ui.upcomingEvents}>
-            <div className="space-y-2">
-              {events.map((event) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  contact={contact}
-                  attendees={contacts.filter((item) =>
-                    event.attendeeContactIds?.includes(item.id),
-                  )}
-                />
-              ))}
-              <EventComposer
-                contacts={contacts}
-                onCreateEvent={(data) =>
-                  addEvent({ ...data, contactId: contact.id })
-                }
-              />
-            </div>
-          </DetailSection>
+          <ContactEventsSection
+            contact={contact}
+            contacts={contacts}
+            events={events}
+            onCreateEvent={(data) =>
+              addEvent({ ...data, contactId: contact.id })
+            }
+          />
 
-          <DetailSection title={ui.notes}>
+          <ContactDetailSection title={ui.notes}>
             <div className="space-y-2">
               {notes.map((note) => (
                 <NoteCard key={note.id} note={note} />
               ))}
               <NoteComposer contactId={contact.id} onCreateNote={addNote} />
             </div>
-          </DetailSection>
+          </ContactDetailSection>
         </div>
       </div>
-    </section>
-  );
-}
-
-function DetailSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section>
-      <h2 className="mb-2 font-inter font-semibold text-foreground text-sm">
-        {title}
-      </h2>
-      {children}
     </section>
   );
 }

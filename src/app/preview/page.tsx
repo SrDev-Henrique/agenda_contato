@@ -17,6 +17,7 @@ import { Notifications } from "@/components/layout/notifications";
 import { ProfileMenuView } from "@/components/layout/profile-menu";
 import { Button } from "@/components/ui/button";
 import { createSeedState } from "@/data/seed";
+import { getTodayActivities } from "@/lib/selectors";
 import { ContactHeaderPreview } from "./contact-header-preview";
 import { ContactRowPreview } from "./contact-row-preview";
 import { ContactTagsEditorPreview } from "./contact-tags-editor-preview";
@@ -41,6 +42,7 @@ const iconOnlyButtons = [
 ];
 
 const previewState = createSeedState();
+const previewTodayActivities = getTodayActivities(previewState);
 const previewContacts = [
   previewState.contacts[2],
   previewState.contacts[0],
@@ -169,7 +171,7 @@ export default function PreviewPage() {
             description="Central compacta para alertas recentes, com contagem de itens não lidos e leitura individual."
           />
           <div className="flex items-center rounded-lg border border-border bg-surface p-5">
-            <Notifications />
+            <Notifications previewActivities={previewTodayActivities} />
           </div>
         </section>
 

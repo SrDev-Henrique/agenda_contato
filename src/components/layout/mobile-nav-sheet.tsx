@@ -65,7 +65,7 @@ export function MobileNavSheet({
           animate="animate"
         >
           <SheetHeader className="border-sidebar-border border-b px-4 py-4">
-            <SheetTitle className="text-left font-semibold text-base">
+            <SheetTitle className="text-left font-bebas-neue text-2xl text-accent leading-none tracking-wide">
               {ui.appName}
             </SheetTitle>
           </SheetHeader>

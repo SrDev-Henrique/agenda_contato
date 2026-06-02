@@ -62,15 +62,21 @@ export function AppSidebar({
           className="flex items-center justify-between gap-2"
         >
           <motion.div
-            className="truncate font-semibold text-base tracking-tight"
-            initial={{ opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : -8 }}
+            className="truncate font-bebas-neue text-2xl text-accent leading-none tracking-wide"
+            initial={{
+              opacity: reduceMotion ? 1 : 0,
+              x: reduceMotion ? 0 : -8,
+            }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...tween, delay: reduceMotion ? 0 : 0.02 }}
           >
             {ui.appName}
           </motion.div>
           <motion.div
-            initial={{ opacity: reduceMotion ? 1 : 0, scale: reduceMotion ? 1 : 0.88 }}
+            initial={{
+              opacity: reduceMotion ? 1 : 0,
+              scale: reduceMotion ? 1 : 0.88,
+            }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...tween, delay: reduceMotion ? 0 : 0.08 }}
           >
@@ -131,7 +137,10 @@ export function AppSidebar({
             </Button>
           </motion.div>
 
-          <motion.div variants={sidebarChromeStaggerItem} className="mt-auto pt-6">
+          <motion.div
+            variants={sidebarChromeStaggerItem}
+            className="mt-auto pt-6"
+          >
             <ProfileMenu className="border-0 bg-transparent px-0 py-0" />
           </motion.div>
         </motion.div>

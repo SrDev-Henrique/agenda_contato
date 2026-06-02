@@ -26,7 +26,7 @@ export function AddContactFab({
       onClick={onAddContact}
       transition={fabSpring}
       className={cn(
-        "fixed right-4 bottom-4 z-60 flex items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-lg hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:hidden",
+        "fixed right-4 bottom-4 z-60 flex items-center justify-center gap-2 rounded-full bg-accent font-medium text-accent-foreground shadow-lg hover:bg-accent/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 md:hidden",
         navSheetOpen ? "h-11 px-4 text-sm" : "size-14",
       )}
     >
@@ -38,9 +38,15 @@ export function AddContactFab({
         {navSheetOpen ? (
           <motion.span
             key="fab-label"
-            initial={{ opacity: reduceMotion ? 1 : 0, width: reduceMotion ? "auto" : 0 }}
+            initial={{
+              opacity: reduceMotion ? 1 : 0,
+              width: reduceMotion ? "auto" : 0,
+            }}
             animate={{ opacity: 1, width: "auto" }}
-            exit={{ opacity: reduceMotion ? 1 : 0, width: reduceMotion ? "auto" : 0 }}
+            exit={{
+              opacity: reduceMotion ? 1 : 0,
+              width: reduceMotion ? "auto" : 0,
+            }}
             transition={tween}
             className="overflow-hidden whitespace-nowrap"
           >

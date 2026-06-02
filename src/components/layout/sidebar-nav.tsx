@@ -170,8 +170,8 @@ function SidebarNavItem({
   const className = cn(
     "relative flex h-7 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left font-medium text-sidebar-foreground text-xs transition-colors",
     active
-      ? "text-sidebar-accent-foreground"
-      : "hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground",
+      ? "text-accent"
+      : "hover:bg-accent-muted hover:text-sidebar-accent-foreground",
   );
 
   const content = (
@@ -179,7 +179,7 @@ function SidebarNavItem({
       {active ? (
         <motion.span
           layoutId={activeIndicatorId}
-          className="absolute inset-0 rounded-md bg-sidebar-accent"
+          className="absolute inset-0 rounded-md bg-accent-subtle"
           transition={spring}
         />
       ) : null}

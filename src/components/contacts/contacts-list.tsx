@@ -13,12 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useShouldAnimateOnKeyChange } from "@/hooks/use-previous";
 import { ui } from "@/lib/i18n/pt-br";
 import { slugify } from "@/lib/id";
 import { useAppMotion } from "@/lib/motion";
 import { groupContactsByLetter } from "@/lib/selectors";
 import { cn } from "@/lib/utils";
-import { useShouldAnimateOnKeyChange } from "@/hooks/use-previous";
 import type { Contact } from "@/types/contact";
 import type { Tag } from "@/types/tag";
 
@@ -128,9 +128,7 @@ export function ContactsList({
             <p className="font-medium text-[0.65rem] text-foreground-subtle uppercase tracking-wide">
               {ui.totalContacts(totalCount)}
             </p>
-            <h2 className="mt-1 font-inter font-semibold text-foreground text-xl leading-none">
-              {ui.contacts}
-            </h2>
+            <h2 className="mt-1 text-foreground">{ui.contacts}</h2>
           </div>
 
           <div className="flex items-center gap-1">

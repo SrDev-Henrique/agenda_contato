@@ -21,6 +21,7 @@ type EventComposerProps = {
   onCreateEvent: (data: Omit<Event, "id">) => void;
   onCancel?: () => void;
   className?: string;
+  defaultContactId?: string;
 };
 
 export function EventComposer({
@@ -28,10 +29,13 @@ export function EventComposer({
   onCreateEvent,
   onCancel,
   className,
+  defaultContactId = "",
 }: EventComposerProps) {
   const [title, setTitle] = useState("");
-  const [selectedContactId, setSelectedContactId] = useState("");
-  const [attendeeContactIds, setAttendeeContactIds] = useState<string[]>([]);
+  const [selectedContactId, setSelectedContactId] = useState(defaultContactId);
+  const [attendeeContactIds, setAttendeeContactIds] = useState<string[]>(() =>
+    defaultContactId ? [defaultContactId] : [],
+  );
   const [date, setDate] = useState(() => getDateInputValue(new Date()));
   const [time, setTime] = useState("10:00");
 
@@ -75,8 +79,8 @@ export function EventComposer({
     });
 
     setTitle("");
-    setSelectedContactId("");
-    setAttendeeContactIds([]);
+    setSelectedContactId(defaultContactId);
+    setAttendeeContactIds(defaultContactId ? [defaultContactId] : []);
   };
 
   const handleSelectMentionContact = (contact: Contact) => {

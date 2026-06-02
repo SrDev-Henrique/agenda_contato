@@ -40,9 +40,7 @@ export default function SignUpPage() {
           <p className="font-semibold text-accent text-lg tracking-tight">
             {ui.appName}
           </p>
-          <h1 className="font-semibold text-2xl text-foreground tracking-tight">
-            {ui.signUpTitle}
-          </h1>
+          <h1>{ui.signUpTitle}</h1>
           <p className="text-foreground-subtle text-sm leading-relaxed">
             {ui.signUpDescription}
           </p>

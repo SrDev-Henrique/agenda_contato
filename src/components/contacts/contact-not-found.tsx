@@ -17,10 +17,7 @@ export function ContactNotFound({ isHydrated }: ContactNotFoundProps) {
   if (!isHydrated) {
     return (
       <section
-        className={cn(
-          appMainPanelClassName,
-          "items-center justify-center p-6",
-        )}
+        className={cn(appMainPanelClassName, "items-center justify-center p-6")}
       >
         <Spinner className="size-8 text-primary" />
         <p className="mt-4 text-foreground-muted text-sm">{ui.loading}</p>
@@ -38,9 +35,7 @@ export function ContactNotFound({ isHydrated }: ContactNotFoundProps) {
       <div className="flex size-16 items-center justify-center rounded-2xl bg-muted text-foreground-muted">
         <UserX className="size-8" aria-hidden />
       </div>
-      <h1 className="mt-5 font-inter font-semibold text-foreground text-xl">
-        {ui.contactNotFound}
-      </h1>
+      <h1 className="mt-5 text-foreground">{ui.contactNotFound}</h1>
       <p className="mt-2 max-w-sm text-foreground-muted text-sm leading-6">
         {ui.contactNotFoundHint}
       </p>

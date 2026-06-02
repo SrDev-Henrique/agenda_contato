@@ -26,6 +26,8 @@ export const auth = betterAuth({
           github: {
             clientId: githubClientId,
             clientSecret: githubClientSecret,
+            // read:user — following/followers; user:email — e-mail público no perfil
+            scope: ["read:user", "user:email"],
           },
         }
       : {}),

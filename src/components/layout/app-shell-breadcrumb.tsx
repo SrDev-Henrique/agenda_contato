@@ -31,7 +31,7 @@ export function AppShellBreadcrumb() {
   );
 
   return (
-    <div className="shrink-0 border-border/60 border-b bg-surface/50 px-4 py-3 md:px-5">
+    <div className="shrink-0 border-border/60 border-b bg-accent-muted/50 px-4 py-3 md:px-5">
       <Breadcrumb aria-label={ui.breadcrumbNav}>
         <BreadcrumbList>
           {crumbs.map((crumb, index) => {

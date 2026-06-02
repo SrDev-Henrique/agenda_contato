@@ -8,11 +8,11 @@ import { AuthBackdrop } from "@/components/auth/auth-backdrop";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useSession } from "@/lib/auth-client";
+import { ui } from "@/lib/i18n/pt-br";
 import { setImportPending } from "@/lib/import/import-pending-storage";
 import { isContactPickerSupported } from "@/lib/import/is-contact-picker-supported";
 import { mapPickerResultsToContacts } from "@/lib/import/map-picker-to-contacts";
 import { pickContacts } from "@/lib/import/pick-contacts";
-import { ui } from "@/lib/i18n/pt-br";
 import { isOnboarded } from "@/lib/onboarding/storage";
 
 function subscribeToPickerSupport() {
@@ -84,9 +84,7 @@ export default function OnboardingClient() {
           <p className="font-semibold text-accent text-lg tracking-tight">
             {ui.appName}
           </p>
-          <h1 className="font-semibold text-2xl text-foreground tracking-tight">
-            {ui.onboardingTitle}
-          </h1>
+          <h1>{ui.onboardingTitle}</h1>
           <p className="text-foreground-subtle text-sm leading-relaxed">
             {ui.onboardingDescription}
           </p>
