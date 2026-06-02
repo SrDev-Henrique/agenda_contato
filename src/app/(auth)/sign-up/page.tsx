@@ -18,10 +18,38 @@ export default function SignUpPage() {
     setError(null);
 
     try {
-      await signIn.social({
+      const result = await signIn.social({
         provider: "github",
         callbackURL: "/onboarding",
       });
+
+      if (result.error) {
+        const message =
+          typeof result.error === "object" &&
+          result.error !== null &&
+          "message" in result.error &&
+          typeof result.error.message === "string"
+            ? result.error.message
+            : ui.signUpError;
+        setError(message);
+        setIsLoading(false);
+        return;
+      }
+
+      const oauthUrl =
+        result.data &&
+        typeof result.data === "object" &&
+        "url" in result.data &&
+        typeof result.data.url === "string"
+          ? result.data.url
+          : null;
+
+      if (oauthUrl) {
+        window.location.assign(oauthUrl);
+        return;
+      }
+
+      setIsLoading(false);
     } catch {
       setError(ui.signUpError);
       setIsLoading(false);
