@@ -149,7 +149,10 @@ export function EventComposer({
                 : ui.eventParticipantsPlaceholder}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-80 p-1">
+          <PopoverContent
+            align="start"
+            className="h-180 w-80 overflow-y-auto p-1"
+          >
             <div className="px-2 py-2 font-medium text-foreground-muted text-xs">
               {ui.eventParticipants}
             </div>
