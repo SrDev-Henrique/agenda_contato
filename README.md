@@ -2,6 +2,8 @@
 
 **Agenda de contatos** com lembretes, eventos e notas — uma aplicação web moderna para organizar relacionamentos e atividades do dia a dia.
 
+**Demo:** [https://agenda-contato-blond.vercel.app/](https://agenda-contato-blond.vercel.app/)
+
 ---
 
 ## Visão geral
@@ -142,6 +144,8 @@ src/
 ```
 
 ## Deploy
+
+A versão em produção está disponível em [https://agenda-contato-blond.vercel.app/](https://agenda-contato-blond.vercel.app/).
 
 O projeto é compatível com [Vercel](https://vercel.com) e outras plataformas que suportam Next.js. Em produção:
 
