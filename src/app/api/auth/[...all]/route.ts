@@ -9,7 +9,7 @@ import {
 
 export const runtime = "nodejs";
 
-const handler = toNextJsHandler(auth);
+const { GET: authGET, POST: authPOST } = toNextJsHandler(auth);
 
 async function withSupabaseDatabaseErrorResponse(
   response: Response,
@@ -28,10 +28,13 @@ async function withSupabaseDatabaseErrorResponse(
   }
 }
 
-async function handleAuthRequest(request: Request): Promise<Response> {
+async function wrapAuthHandler(
+  handler: (request: Request) => Promise<Response>,
+  request: Request,
+): Promise<Response> {
   const response = await handler(request);
   return withSupabaseDatabaseErrorResponse(response);
 }
 
-export const GET = handleAuthRequest;
-export const POST = handleAuthRequest;
+export const GET = (request: Request) => wrapAuthHandler(authGET, request);
+export const POST = (request: Request) => wrapAuthHandler(authPOST, request);
