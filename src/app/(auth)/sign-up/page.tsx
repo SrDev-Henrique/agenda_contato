@@ -6,6 +6,7 @@ import { useState } from "react";
 import { AuthBackdrop } from "@/components/auth/auth-backdrop";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { signIn } from "@/lib/auth-client";
 import { ui } from "@/lib/i18n/pt-br";
 
@@ -24,14 +25,7 @@ export default function SignUpPage() {
       });
 
       if (result.error) {
-        const message =
-          typeof result.error === "object" &&
-          result.error !== null &&
-          "message" in result.error &&
-          typeof result.error.message === "string"
-            ? result.error.message
-            : ui.signUpError;
-        setError(message);
+        setError(getAuthErrorMessage(result.error));
         setIsLoading(false);
         return;
       }
@@ -50,8 +44,8 @@ export default function SignUpPage() {
       }
 
       setIsLoading(false);
-    } catch {
-      setError(ui.signUpError);
+    } catch (error) {
+      setError(getAuthErrorMessage(error));
       setIsLoading(false);
     }
   };

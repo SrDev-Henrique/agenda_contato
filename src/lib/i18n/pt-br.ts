@@ -14,6 +14,7 @@ export const ui = {
     "Para acessar sua agenda de contatos, eventos e lembretes, entre com sua conta do GitHub.",
   connectGithub: "Continuar com GitHub",
   signUpError: "Não foi possível conectar com o GitHub. Tente novamente.",
+  supabaseDatabasePaused: "Banco de dado supabase atualmente pausado",
   signOut: "Sair",
   deleteAccount: "Excluir conta",
   deleteAccountTitle: "Excluir conta?",
